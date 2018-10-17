@@ -18,15 +18,15 @@ end
 
 % Get a list of all .mat-files in the folder.
 listOfFiles = dir(fullfile(fileFolder, '*.mat'));
-% Load the files 
+% Loa
 for k = 1 : length(listOfFiles)
   eval(['load ' listOfFiles(k).name]);
 end
-
-
+    
 
 % EMG
 % RMS= 
+% TrainProfile =
 % GeneratedProfile = 
 
 
