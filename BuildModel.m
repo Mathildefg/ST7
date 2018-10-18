@@ -12,7 +12,7 @@ fileFolder = fileFolder.folder;
 % Get a list of all .mat-files in the folder.
 listOfFiles = dir(fullfile(fileFolder, '*.mat'));
 % Load the files 
-EMG= []; RMS = [];
+EMG= []; RMS= []; GeneratedProfile = [];
 for k = 1 : length(listOfFiles)
   %data{k}= eval(['load ' listOfFiles(k).name]);
   %sprintf('data%d', k) = load(listOfFiles(k).name);
@@ -22,18 +22,25 @@ for k = 1 : length(listOfFiles)
   load(listOfFiles(k).name, 'emg');
   data{k} = emg.values;
   EMG = [EMG; data{1,k}];
-  RMS = [RMS rms(data{1,k}, 20, 15, 0)];
+  
+  RMS_temp = [];
+  for i=1 : 8
+      RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),20,15,0));
+  end
+  RMS = [RMS; RMS_temp];
+ 
+  
+  GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 20, 15, 0)];
 end
 clear emg;
 
-% GeneratedProfile = 
-
 figure(1)
-title('EMG-data, RMS og Generated profile');
-subplot(2,1,1)
+subplot(3,1,1)
 plot(EMG)
-subplot(2,1,2)
+subplot(3,1,2)
 plot(RMS)
+subplot(3,1,3)
+plot(GeneratedProfile)
 
 
 %% Feature extraction and arrangement in predictors and target
