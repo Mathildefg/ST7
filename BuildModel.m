@@ -28,45 +28,21 @@ for k = 1 : length(listOfFiles)
   
   GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 40, 30, 0)];
   
-  %To be used for indexing:
+  %To be used for indexing - the lengths of the RMS from each movement:
   f(k) = length(RMS_temp);
-  
-  %Assigning a number for each movement to be used in indexing
-  switch listOfFiles(k).name
-      case {'Flexion_1.mat', 'Flexion_2.mat', 'Flexion_3.mat'}
-          temp_array(1:f(k))= 1;
-          movement = [movement temp_array];
-          
-      case {'Extension_1.mat', 'Extension_2.mat', 'Extension_3.mat'}
-          temp_array(1:f(k))= 2;
-          movement = [movement temp_array];
-          
-      case {'Radial_deviation_1.mat', 'Radial_deviation_2.mat', 'Radial_deviation_3.mat'}
-          temp_array(1:f(k))= 3;
-          movement = [movement temp_array];
-          
-      case {'Ulnar_deviation_1.mat', 'Ulnar_deviation_2.mat', 'Ulnar_deviation_3.mat'}
-          temp_array(1:f(k))= 4;
-          movement = [movement temp_array];
-          
-      case {'Supination_1.mat', 'Supination_2.mat', 'Supination_3.mat'}
-          temp_array(1:f(k))= 5;
-          movement = [movement temp_array];
-          
-      case {'Pronation_1.mat', 'Pronation_2.mat', 'Pronation_3.mat'}
-          temp_array(1:f(k))= 6;
-          movement = [movement temp_array];
-          
-      case {'Rest_1.mat', 'Rest_2.mat', 'Rest_3.mat'}
-          temp_array(1:f(k))= 7;
-          movement = [movement temp_array];
-          
-      otherwise
-          fprintf('Unknown file included\n')
-  end
   
 end
 clear emg RMS_temp;
+
+%Assigning a number for each movement to be used in indexing. Feasible
+%because the files are always loaded alphabetically9
+movement(1:sum(f(1:3))) =2;
+movement(sum(f(1:3))+1: sum(f(1:6)))=1;
+movement(sum(f(1:6))+1:sum(f(1:9)))=6;
+movement(sum(f(1:9))+1:sum(f(1:12)))=3;
+movement(sum(f(1:12))+1:sum(f(1:15)))=7;
+movement(sum(f(1:15))+1:sum(f(1:19)))= 5;
+movement(sum(f(1:19))+1:sum(f(1:21)))=4;
 
 %The index vector
 [dofs, i, ~] = unique(movement);
@@ -82,17 +58,17 @@ subplot(3,1,3)
 plot(GeneratedProfile)
 
 
-%% Feature extraction and arrangement in predictors and target
+%% Arrangement in predictors and target
 
 %Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC. 
-% x_flex
-% x_ext
-% x_rd 
-% x_ud
-% x_pro
-% x_sup
-% 
-% %Target values - The generated profile. 
+x_flex = RMS(i(1):i(2)-1,:);  %Vi trækker 1 fra fordi i(2) er første sample i næste bevægelse.
+x_ext = RMS(i(2):i(3)-1,:);
+x_rd = RMS(i(3):i(4)-1,:);
+x_ud = RMS(i(4):i(5)-1,:);
+x_pro = RMS(i(5):i(6)-1,:);
+x_sup = RMS(i(6):end,:);
+
+%Target values - The generated profile. 
 % y_flex
 % y_ext
 % y_rd
