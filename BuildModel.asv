@@ -12,12 +12,9 @@ fileFolder = fileFolder.folder;
 % Get a list of all .mat-files in the folder.
 listOfFiles = dir(fullfile(fileFolder, '*.mat'));
 % Load the files 
-EMG= []; RMS= []; GeneratedProfile = [];
+EMG= []; RMS= []; GeneratedProfile = [];i=[1];
 for k = 1 : length(listOfFiles)
-  %data{k}= eval(['load ' listOfFiles(k).name]);
-  %sprintf('data%d', k) = load(listOfFiles(k).name);
-  %data = 
-  %filename = sprintf('data%d', k);
+
  
   load(listOfFiles(k).name, 'emg');
   data{k} = emg.values;
@@ -25,17 +22,28 @@ for k = 1 : length(listOfFiles)
   
   RMS_temp = [];
   for i=1 : 8
-      RMS_temp(:,i) = transpose(rms(data{1,k}(:,i),20,15,0));
+      RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,30,0));
+     
   end
   RMS = [RMS; RMS_temp];
- 
   
-  GeneratedProfile = [GeneratedProfile rms(data{1,k}, 20, 15, 0)];
+  %To be used for indexing:
+  f(k) = length(RMS_temp);f= transpose(f);
+
+  GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 40, 30, 0)];
+  
+  %Creating an index vector
+  switch 
+      case
+  end
+  
 end
 clear emg;
 
+
+
+
 figure(1)
-title('EMG-data, RMS og Generated profile');
 subplot(3,1,1)
 plot(EMG)
 subplot(3,1,2)
