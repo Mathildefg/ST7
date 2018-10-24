@@ -21,18 +21,20 @@ for k = 1 : length(listOfFiles)
   
   RMS_temp = [];
   for i=1 : 8
-      RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,30,0));
+      RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,20,0));
      
   end
   RMS = [RMS; RMS_temp];
   
-  GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 40, 30, 0)];
+  GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 40, 20, 0)];
   
   %To be used for indexing - the lengths of the RMS from each movement:
   f(k) = length(RMS_temp);
   
 end
 clear emg RMS_temp;
+
+GeneratedProfile= transpose(GeneratedProfile);
 
 %Assigning a number for each movement to be used in indexing. Feasible
 %because the files are always loaded alphabetically9
@@ -51,11 +53,11 @@ i = sort(i);
 
 figure(1)
 subplot(3,1,1)
-plot(EMG)
+plot(1:length(EMG),EMG)
 subplot(3,1,2)
-plot(RMS)
+plot(1:length(RMS),RMS)
 subplot(3,1,3)
-plot(GeneratedProfile)
+plot(1:length(GeneratedProfile), GeneratedProfile)
 
 
 %% Arrangement in predictors and target
@@ -69,9 +71,9 @@ x_pro = RMS(i(5):i(6)-1,:);
 x_sup = RMS(i(6):end,:);
 
 %Target values - The generated profile. 
-% y_flex
-% y_ext
-% y_rd
-% y_ud
-% y_pro
-% y_sup
+y_flex = GeneratedProfile(i(1):i(2)-1,:);  
+y_ext = GeneratedProfile(i(2):i(3)-1,:);
+y_rd = GeneratedProfile(i(3):i(4)-1,:);
+y_ud = GeneratedProfile(i(4):i(5)-1,:);
+y_pro = GeneratedProfile(i(5):i(6)-1,:);
+y_sup = GeneratedProfile(i(6):end,:);
