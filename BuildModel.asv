@@ -142,12 +142,10 @@ gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp
 %% Test predictions on training data
 % GPR
 % the training data
-[y1_testGPR,p1,o1] = predict(gprMdl_dof1,RMS);
-[y2_testGPR,p2,o2] = predict(gprMdl_dof2,RMS);
-[y3_testGPR,p3,o3] = predict(gprMdl_dof3,RMS);
-[y4_testGPR,p4,o4] = predict(gprMdl_dof4,RMS);
-[y5_testGPR,p5,o5] = predict(gprMdl_dof5,RMS);
-[y6_testGPR,p6,o6] = predict(gprMdl_dof6,RMS);
+[y1_testGPR,p1,o1] = predict(gprMdl_dof1o,RMS);
+[y2_testGPR,p2,o2] = predict(gprMdl_dof2o,RMS);
+[y3_testGPR,p3,o3] = predict(gprMdl_dof3o,RMS);
+[y4_testGPR,p4,o4] = predict(gprMdl_dof4o,RMS);
 
 %% Plots
 % GPR
@@ -156,24 +154,24 @@ LR_GPR=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized'
 ax1 = subplot(4,1,1);
 rectangle('Position',[i(3) -0.24 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[0 -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),y1_testGPR,'k');
+plot(1:length(x),y1_LR,1:length(x),y1_testGPR,'k');
 title('Flexion')
 hold on;
 ax2 = subplot(4,1,2);
 rectangle('Position',[i(3) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),y2_testGPR,'k');
+plot(1:length(x),y2_LR,1:length(x),y2_testGPR,'k');
 title('Extension')
 ylabel('normalized [-]')
 ax3 = subplot(4,1,3);
 rectangle('Position',[i(3) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),y3_testGPR,'k');
+plot(1:length(x),y3_LR,1:length(x),y3_testGPR,'k');
 title('Abduction')
 ax4 = subplot(4,1,4);
 rectangle('Position',[i(3) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(5) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),y4_testGPR,'k');
+plot(1:length(x),y4_LR,1:length(x),y4_testGPR,'k');
 title('Adduction')
 xlabel('samples [#]')
 [~, hobj, ~, ~] = legend('LR','GPR','Location','Best');
@@ -187,24 +185,24 @@ GPR_p=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized',
 ax1=subplot(4,1,1);
 rectangle('Position',[i(3) 0.008 i(2)-1 0.39],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[0 0 i(2)-1 0.1],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),p1);
+plot(1:length(x),p1);
 title('Flexion')
 hold on;
 ax2=subplot(4,1,2);
 rectangle('Position',[i(3) 0.008 i(2)-1 0.39],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(2) 0 i(2)-1 0.1],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),p2);
+plot(1:length(x),p2);
 title('Extension')
 ax3=subplot(4,1,3);
 rectangle('Position',[i(3) 0.008 i(2)-1 0.39],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(4) 0 i(2)-1 0.1],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),p3);
+plot(1:length(x),p3);
 title('Abduction')
 ylabel('uncertainty [ratio]')
 ax4=subplot(4,1,4);
 rectangle('Position',[i(3) 0.008 i(2)-1 0.39],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(5) 0 i(2)-3 0.1],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-plot(1:length(RMS),p4);
+plot(1:length(x),p4);
 title('Adduction')
 xlabel('samples [#]')
 [~, hobj, ~, ~] = legend('p_{GPR}','Location','Best');
