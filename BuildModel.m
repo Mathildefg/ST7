@@ -92,7 +92,7 @@ y_rest = GeneratedProfile(i(7):end,:);
  y5 = [y_sup;y_rest];  x5 = [y_sup;y_rest];
  y6 = [y_pro;y_rest];  x6 = [y_pro;y_rest];
 
-%% Gaussian Process Regression 
+%% Gaussian Process Regression - Stort set kopieret fra Baumeister.
 optimization = input('Optimization? Y/N [N]: ','s');
 if ~strcmp(optimization,'Y') && ~strcmp(optimization,'y')
     optimization = 'N';
