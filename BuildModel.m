@@ -8,6 +8,7 @@ clc; clear; close all;
 % respective test subject. 
 fileFolder = dir(uigetdir);
 fileFolder = fileFolder.folder;
+addpath(fileFolder);
 
 % Get a list of all .mat-files in the folder.
 listOfFiles = dir(fullfile(fileFolder, '*.mat'));
