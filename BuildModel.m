@@ -93,14 +93,6 @@ y_rest = GeneratedProfile(i(7):end,:);
  y6 = [y_pro;y_rest];  x6 = [y_pro;y_rest];
 
  
- EMG_flex = [data{1,4};data{1,5};data{1,6}];
- figure(1)
-subplot(3,1,1)
-plot(x_flex)
-subplot(3,1,2)
-plot(y_flex)
-subplot(3,1,3)
-plot(EMG_flex)
 
 
  
