@@ -24,8 +24,8 @@ m1.stopStreaming(); % Streaming is stopped
 m1.clearLogs(); % The log file that saves the collected data is cleared.
 
 % Load regression models
-disp('Open the regression model to be used.')
-if ~exist('gprMdl_dof1')
+disp('Open the regression models to be used.')
+if ~exist('gprMdl_dof1') || ~exist('LRmdl_1')
     uiopen('*.mat')
 end
 
@@ -49,7 +49,11 @@ Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
 
 % Choose algorithm
- data(1).p = zeros(Time/dt,4); % For GPR p-values are saved
+algo = input('What algorithm? LR/GPR [GPR]: ','s');
+if ~strcmp(algo,"LR")
+    algo = "GPR";
+    data(1).p = zeros(Time/dt,4); % For GPR p-values are saved
+end
 
 %% Initialization
 % Matrices/vectors
@@ -140,14 +144,20 @@ for ii = 1:N
     rms_data(N,:)=rms([ window1_data(1:samples_win,:) ; window2_data(1:samples_win,:) ; window3_data(1:samples_win,:) ]);
     
     % Target predictions: GPR or LR
-                %Gaussian process regression
+    switch algo
+        case "GPR"              %Gaussian process regression
             [dof1,p1] = predict(gprMdl_dof1,rms_data(N,:));
             [dof2,p2] = predict(gprMdl_dof2,rms_data(N,:));
             [dof3,p3] = predict(gprMdl_dof3,rms_data(N,:));
             [dof4,p4] = predict(gprMdl_dof4,rms_data(N,:));
             data.p(ii,1:4)=[p1,p2,p3,p4];
             
-  
+        case "LR"               %Linear regression 
+              dof1 = predict(LRmdl_1,rms_data(N,:));
+              dof2 = predict(LRmdl_2,rms_data(N,:));
+              dof3 = predict(LRmdl_3,rms_data(N,:));
+              dof4 = predict(LRmdl_4,rms_data(N,:));
+    end
     
      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
     if dof1 >= dof2                 %if dof1 is bigger than or equal to dof2
@@ -269,10 +279,12 @@ data.sysOut = data.sysOut(1:length(data.time),:);       %returns the ??
 data.target = data.target(1:length(data.time),:);       %??
 data.cursor = data.cursor(1:length(data.time),:);       %??
 data.dof = data.dof(1:length(data.time),:);             %??
-                                     %if algorithm case is Gaussian Process Regression
+if algo == "GPR"                                        %if algorithm case is Gaussian Process Regression
     data.p = data.p(1:length(data.time),:);             %save the data ??
     save('dataGPR','-struct','data')                    %save the data of GRP in a structure field in a file called dataGPR
-
+else 
+    save('dataLR','-struct','data')                     %save the data of LR in a structure field in a file called dataLR
+end
 
 %% Plots
 %Plot 1 - Trajectory
@@ -284,11 +296,32 @@ plot(data.sysOut(1:length(data.target),1),data.sysOut(1:length(data.target),2),'
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
-
+if algo == "LR"
+    export_fig(hfig_traj,'-pdf','filename','LR_trajectory');
+else
     export_fig(hfig_traj,'-pdf','filename','GPR_trajectory');
+end
 
 %Plot 2 - Predicted target values and the uncertainty values (GPR only)
 %over time.
+if algo == "LR"
+    subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
+    fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
+    ax1 = subplot(2,1,1);
+    plot(1:length(data.cursor),data.cursor,'LineWidth',1.5)
+    ylabel('normalized [-]')
+    ylim([-1.1 1.1])
+    legend('x','y')
+    title('','Fontsize',14)
+    ax2 = subplot(2,1,2);
+    plot(1:length(data.dof),data.dof,'LineWidth',1.5)
+    ylabel('normalized [-]')
+    ylim([0 1.1])
+    legend('dof1','dof2','dof3','dof4')
+    xlabel('samples [#]')
+    set([ax1,ax2],'fontsize',11)
+    export_fig(fig_plots,'-pdf','filename','LR_plots');
+else
     subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
     fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
     ax1 = subplot(3,1,1);
@@ -309,3 +342,4 @@ grid on
     xlabel('samples [#]')
     set([ax1,ax2,ax3],'fontsize',11)
     export_fig(fig_plots,'-pdf','filename','GPR_plots');
+end
