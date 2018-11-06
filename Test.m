@@ -11,8 +11,8 @@
   % The following 2 commented lines of codes builds the myomex file.
   % Uncommend and run if necessary.
   
-sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
-build_myo_mex(sdk_path); % builds myo_mex
+%sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
+%build_myo_mex(sdk_path); % builds myo_mex
 if exist('mm')
     mm.delete
 end
@@ -25,7 +25,7 @@ m1.clearLogs(); % The log file that saves the collected data is cleared.
 
 % Load regression models
 disp('Open the regression models to be used.')
-if ~exist('gprMdl_dof1') || ~exist('LRmdl_1')
+if ~exist('gprMdl_dof1') %%|| ~exist('LRmdl_1') %Skal indkommenteres når vi har linær model. 
     uiopen('*.mat')
 end
 
