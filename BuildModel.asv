@@ -149,8 +149,6 @@ LRmdl_1 = fitlm(x1,y1);
 LRmdl_2 = fitlm(x2,y2);
 LRmdl_3 = fitlm(x3,y3);
 LRmdl_4 = fitlm(x4,y4);
-LRmdl_5 = fitlm(x5,y5);
-LRmdl_6 = fitlm(x6,y6);
 
 %% Test predictions on training data
 % GPR
