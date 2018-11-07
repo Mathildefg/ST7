@@ -11,8 +11,8 @@
   % The following 2 commented lines of codes builds the myomex file.
   % Uncommend and run if necessary.
   
-%sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
-%build_myo_mex(sdk_path); % builds myo_mex
+% sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
+% build_myo_mex(sdk_path); % builds myo_mex
 if exist('mm')
     mm.delete
 end
@@ -30,7 +30,7 @@ if ~exist('gprMdl_dof1') %%|| ~exist('LRmdl_1') %Skal indkommenteres når vi har 
 end
 
 % Load txt file that determines target positions and size
-fileID = fopen('Fitt_real.txt','r');            %load the file from Fitt_real.txt
+fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real.txt
 Target = fscanf(fileID,'%f %f %f %f',[4 inf])'; %fscanf reads data from the fileID, 
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 4 rows and to the end of the file in rows
@@ -52,7 +52,7 @@ N = Time/dt; % Number of iterations
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
 if ~strcmp(algo,"LR")
     algo = "GPR";
-    data(1).p = zeros(Time/dt,4); % For GPR p-values are saved
+    dataB(1).p = zeros(Time/dt,4); % For GPR p-values are saved
 end
 
 %% Initialization
@@ -61,11 +61,11 @@ window1_data = zeros(samples_win,8);    %window1 data array with only zeros of s
 window2_data = zeros(samples_win,8);    %window2 data array with only zeros of size (samples_win,8)
 window3_data = zeros(samples_win,8);    %window3 data array with only zeros of size (samples_win,8)
 rms_data = zeros(Time/dt,8);            %rootmeansquared data array with only zeros of size (time / dt, 8)
-data(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in array with only zeros of size (time / dt, 1)
-data(1).dof = zeros(Time/dt,4);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 4)
-data(1).target = zeros(Time/dt,2);      %the target value from data(1) is put in array with only zeros of size (time / dt, 2)
-data(1).cursor = zeros(Time/dt,2);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 2)
-data(1).sysOut = zeros(Time/dt,2);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 2)
+dataB(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in array with only zeros of size (time / dt, 1)
+dataB(1).dof = zeros(Time/dt,4);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 4)
+dataB(1).target = zeros(Time/dt,2);      %the target value from data(1) is put in array with only zeros of size (time / dt, 2)
+dataB(1).cursor = zeros(Time/dt,2);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 2)
+dataB(1).sysOut = zeros(Time/dt,2);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 2)
 
 % Counters
 counter_target = 1;                 %set the counter for target to be 1
@@ -150,7 +150,7 @@ for ii = 1:N
             [dof2,p2] = predict(gprMdl_dof2,rms_data(N,:));
             [dof3,p3] = predict(gprMdl_dof3,rms_data(N,:));
             [dof4,p4] = predict(gprMdl_dof4,rms_data(N,:));
-            data.p(ii,1:4)=[p1,p2,p3,p4];
+            dataB.p(ii,1:4)=[p1,p2,p3,p4];
             
         case "LR"               %Linear regression 
               dof1 = predict(LRmdl_1,rms_data(N,:));
@@ -192,11 +192,11 @@ for ii = 1:N
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
     
     % Store data                                    %Why is (ii,:)? 
-    data.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
-    data.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
-    data.target(ii,:) = Target(counter_target,1:2); %store the Target data 
-    data.cursor(ii,:) = cursor;                     %store the cursor data
-    data.dof(ii,:) = [dof1,dof2,dof3,dof4];         %store the degrees of freedom data
+    dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
+    dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
+    dataB.target(ii,:) = Target(counter_target,1:2); %store the Target data 
+    dataB.cursor(ii,:) = cursor;                     %store the cursor data
+    dataB.dof(ii,:) = [dof1,dof2,dof3,dof4];         %store the degrees of freedom data
     
     % Update screen
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
@@ -274,13 +274,13 @@ pause(3);                           %Pause for 3 seconds
 close(hfig)                         %close figure
 
 %% Calculate performance and save data
-data.time = nonzeros(data.time);                        %returns the nonzero elements in data.time
-data.sysOut = data.sysOut(1:length(data.time),:);       %returns the ??
-data.target = data.target(1:length(data.time),:);       %??
-data.cursor = data.cursor(1:length(data.time),:);       %??
-data.dof = data.dof(1:length(data.time),:);             %??
+dataB.time = nonzeros(dataB.time);                        %returns the nonzero elements in data.time
+dataB.sysOut = dataB.sysOut(1:length(dataB.time),:);       %returns the ??
+dataB.target = dataB.target(1:length(dataB.time),:);       %??
+dataB.cursor = dataB.cursor(1:length(dataB.time),:);       %??
+dataB.dof = dataB.dof(1:length(dataB.time),:);             %??
 if algo == "GPR"                                        %if algorithm case is Gaussian Process Regression
-    data.p = data.p(1:length(data.time),:);             %save the data ??
+    dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
     save('dataGPR','-struct','data')                    %save the data of GRP in a structure field in a file called dataGPR
 else 
     save('dataLR','-struct','data')                     %save the data of LR in a structure field in a file called dataLR
@@ -290,9 +290,9 @@ end
 %Plot 1 - Trajectory
 hfig_traj = figure;
 set(hfig_traj, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off','Color','w')
-plot(data.target(1:length(data.target),1),data.target(1:length(data.target),2),'go')
+plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),'go')
 hold on
-plot(data.sysOut(1:length(data.target),1),data.sysOut(1:length(data.target),2),'bx')
+plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),'bx')
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
@@ -308,13 +308,13 @@ if algo == "LR"
     subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
     fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
     ax1 = subplot(2,1,1);
-    plot(1:length(data.cursor),data.cursor,'LineWidth',1.5)
+    plot(1:length(dataB.cursor),dataB.cursor,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([-1.1 1.1])
     legend('x','y')
     title('','Fontsize',14)
     ax2 = subplot(2,1,2);
-    plot(1:length(data.dof),data.dof,'LineWidth',1.5)
+    plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([0 1.1])
     legend('dof1','dof2','dof3','dof4')
@@ -325,18 +325,18 @@ else
     subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
     fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
     ax1 = subplot(3,1,1);
-    plot(1:length(data.cursor),data.cursor,'LineWidth',1.5)
+    plot(1:length(dataB.cursor),dataB.cursor,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([-1.1 1.1])
     legend('x','y')
     title('','Fontsize',14)
     ax2 = subplot(3,1,2);
-    plot(1:length(data.dof),data.dof,'LineWidth',1.5)
+    plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([0 1.1])
     legend('dof1','dof2','dof3','dof4')
     ax3 = subplot(3,1,3);
-    plot(1:length(data.p),data.p,'LineWidth',1.5)
+    plot(1:length(dataB.p),dataB.p,'LineWidth',1.5)
     ylabel('uncertainty [ratio]')
     legend('p1','p2','p3','p4')
     xlabel('samples [#]')
