@@ -44,8 +44,8 @@ movement(sum(f(1:3))+1: sum(f(1:6)))=1;       %Flexion= 1
 movement(sum(f(1:6))+1:sum(f(1:9)))=6;        %Pronation = 6
 movement(sum(f(1:9))+1:sum(f(1:12)))=3;       %Radial deviation = 3
 movement(sum(f(1:12))+1:sum(f(1:15)))=7;      %Rest = 7
-movement(sum(f(1:15))+1:sum(f(1:19)))= 5;     %Supination = 5
-movement(sum(f(1:19))+1:sum(f(1:21)))=4;      %Ulnar deviation = 4
+movement(sum(f(1:15))+1:sum(f(1:18)))= 5;     %Supination = 5
+movement(sum(f(1:18))+1:sum(f(1:21)))=4;      %Ulnar deviation = 4
 
 %The index vector
 [dofs, i, ~] = unique(movement);
@@ -70,7 +70,7 @@ x_rd = RMS(i(3):i(4)-1,:);
 x_ud = RMS(i(4):i(5)-1,:);
 x_sup = RMS(i(5):i(6)-1,:);
 x_pro = RMS(i(6):i(7)-1,:);
-x_rest = RMS(i(7-1):end,:);
+x_rest = RMS(i(7):end,:);
 
 % Setting rest to zero
 GeneratedProfile(i(7):end,:)= 0;
@@ -86,12 +86,12 @@ y_rest = GeneratedProfile(i(7):end,:);
 
 
 %
- y1 = [y_flex;y_rest]; x1 = [y_flex;y_rest];
- y2 = [y_ext;y_rest];  x2 = [y_ext;y_rest];
- y3 = [y_rd;y_rest];   x3 = [y_rd;y_rest];
- y4 = [y_ud;y_rest];   x4 = [y_ud;y_rest];
- y5 = [y_sup;y_rest];  x5 = [y_sup;y_rest];
- y6 = [y_pro;y_rest];  x6 = [y_pro;y_rest];
+ y1 = [y_flex;y_rest]; x1 = [x_flex;x_rest];
+ y2 = [y_ext;y_rest];  x2 = [x_ext;x_rest];
+ y3 = [y_rd;y_rest];   x3 = [x_rd;x_rest];
+ y4 = [y_ud;y_rest];   x4 = [x_ud;x_rest];
+ y5 = [y_sup;y_rest];  x5 = [x_sup;x_rest];
+ y6 = [y_pro;y_rest];  x6 = [x_pro;x_rest];
 
  
 
@@ -112,8 +112,8 @@ switch optimization %the little o after models stands for 'old'.
         gprMdl_dof2o = fitrgp(x2,y2,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
         gprMdl_dof3o = fitrgp(x3,y3,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
         gprMdl_dof4o = fitrgp(x4,y4,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof4o = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof4o = fitrgp(x6,y6,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
+        gprMdl_dof5o = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
+        gprMdl_dof6o = fitrgp(x6,y6,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
         
     case 'N'        % if non-optimization (already known hyperparameters) method is chosen
         % Gaussian Regression - Already known hyperparameters
