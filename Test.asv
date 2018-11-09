@@ -117,7 +117,6 @@ con_sup= rectangle('Position',[-0.70 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Line
 con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 
-
 %Supplot for fitts law
 subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
 % Add target marker and cross
@@ -133,7 +132,6 @@ htext = text(0, 0.7, {'Move the black circular cursor to the orange target';''; 
 htext_score1 = text(1.01, 0.8, {'Score:'},'fontsize', 14, 'color', 'k'); htext_score2 = text(1.2, 0.8, num2str(counter_score),'fontsize', 14, 'color', 'k');
 htext_score3 = text(1.01, 0.7, {'Time:'},'fontsize', 14, 'color', 'k'); htext_score4 = text(1.2, 0.7, num2str('-'),'fontsize', 14, 'color', 'k');
 htext_score5 = text(1.01, 0.6, {'Fails:'},'fontsize', 14, 'color', 'k'); htext_score6 = text(1.2, 0.6, num2str(counter_fail),'fontsize', 14, 'color', 'k');
-
 
 
 % Wait for start
