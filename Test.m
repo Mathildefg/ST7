@@ -26,7 +26,7 @@ m1.clearLogs(); % The log file that saves the collected data is cleared.
 
 % Load regression models
 disp('Open the regression models to be used.')
-if ~exist('gprMdl_dof1') %%|| ~exist('LRmdl_1') %Skal indkommenteres når vi har linær model. 
+if ~exist('gprMdl_dof1') || ~exist('LRmdl_1') %Skal indkommenteres når vi har linær model. 
     uiopen('*.mat')
 end
 
@@ -93,6 +93,14 @@ sysC = sysDisc.C;                   %sysC is set to be the system discrete at C
 sysD = sysDisc.D;                   %sysD is set to be the system discrete at D
 sysState = zeros(size(sysB));       %Creates an array of only zeros with the size of sysB, called sysState.
 
+%% Calculate the confidence baseline 
+% tilføjet af Steff
+baseCI_1 = mean(o1(:,2))-mean(o1(:,1)); %Den gennemsnitlige forskel mellem nedre og øvre CI
+baseCI_2 = mean(o2(:,2))-mean(o2(:,1));
+baseCI_3 = mean(o3(:,2))-mean(o3(:,1));
+baseCI_4 = mean(o4(:,2))-mean(o4(:,1));
+baseCI_5 = mean(o5(:,2))-mean(o5(:,1));
+baseCI_6 = mean(o6(:,2))-mean(o6(:,1));
 
 %% Initialize fitts law task
 close all
@@ -105,7 +113,7 @@ axis([-1 1 -1 1])
 set(subplotConfi,'color', [.98,.98,.98], 'xtick', 0, 'ytick', 0);
 
 htext_extFlex = text(-0.78, 0.90, {'Extension          Flexion'},'fontsize', 16, 'color', 'k'); 
-con_ext = rectangle('Position',[-0.72 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_ext = rectangle('Position',[-0.70 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex = rectangle('Position',[0.20 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 htext_rdUd = text(-0.78, 0.25, {'Radial Dev.    Ulnar Dev.'},'fontsize', 16, 'color', 'k'); 
@@ -120,7 +128,7 @@ con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Line
 %The fill will represent the confidence by varying the height of a green
 
 ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; sup_fill=0; pro_fill=0;
-con_ext_fill = rectangle('Position',[-0.72 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_ext_fill = rectangle('Position',[-0.70 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex_fill = rectangle('Position',[0.20 0.35 0.5 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 con_rd_fill = rectangle('Position',[-0.70 -0.30 0.5 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
@@ -188,7 +196,9 @@ for ii = 1:N
             [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:));
             [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:));
             [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:));
-            dataB.p(ii,1:4)=[p1,p2,p3,p4];
+            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:));
+            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:));
+            dataB.p(ii,1:6)=[p1,p2,p3,p4,p5,p6];
             
             
         case "LR"               %Linear regression 
@@ -196,6 +206,8 @@ for ii = 1:N
               dof2 = predict(LRmdl_2,rms_data(N,:));
               dof3 = predict(LRmdl_3,rms_data(N,:));
               dof4 = predict(LRmdl_4,rms_data(N,:));
+              dof5 = predict(LRmdl_5,rms_data(N,:));
+              dof6 = predict(LRmdl_6,rms_data(N,:));
     end
     
      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
@@ -204,10 +216,10 @@ for ii = 1:N
     else
         dofA = dof2;                %else put dofA to be dof2
     end
-    if dof3 >= dof4                 %if dof3 is bigger than or equal to dof4
-        dofB = dof3;                %put dofB to be dof3                            Why is this reverse from MYO4?
+    if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
+        dofB = dof4;                %put dofB to be dof4                            Why is this reverse from MYO4?
     else
-        dofB = -dof4;               %else dofB to be -dof4                          Why is this reverse from MYO4?
+        dofB = -dof6;               %else dofB to be -dof4                          Why is this reverse from MYO4?
     end
     
     % Use movement thresholds for minima and maxima
@@ -235,7 +247,7 @@ for ii = 1:N
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
     dataB.target(ii,:) = Target(counter_target,1:2); %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
-    dataB.dof(ii,:) = [dof1,dof2,dof3,dof4];         %store the degrees of freedom data
+    dataB.dof(ii,:) = [dof1,dof2,dof4,dof6];         %store the degrees of freedom data
     
     % Update screen
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
@@ -243,18 +255,22 @@ for ii = 1:N
     
     % Update confidence bars HER ER DU I GANG MATHILDE - FIND UD AF AT
     % OPDATERE FIGUREN.
-    ext_fill = max(0.5- ci1(:,2)-dof1,0);
+    ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
+    %ext_fill = max(0.5- ci1(:,2)-dof1,0);
     
-    set(con_ext_fill, 'Position', [-0.72 0.35 0.5 ext_fill]);
+    set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
     
-    flex_fill = max(0.5- ci2(:,2)-dof2,0);
-    set(con_flex_fill, 'Position', [-0.72 0.35 0.5 flex_fill]);
+    %flex_fill = max(0.5- ci2(:,2)-dof2,0);
+    flex_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
+    set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
     
-    rd_fill = max(0.5- ci4(:,2)-dof4,0);
-    set(con_rd_fill, 'Position', [-0.72 0.35 0.5 rd_fill]);
+    %rd_fill = max(0.5- ci4(:,2)-dof4,0);
+    rd_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
+    set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
     
-    ud_fill = max(0.5- ci3(:,2)-dof3,0);
-    set(con_ud_fill, 'Position', [-0.72 0.35 0.5 ud_fill]);
+    %ud_fill = max(0.5- ci6(:,2)-dof6,0);
+    ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+    set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
     drawnow
     
     
@@ -376,7 +392,7 @@ if algo == "LR"
     plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([0 1.1])
-    legend('dof1','dof2','dof3','dof4')
+    legend('dof1','dof2','dof4','dof6')
     xlabel('samples [#]')
     set([ax1,ax2],'fontsize',11)
     export_fig(fig_plots,'-pdf','filename','LR_plots');
@@ -393,7 +409,7 @@ else
     plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([0 1.1])
-    legend('dof1','dof2','dof3','dof4')
+    legend('dof1','dof2','dof4','dof6')
     ax3 = subplot(3,1,3);
     plot(1:length(dataB.p),dataB.p,'LineWidth',1.5)
     ylabel('uncertainty [ratio]')
