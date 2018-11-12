@@ -256,3 +256,5 @@ set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y1_testGPR)+1])
 % set(gca_handles,'fontsize',10,'YLim',[0 0.1],'XLim',[0 length(y1_testGPR)+1])
 
 %% Save Figures
+
+clear subplot

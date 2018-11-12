@@ -108,14 +108,26 @@ htext_extFlex = text(-0.78, 0.90, {'Extension          Flexion'},'fontsize', 16,
 con_ext = rectangle('Position',[-0.72 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex = rectangle('Position',[0.20 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
-htext_extFlex = text(-0.78, 0.25, {'Radial Dev.    Ulnar Dev.'},'fontsize', 16, 'color', 'k'); 
+htext_rdUd = text(-0.78, 0.25, {'Radial Dev.    Ulnar Dev.'},'fontsize', 16, 'color', 'k'); 
 con_rd = rectangle('Position',[-0.70 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_ud = rectangle('Position',[0.20 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
-htext_extFlex = text(-0.78, -0.40, {'Supination       Pronation'},'fontsize', 16, 'color', 'k'); 
+htext_supPro = text(-0.78, -0.40, {'Supination       Pronation'},'fontsize', 16, 'color', 'k'); 
 con_sup= rectangle('Position',[-0.70 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2);
 con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
+%Plotting the confidence (fill) - tilføjet af Mat
+%The fill will represent the confidence by varying the height of a green
+
+ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; sup_fill=0; pro_fill=0;
+con_ext_fill = rectangle('Position',[-0.72 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_flex_fill = rectangle('Position',[0.20 0.35 0.5 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+
+con_rd_fill = rectangle('Position',[-0.70 -0.30 0.5 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_ud_fill = rectangle('Position',[0.20 -0.30 0.5 ud_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+
+con_sup_fill = rectangle('Position',[-0.70 -0.95 0.5 sup_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2);
+con_pro_fill = rectangle('Position',[0.20 -0.95 0.5 pro_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 %Supplot for fitts law
 subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
@@ -132,6 +144,7 @@ htext = text(0, 0.7, {'Move the black circular cursor to the orange target';''; 
 htext_score1 = text(1.01, 0.8, {'Score:'},'fontsize', 14, 'color', 'k'); htext_score2 = text(1.2, 0.8, num2str(counter_score),'fontsize', 14, 'color', 'k');
 htext_score3 = text(1.01, 0.7, {'Time:'},'fontsize', 14, 'color', 'k'); htext_score4 = text(1.2, 0.7, num2str('-'),'fontsize', 14, 'color', 'k');
 htext_score5 = text(1.01, 0.6, {'Fails:'},'fontsize', 14, 'color', 'k'); htext_score6 = text(1.2, 0.6, num2str(counter_fail),'fontsize', 14, 'color', 'k');
+
 
 
 % Wait for start
@@ -171,11 +184,12 @@ for ii = 1:N
     % Target predictions: GPR or LR
     switch algo
         case "GPR"              %Gaussian process regression
-            [dof1,p1] = predict(gprMdl_dof1,rms_data(N,:));
-            [dof2,p2] = predict(gprMdl_dof2,rms_data(N,:));
-            [dof3,p3] = predict(gprMdl_dof3,rms_data(N,:));
-            [dof4,p4] = predict(gprMdl_dof4,rms_data(N,:));
+            [dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:));
+            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:));
+            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:));
+            [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:));
             dataB.p(ii,1:4)=[p1,p2,p3,p4];
+            
             
         case "LR"               %Linear regression 
               dof1 = predict(LRmdl_1,rms_data(N,:));
@@ -225,7 +239,27 @@ for ii = 1:N
     
     % Update screen
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
-    drawnow             
+    drawnow  
+    
+    % Update confidence bars HER ER DU I GANG MATHILDE - FIND UD AF AT
+    % OPDATERE FIGUREN.
+    ext_fill = max(0.5- ci1(:,2)-dof1,0);
+    
+    set(con_ext_fill, 'Position', [-0.72 0.35 0.5 ext_fill]);
+    
+    flex_fill = max(0.5- ci2(:,2)-dof2);
+    set(con_flex_fill, 'Position', [-0.72 0.35 0.5 flex_fill]);
+    
+    rd_fill = max(0.5- ci4(:,2)-dof4);
+    set(con_rd_fill, 'Position', [-0.72 0.35 0.5 rd_fill]);
+    
+    ud_fill = max(0.5- ci3(:,2)-dof3;
+    set(con_ud_fill, 'Position', [-0.72 0.35 0.5 ud_fill]);
+    drawnow
+    
+    
+   
+    
     
     % Update target position
     if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
