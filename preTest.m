@@ -1,4 +1,5 @@
-% clc; clear; close all;
+% clc; clear; 
+close all;
 %% A pretest script - by Tom Baumeister
 %
 % The script performs the fitts law test for training prior to the real test.

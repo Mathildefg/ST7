@@ -1,4 +1,5 @@
-% clc; clear; close all;
+% clc; clear; 
+close all;
 %% The Fitts law test - by Tom Baumeister
 %
 % This is the script used for the real experiment. The script was runned
@@ -255,9 +256,9 @@ for ii = 1:N
     
     % Update confidence bars HER ER DU I GANG MATHILDE - FIND UD AF AT
     % OPDATERE FIGUREN.
-    ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
-    %ext_fill = max(0.5- ci1(:,2)-dof1,0);
     
+    %ext_fill = max(0.5- ci1(:,2)-dof1,0);
+    ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
     set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
     
     %flex_fill = max(0.5- ci2(:,2)-dof2,0);
@@ -271,6 +272,10 @@ for ii = 1:N
     %ud_fill = max(0.5- ci6(:,2)-dof6,0);
     ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
     set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+    
+    %
+    
+    
     drawnow
     
     
