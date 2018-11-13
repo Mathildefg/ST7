@@ -45,7 +45,7 @@ Reach_time = 15; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Max duration of simulation [s]
 samples_win = 20; % Number of samples used for prediction after windowing
 dt = samples_win/200; % Sample time after windowing [s]
-threshold = 0.1; % Threshold
+threshold = 0.03; % Threshold
 W = Target(1,3); % Width or difficulty of the target
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
@@ -144,7 +144,7 @@ con_ud_fill = rectangle('Position',[0.20 -0.30 0.5 ud_fill],'FaceColor','green',
 con_sup_fill = rectangle('Position',[-0.70 -0.95 0.5 sup_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2);
 con_pro_fill = rectangle('Position',[0.20 -0.95 0.5 pro_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
-%Supplot for fitts law
+%Subplot for fitts law
 subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
 % Add target marker and cross
 htarget = plot(Target(1,1), Target(1,2), 'ro','markersize',5,'MarkerFaceColor', [0.9100 0.4100 0.1700], 'linewidth', 2, 'buttondownfcn', 'uiresume'); hold on
@@ -224,9 +224,9 @@ for ii = 1:N
         dofA = dof2;                %else put dofA to be dof2
     end
     if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
-        dofB = dof4;                %put dofB to be dof4                            Why is this reverse from MYO4?
+        dofB = -dof4;                %put dofB to be dof4                            
     else
-        dofB = -dof6;               %else dofB to be -dof4                          Why is this reverse from MYO4?
+        dofB = dof6;               %else dofB to be -dof4                          
     end
     
     % Use movement thresholds for minima and maxima
@@ -239,7 +239,7 @@ for ii = 1:N
         dofA=0;                         %set dofA to be equal to 0
     end
     dofA(dofA>1)=1; dofA(dofA<-1)=-1;   %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
-    cursor = [dofA,dofB];               %set the cursor to be the concatenation of dofB and dofA (put two matrices together to create a larger one).
+    cursor = [dofB, dofA];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
     
     % Update controlled system states
     sysState = sysA * sysState + sysB * cursor;     %set the system state to be the sysA times old system state plus sysB times the cursor matrix
@@ -288,8 +288,6 @@ for ii = 1:N
     
     drawnow
     
-    
-   
     
     
     % Update target position
