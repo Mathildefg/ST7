@@ -113,18 +113,15 @@ subplotConfi = subplot(1,2,1, 'position', [0.02 0.02 0.22 0.95]);
 axis([-1 1 -1 1])
 set(subplotConfi,'color', [.98,.98,.98], 'xtick', 0, 'ytick', 0);
 
-htext_ext = text(-0.70, 0.90, {'Extension'},'fontsize', 16, 'color', 'k'); 
-htext_Flex = text(0.20, 0.90, {'Flexion'},'fontsize', 16, 'color', 'k');
+htext_extFlex = text(-0.78, 0.90, {'Extension          Flexion'},'fontsize', 16, 'color', 'k'); 
 con_ext = rectangle('Position',[-0.70 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex = rectangle('Position',[0.20 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
-htext_rd = text(-0.70, 0.25, {'Radial Dev.'},'fontsize', 16, 'color', 'k');
-htext_Ud = text(0.20, 0.25, {'Ulnar Dev.'},'fontsize', 16, 'color', 'k');
+htext_rdUd = text(-0.78, 0.25, {'Radial Dev.    Ulnar Dev.'},'fontsize', 16, 'color', 'k'); 
 con_rd = rectangle('Position',[-0.70 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_ud = rectangle('Position',[0.20 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
-htext_sup = text(-0.70, -0.40, {'Supination'},'fontsize', 16, 'color', 'k'); 
-htext_Pro = text(0.20, -0.40, {'Pronation'},'fontsize', 16, 'color', 'k'); 
+htext_supPro = text(-0.78, -0.40, {'Supination       Pronation'},'fontsize', 16, 'color', 'k'); 
 con_sup = rectangle('Position',[-0.70 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2);
 con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
@@ -257,7 +254,8 @@ for ii = 1:N
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
     
-    % Update confidence bars
+    % Update confidence bars HER ER DU I GANG MATHILDE - FIND UD AF AT
+    % OPDATERE FIGUREN.
     
     %ext_fill = max(0.5- ci1(:,2)-dof1,0);
     ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
@@ -277,11 +275,10 @@ for ii = 1:N
     
     %pro_fill = max(0.5- ci3(:,2)-dof3,0);
     pro_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
-    set(con_pro_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
+    set(con_ud_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
     
-    %sub_fill = max(0.5-ci5(:,2)-dof5,0);
-    sup_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
-    set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 pro_fill]);
+    [-0.70 -0.95 0.5 pro_fill]
+    
     
     drawnow
     
