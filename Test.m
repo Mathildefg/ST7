@@ -114,18 +114,21 @@ axis([-1 1 -1 1])
 set(subplotConfi,'color', [.98,.98,.98], 'xtick', 0, 'ytick', 0);
 
 htext_ext = text(-0.70, 0.90, {'Extension'},'fontsize', 16, 'color', 'k'); 
-htext_Flex = text(0.20, 0.90, {'Flexion'},'fontsize', 16, 'color', 'k');
 con_ext = rectangle('Position',[-0.70 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+
+htext_Flex = text(0.20, 0.90, {'Flexion'},'fontsize', 16, 'color', 'k');
 con_flex = rectangle('Position',[0.20 0.35 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 htext_rd = text(-0.70, 0.25, {'Radial Dev.'},'fontsize', 16, 'color', 'k');
-htext_Ud = text(0.20, 0.25, {'Ulnar Dev.'},'fontsize', 16, 'color', 'k');
 con_rd = rectangle('Position',[-0.70 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+
+htext_Ud = text(0.20, 0.25, {'Ulnar Dev.'},'fontsize', 16, 'color', 'k');
 con_ud = rectangle('Position',[0.20 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 htext_sup = text(-0.70, -0.40, {'Supination'},'fontsize', 16, 'color', 'k'); 
-htext_Pro = text(0.20, -0.40, {'Pronation'},'fontsize', 16, 'color', 'k'); 
 con_sup = rectangle('Position',[-0.70 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2);
+
+htext_pro = text(0.20, -0.40, {'Pronation'},'fontsize', 16, 'color', 'k'); 
 con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 %Plotting the confidence (fill) - tilføjet af Mat
