@@ -39,8 +39,8 @@ for ii = 1:length(LR.time)-1        %from one through length of the LR.time - 1.
 end
 i_lr = nonzeros(i_lr);              %get the nonzero elements in i_lr, put them as i_lr
 
-% 47 indexes are expected and are checked
-if length(i_lr) == 47               %if the expected length of the array i_lr is 47
+% 47 indexes are expected and are checked. VI SKAL TJEKKE HVOR 
+if length(i_lr) == 47               %if the expected length of the array i_lr is 47          
     disp('Yes')                     %display yes
 else                                %if the expected length of the array i_lr, is NOT 47, 
     disp('No, there is a mistake')  %display mistake message

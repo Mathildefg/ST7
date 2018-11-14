@@ -54,7 +54,7 @@ N = Time/dt; % Number of iterations
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
 if ~strcmp(algo,"LR")
     algo = "GPR";
-    dataB(1).p = zeros(Time/dt,6); % For GPR p-values are saved
+    dataB(1).p = zeros(Time/dt,4); % For GPR p-values are saved
 end
 
 %% Initialization
@@ -64,7 +64,7 @@ window2_data = zeros(samples_win,8);    %window2 data array with only zeros of s
 window3_data = zeros(samples_win,8);    %window3 data array with only zeros of size (samples_win,8)
 rms_data = zeros(Time/dt,8);            %rootmeansquared data array with only zeros of size (time / dt, 8)
 dataB(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in array with only zeros of size (time / dt, 1)
-dataB(1).dof = zeros(Time/dt,6);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 4)
+dataB(1).dof = zeros(Time/dt,4);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 4)
 dataB(1).target = zeros(Time/dt,2);      %the target value from data(1) is put in array with only zeros of size (time / dt, 2)
 dataB(1).cursor = zeros(Time/dt,2);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 2)
 dataB(1).sysOut = zeros(Time/dt,2);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 2)
@@ -249,12 +249,12 @@ for ii = 1:N
     sysOut(sysOut>1)=1;                             %If systemstate is bigger than 1, set to 1.
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
     
-    % Store data                                     
+    % Store data                                    %Why is (ii,:)? 
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
     dataB.target(ii,:) = Target(counter_target,1:2); %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
-    dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
+    dataB.dof(ii,:) = [dof1,dof2,dof4,dof6];         %store the degrees of freedom data
     
     % Update screen
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
@@ -422,7 +422,7 @@ else
     plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([0 1.1])
-    legend('dof1','dof2','dof3','dof4','dof5','dof6')
+    legend('dof1','dof2',,'dof3','dof4''dof4','dof6')
     ax3 = subplot(3,1,3);
     plot(1:length(dataB.p),dataB.p,'LineWidth',1.5)
     ylabel('uncertainty [ratio]')
