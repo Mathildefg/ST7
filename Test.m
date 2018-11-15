@@ -45,10 +45,13 @@ Reach_time = 15; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Max duration of simulation [s]
 samples_win = 20; % Number of samples used for prediction after windowing
 dt = samples_win/200; % Sample time after windowing [s]
-threshold = 0.03; % Threshold
+threshold = 0.1; % Threshold
 W = Target(1,3); % Width or difficulty of the target
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
+dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0;
+
+xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
 
 % Choose algorithm
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
@@ -94,6 +97,23 @@ sysC = sysDisc.C;                   %sysC is set to be the system discrete at C
 sysD = sysDisc.D;                   %sysD is set to be the system discrete at D
 sysState = zeros(size(sysB));       %Creates an array of only zeros with the size of sysB, called sysState.
 
+% %% Plotting the dof data instead of the green bars
+% testplotdof = input('Green bars? Y/N [N]: ','s');
+% if ~strcmp(testplotdof,'Y') && ~strcmp(testplotdof,'y')
+%     testplotdof = 'N';
+% elseif strcmp(testplotdof,'y')
+%     testplotdof = 'Y';
+% end
+% 
+% switch testplotdof
+%     case 'Y'        %if you want to see green bars as output
+%         
+%         
+%     case 'N'        %if you want to see DoF output instead
+%        
+%         
+% end
+
 %% Calculate the confidence baseline 
 % tilføjet af Steff
 baseCI_1 = mean(o1(:,2))-mean(o1(:,1)); %Den gennemsnitlige forskel mellem nedre og øvre CI
@@ -105,6 +125,13 @@ baseCI_6 = mean(o6(:,2))-mean(o6(:,1));
 
 %% Initialize fitts law task
 close all
+%plot for dof
+bargraph = figure;
+set(bargraph, 'units', 'normalized','position', [0 0 0.3 0.3],'menubar', 'none','renderer','painters','name','BarDoF','numbertitle','off','Color','w')
+xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
+b = bar(xaksen);
+ylim([-0.5 0.5]);
+
 hfig = figure; %make a figure called hfig       [ 0 0 1 1] = [x y width height] = full screen
 set(hfig, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off')
 
@@ -137,10 +164,8 @@ con_pro = rectangle('Position',[0.20 -0.95 0.5 0.5],'EdgeColor',[.4,.4,.4],'Line
 ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; sup_fill=0; pro_fill=0;
 con_ext_fill = rectangle('Position',[-0.70 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex_fill = rectangle('Position',[0.20 0.35 0.5 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-
 con_rd_fill = rectangle('Position',[-0.70 -0.30 0.5 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_ud_fill = rectangle('Position',[0.20 -0.30 0.5 ud_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-
 con_sup_fill = rectangle('Position',[-0.70 -0.95 0.5 sup_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2);
 con_pro_fill = rectangle('Position',[0.20 -0.95 0.5 pro_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
@@ -217,28 +242,68 @@ for ii = 1:N
               dof6 = predict(LRmdl_6,rms_data(N,:));
     end
     
-     % Predictions are ranging [0 1]. Set to [-1 1] for x and y
-    if dof1 >= dof2                 %if dof1 is bigger than or equal to dof2
-        dofA = -dof1;               %put dofA to be -dof1
+    
+    %% confidence interval istedet for dof1
+    nyci1 = ci1(1)+ci1(2);
+    nyci2 = ci2(1)+ci2(2);
+    nyci3 = ci3(1)+ci3(2);
+    nyci4 = ci4(1)+ci4(2);
+    nyci5 = ci5(1)+ci5(2);
+    nyci6 = ci6(1)+ci6(2);
+    
+    if  nyci1 <= nyci2 %hvis confidence interval for ext er mindre end flex
+        dofA = -nyci1; %sæt dofA til at være -confidence interval for ext
     else
-        dofA = dof2;                %else put dofA to be dof2
+        dofA = nyci2; %elllers sæt til confidence interval for flex
     end
-    if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
-        dofB = -dof4;                %put dofB to be dof4                            
+    if nyci4 <= nyci6 %hvis confidence int for rad er mindre end uln
+        dofB = -nyci4; %sæt dofB til at være -con int for rad
     else
-        dofB = dof6;               %else dofB to be -dof4                          
+        dofB = nyci6; %ellers sæt til at conf int for uln
     end
     
+    %cursor size = dofC. bliver ikke brugt lige pt til noget
+    if nyci3 <= nyci5 %hvis confidence interval for 3 er mindre end 5
+        dofC = -nyci3;%sæt dofC til at være -ci3
+    else
+        dofC = nyci5;
+    end
+    
+%    %% dofs istedet for confidence intervals
+%        if  dof1 <= dof2
+%         dofA = -dof1;
+%     else
+%         dofA = dof2;
+%     end
+%     if dof3 <= dof5
+%         dofB = -dof3;
+%     else
+%         dofB = dof5;
+%     end
+    %%
+      
+%      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
+%     if dof1 >= dof2                 %if dof1 is bigger than or equal to dof2
+%        dofA = -dof1;               %put dofA to be -dof1
+%     else
+%       dofA = dof2;                %else put dofA to be dof2
+%     end
+%     if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
+%       dofB = -dof4;                %put dofB to be dof4                            
+%     else
+%        dofB = dof6;               %else dofB to be -dof4                          
+%     end
+%     
     % Use movement thresholds for minima and maxima
-    if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
+     if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
         dofB=0;                         %set dofB to be equal to 0
-    end
-    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
-
-    if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
-        dofA=0;                         %set dofA to be equal to 0
-    end
-    dofA(dofA>1)=1; dofA(dofA<-1)=-1;                                %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
+     end
+     dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+ 
+     if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
+         dofA=0;                         %set dofA to be equal to 0
+     end
+     dofA(dofA>1)=1; dofA(dofA<-1)=-1;                                %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
     cursor = [dofA,dofB];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
     
     % Update controlled system states
@@ -259,6 +324,10 @@ for ii = 1:N
     % Update screen
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
+    
+    % Update Bargraph
+    xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
+    b.YData = xaksen;
     
     % Update confidence bars
     
@@ -285,6 +354,7 @@ for ii = 1:N
     %sub_fill = max(0.5-ci5(:,2)-dof5,0);
     sup_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
     set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 sup_fill]);
+    
     
     drawnow
     
