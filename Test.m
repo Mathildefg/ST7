@@ -52,7 +52,7 @@ N = Time/dt; % Number of iterations
 dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0; dofC = 0;
 prevdofC = 0; nydofC = 0;
 
-xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
 
 % Choose algorithm
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
@@ -172,7 +172,7 @@ con_pro_fill = rectangle('Position',[0.20 -0.95 0.5 pro_fill],'FaceColor','green
 %Subplot for fitts law
 subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
 % Add target marker and cross
-htarget = plot(Target(1,1), Target(1,2), 'ro','markersize',5,'MarkerFaceColor', [0.9100 0.4100 0.1700], 'linewidth', 2, 'buttondownfcn', 'uiresume'); hold on
+htarget = plot(Target(1,1), Target(1,2), 'ro','markersize', Target(1,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'linewidth', 2, 'buttondownfcn', 'uiresume'); hold on
 htarget_cross = plot(Target(1,1), Target(1,2), 'k+','markersize',Target(1,4),'linewidth', .7, 'buttondownfcn', 'uiresume'); hold on
 % Add position cursor (of controlled system)
 hpos = plot(0, 0, 'ko', 'markersize', 12, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', [0.1 0.1 0.1], 'linewidth', 2, 'buttondownfcn', 'uiresume');
@@ -256,20 +256,19 @@ for ii = 1:N
     else
         dofA = nyci2; %elllers sæt til confidence interval for flex
     end
-    if nyci4 <= nyci6 %hvis confidence int for rad er mindre end uln
-        dofB = -nyci4; %sæt dofB til at være -con int for rad
+    if nyci3 <= nyci5 %hvis confidence int for rad er mindre end uln
+        dofB = -nyci3; %sæt dofB til at være -con int for rad
     else
-        dofB = nyci6; %ellers sæt til at conf int for uln
+        dofB = nyci5; %ellers sæt til at conf int for uln
     end
     
     %cursor size = dofC. bliver ikke brugt lige pt til noget
-    if nyci3 <= nyci5 %hvis confidence interval for 3 er mindre end 5
-        dofC = -nyci3;%sæt dofC til at være -ci3
+    if nyci4 <= nyci6 %hvis confidence interval for 3 er mindre end 5
+        dofC = -nyci4;%sæt dofC til at være -ci3
     else
-        dofC = nyci5;
+        dofC = nyci6;
     end
-    prevdofC = dofC;
-    nydofC = prevdofC + dofC;
+
     
 %    %% dofs istedet for confidence intervals
 %        if  dof1 <= dof2
