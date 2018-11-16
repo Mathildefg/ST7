@@ -52,7 +52,7 @@ N = Time/dt; % Number of iterations
 dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0; dofC = 0;
 prevdofC = 0; nydofC = 0;
 
-xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
 
 % Choose algorithm
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
@@ -129,6 +129,7 @@ close all
 %plot for dof
 bargraph = figure;
 set(bargraph, 'units', 'normalized','position', [0 0 0.3 0.3],'menubar', 'none','renderer','painters','name','BarDoF','numbertitle','off','Color','w')
+xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
 b = bar(xaksen);
 ylim([-0.5 0.5]);
 
@@ -328,7 +329,7 @@ for ii = 1:N
     drawnow  
     
     % Update Bargraph
-    xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+    xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB];
     b.YData = xaksen;
     
     % Update confidence bars
