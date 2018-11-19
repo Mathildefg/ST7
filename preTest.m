@@ -1,4 +1,4 @@
-% clc; clear; 
+%clc; clear; 
 close all;
 %% A pretest script - by Tom Baumeister
 %
@@ -232,17 +232,17 @@ for ii = 1:N
     else
         dofA = nyci2; %elllers sæt til confidence interval for flex
     end
-    if nyci3 <= nyci5 %hvis confidence int for rad er mindre end uln
-        dofB = -nyci3; %sæt dofB til at være -con int for rad
+    if nyci4 <= nyci6 %hvis confidence int for rad er mindre end uln
+        dofB = -nyci4; %sæt dofB til at være -con int for rad
     else
-        dofB = nyci5; %ellers sæt til at conf int for uln
+        dofB = nyci6; %ellers sæt til at conf int for uln
     end
     
     %cursor size = dofC. bliver ikke brugt lige pt til noget
-    if nyci4 <= nyci6 %hvis confidence interval for 3 er mindre end 5
-        dofC = -nyci4;%sæt dofC til at være -ci3
+    if nyci3 <= nyci5 %hvis confidence interval for 3 er mindre end 5
+        dofC = -nyci3;%sæt dofC til at være -ci3
     else
-        dofC = nyci6;
+        dofC = nyci5;
     end
 
 %       % Predictions are ranging [0 1]. Set to [-1 1] for x and y
@@ -257,27 +257,36 @@ for ii = 1:N
 %         dofB = -dof4;               %else dofB to be -dof4                          Why is this reverse from previous MYO4?
 %     end
     % Use movement thresholds for minima and maxima
-    if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
-        dofB=0;                         %set dofB to be equal to 0
-    end
-    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
-
     if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
         dofA=0;                         %set dofA to be equal to 0
     end
     dofA(dofA>1)=1; dofA(dofA<-1)=-1;   %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
-    cursor = [dofA,dofB];               %set the cursor to be the concatenation of dofB and dofA (put two matrices together to create a larger one).
+    
+    if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
+        dofB=0;                         %set dofB to be equal to 0
+    end
+    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+    
+    if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
+        dofC=0;                         %set dofB to be equal to 0
+    end
+    dofC(dofC>1)=1; dofC(dofC<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+
+    
+    cursor = [dofA,dofB,dofC];               %set the cursor to be the concatenation of dofB and dofA (put two matrices together to create a larger one).
     
     % Update controlled system states
     sysState = sysA * sysState + sysB * cursor;     %set the system state to be the sysA times old system state plus sysB times the cursor matrix
     sysOut = sysC * sysState + sysD * cursor;       %set the system state out to be the sysC times old system state plus sysD times the cursor matrix
-   
+    sysOut1 = sysC * sysState + sysD * cursor;
     % Limit the play field to the border
     sysOut(sysOut>1)=1;                             %If systemstate is bigger than 1, set to 1.
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
+    sysOut1(sysOut1>5)=5;               %sets limit to oyr markersize so it cannot go below 0 for sysout1(3).
+    sysOut1(sysOut1<0.35)=0.35;
         
     % Update the cursor position
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2));
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', (sysOut1(3)*20));
     drawnow
     
     % Update Bargraph
@@ -337,11 +346,11 @@ for ii = 1:N
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position (only works for velocity control)
         if control_type == 'vel'
-            set(hpos, 'xdata', 0, 'ydata', 0,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0]; % In order to not use predictions during the 1 second wait
+            sysState = [0 0 0]; % In order to not use predictions during the 1 second wait
             t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail = counter_fail + 1;    %Update fail score
@@ -361,11 +370,11 @@ for ii = 1:N
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
         if control_type == 'vel'
-            set(hpos, 'xdata', 0, 'ydata', 0,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0];
+            sysState = [0 0 0];
             t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r'); %When cursor is not within target, it updates color
