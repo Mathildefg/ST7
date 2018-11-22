@@ -232,6 +232,52 @@ for ii = 1:N
             [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
             dataB.p(ii,1:6)=[p1,p2,p3,p4,p5,p6];
             
+            nyci1 = ci1(2)-ci1(1);
+            nyci2 = ci2(2)-ci2(1);
+            nyci3 = ci3(2)-ci3(1);
+            nyci4 = ci4(2)-ci4(1);
+            nyci5 = ci5(2)-ci5(1);
+            nyci6 = ci6(2)-ci6(1);
+            
+            %Radial vs. ulnar dev.
+            if nyci5 <= nyci6
+                dofA = -dof5;
+                if abs(dofA) < MVC(5)*0.1            %if dofA is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+            else
+                dofA = dof6;
+                if abs(dofA) < MVC(7)*0.1            %if dofA is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+              end
+                
+            %Flexion vs. extension
+            if  nyci3 <= nyci2 
+                dofB = -dof3;
+                if abs(dofB) < MVC(3)*0.1            %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            else
+                dofB = dof2;
+                if abs(dofB) < MVC(2)*0.1            %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            end 
+            
+            %cursor size = dofC.
+            if nyci1 <= nyci4
+                dofC = -dof1;
+                if abs(dofC) < MVC(1)*0.1            %if dofC is below 10% of MVC set to 0.
+                dofC = 0;
+                end
+            else
+                dofC = dof4;
+                if abs(dofC) < MVC(4)*0.1            %if dofC is below 10% of MVC set to 0.
+                dofC = 0;
+                end
+            end
+            
             
         case "LR"               %Linear regression 
               dof1 = predict(LRmdl_1,rms_data(N,:));    %close
@@ -240,47 +286,24 @@ for ii = 1:N
               dof4 = predict(LRmdl_4,rms_data(N,:));    %open
               dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
+              
+              if dof5 <= dof6
+                  dofA = -dof5;
+              else
+                  dofA = dof6;
+              end
+              if  dof3 <= dof2
+                  dofB = -dof3;
+              else
+                  dofB = dof2;
+              end
+              if dof1 <= dof4
+                  dofC = -dof1
+              else
+                  dofC = dof4;
+              end
     end
     
-    
-    %% confidence interval istedet for dof1
-    nyci1 = ci1(2)-ci1(1);
-    nyci2 = ci2(2)-ci2(1);
-    nyci3 = ci3(2)-ci3(1);
-    nyci4 = ci4(2)-ci4(1);
-    nyci5 = ci5(2)-ci5(1);
-    nyci6 = ci6(2)-ci6(1);
-    
-    if  nyci3 <= nyci2 %hvis confidence interval for ext er mindre end flex
-        dofB = -dof3; %sæt dofA til at være -confidence interval for ext
-    else
-        dofB = dof2; %elllers sæt til confidence interval for flex
-    end
-    if nyci5 <= nyci6 %hvis confidence int for rad er mindre end uln
-        dofA = -dof5; %sæt dofB til at være -con int for rad
-    else
-        dofA = dof6; %ellers sæt til at conf int for uln
-    end
-    
-    %cursor size = dofC.
-    if nyci1 <= nyci4 %hvis confidence interval for 3 er mindre end 5
-        dofC = -dof1;%sæt dofC til at være -ci3
-    else
-        dofC = dof4;
-    end
-
-    
-%    %% dofs istedet for confidence intervals
-%        if  dof1 <= dof2
-%         dofA = -dof1;
-%     else
-%         dofA = dof2;
-%     end
-%     if dof3 <= dof5
-%         dofB = -dof3;
-%     else
-%         dofB = dof5;
-%     end
     %%
       
 %      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
@@ -296,19 +319,19 @@ for ii = 1:N
 %     end
 %     
     % Use movement thresholds for minima and maxima
-     if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
-         dofA = 0;                         %set dofA to be equal to 0
-     end
+% %      if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
+% %          dofA = 0;                         %set dofA to be equal to 0
+% %      end
      dofA(dofA>1)=1; dofA(dofA<-1)=-1;       %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
      
-     if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
-        dofB = 0;                         %set dofB to be equal to 0
-     end
+% %      if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
+% %         dofB = 0;                         %set dofB to be equal to 0
+% %      end
      dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
  
-     if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
-        dofC = 0;                         %set dofB to be equal to 0
-     end
+% %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
+% %         dofC = 0;                         %set dofB to be equal to 0
+% %      end
      dofC(dofC>1)=1; dofC(dofC<-1)=-1;
      
     cursor = [dofA,dofB,dofC];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
@@ -341,15 +364,15 @@ for ii = 1:N
     
     % Update confidence bars
     %ext_fill = max(0.5- ci1(:,2)-dof1,0);
-    ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
+    ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
     set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
     
     %flex_fill = max(0.5- ci2(:,2)-dof2,0);
-    flex_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
+    flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
     set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
     
     %rd_fill = max(0.5- ci4(:,2)-dof4,0);
-    rd_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
+    rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
     set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
     
     %ud_fill = max(0.5- ci6(:,2)-dof6,0);
@@ -357,11 +380,11 @@ for ii = 1:N
     set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
     
     %pro_fill = max(0.5- ci3(:,2)-dof3,0);
-    pro_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+    pro_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
     set(con_pro_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
     
     %sub_fill = max(0.5-ci5(:,2)-dof5,0);
-    sup_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+    sup_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
     set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 sup_fill]);
     
     

@@ -51,7 +51,7 @@ movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
 
 %The index vector
 [dofs, i, ~] = unique(movement);
-MVC = unique(MVC, 'stable');
+
 
 figure(1)
 subplot(3,1,1)
