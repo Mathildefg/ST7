@@ -224,49 +224,49 @@ for ii = 1:N
     % Target predictions: GPR or LR
     switch algo
         case "GPR"              %Gaussian process regression
-            [dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:));
-            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:));
-            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:));
-            [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:));
-            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:));
-            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:));
+            [dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:)); %close
+            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
+            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
+            [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:)); %open
+            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:)); %rd
+            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
             dataB.p(ii,1:6)=[p1,p2,p3,p4,p5,p6];
             
             
         case "LR"               %Linear regression 
-              dof1 = predict(LRmdl_1,rms_data(N,:));
-              dof2 = predict(LRmdl_2,rms_data(N,:));
-              dof3 = predict(LRmdl_3,rms_data(N,:));
-              dof4 = predict(LRmdl_4,rms_data(N,:));
-              dof5 = predict(LRmdl_5,rms_data(N,:));
-              dof6 = predict(LRmdl_6,rms_data(N,:));
+              dof1 = predict(LRmdl_1,rms_data(N,:));    %close
+              dof2 = predict(LRmdl_2,rms_data(N,:));    %extension
+              dof3 = predict(LRmdl_3,rms_data(N,:));    %flexion
+              dof4 = predict(LRmdl_4,rms_data(N,:));    %open
+              dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
+              dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
     end
     
     
     %% confidence interval istedet for dof1
-    nyci1 = ci1(1)+ci1(2);
-    nyci2 = ci2(1)+ci2(2);
-    nyci3 = ci3(1)+ci3(2);
-    nyci4 = ci4(1)+ci4(2);
-    nyci5 = ci5(1)+ci5(2);
-    nyci6 = ci6(1)+ci6(2);
+    nyci1 = ci1(2)-ci1(1);
+    nyci2 = ci2(2)-ci2(1);
+    nyci3 = ci3(2)-ci3(1);
+    nyci4 = ci4(2)-ci4(1);
+    nyci5 = ci5(2)-ci5(1);
+    nyci6 = ci6(2)-ci6(1);
     
-    if  nyci1 <= nyci2 %hvis confidence interval for ext er mindre end flex
-        dofA = -nyci1; %sæt dofA til at være -confidence interval for ext
+    if  nyci3 <= nyci2 %hvis confidence interval for ext er mindre end flex
+        dofB = -dof3; %sæt dofA til at være -confidence interval for ext
     else
-        dofA = nyci2; %elllers sæt til confidence interval for flex
+        dofB = dof2; %elllers sæt til confidence interval for flex
     end
-    if nyci4 <= nyci6 %hvis confidence int for rad er mindre end uln
-        dofB = -nyci4; %sæt dofB til at være -con int for rad
+    if nyci5 <= nyci6 %hvis confidence int for rad er mindre end uln
+        dofA = -dof5; %sæt dofB til at være -con int for rad
     else
-        dofB = nyci6; %ellers sæt til at conf int for uln
+        dofA = dof6; %ellers sæt til at conf int for uln
     end
     
     %cursor size = dofC.
-    if nyci3 <= nyci5 %hvis confidence interval for 3 er mindre end 5
-        dofC = -nyci3;%sæt dofC til at være -ci3
+    if nyci1 <= nyci4 %hvis confidence interval for 3 er mindre end 5
+        dofC = -dof1;%sæt dofC til at være -ci3
     else
-        dofC = nyci5;
+        dofC = dof4;
     end
 
     
@@ -341,7 +341,7 @@ for ii = 1:N
     
     % Update confidence bars
     %ext_fill = max(0.5- ci1(:,2)-dof1,0);
-    ext_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
+    ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_1)/baseCI_1)),0),0.5);
     set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
     
     %flex_fill = max(0.5- ci2(:,2)-dof2,0);

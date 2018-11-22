@@ -224,49 +224,49 @@ for ii = 1:N
     % Target predictions: GPR or LR
     switch algo
         case "GPR"              %Gaussian process regression
-            [dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:));
-            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:));
-            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:));
-            [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:));
-            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:));
-            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:));
+            [dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:)); %close
+            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
+            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
+            [dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:)); %open
+            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:)); %rd
+            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
             dataB.p(ii,1:6)=[p1,p2,p3,p4,p5,p6];
             
             
         case "LR"               %Linear regression 
-              dof1 = predict(LRmdl_1,rms_data(N,:));
-              dof2 = predict(LRmdl_2,rms_data(N,:));
-              dof3 = predict(LRmdl_3,rms_data(N,:));
-              dof4 = predict(LRmdl_4,rms_data(N,:));
-              dof5 = predict(LRmdl_5,rms_data(N,:));
-              dof6 = predict(LRmdl_6,rms_data(N,:));
+              dof1 = predict(LRmdl_1,rms_data(N,:));    %close
+              dof2 = predict(LRmdl_2,rms_data(N,:));    %extension
+              dof3 = predict(LRmdl_3,rms_data(N,:));    %flexion
+              dof4 = predict(LRmdl_4,rms_data(N,:));    %open
+              dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
+              dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
     end
     
     
     %% confidence interval istedet for dof1
-    nyci1 = ci1(1)+ci1(2);
-    nyci2 = ci2(1)+ci2(2);
-    nyci3 = ci3(1)+ci3(2);
-    nyci4 = ci4(1)+ci4(2);
-    nyci5 = ci5(1)+ci5(2);
-    nyci6 = ci6(1)+ci6(2);
+    nyci1 = ci1(2)-ci1(1);
+    nyci2 = ci2(2)-ci2(1);
+    nyci3 = ci3(2)-ci3(1);
+    nyci4 = ci4(2)-ci4(1);
+    nyci5 = ci5(2)-ci5(1);
+    nyci6 = ci6(2)-ci6(1);
     
-    if  nyci1 <= nyci2 %hvis confidence interval for ext er mindre end flex
-        dofA = -nyci1; %sæt dofA til at være -confidence interval for ext
+    if  nyci3 <= nyci2 %hvis confidence interval for ext er mindre end flex
+        dofB = -dof3; %sæt dofA til at være -confidence interval for ext
     else
-        dofA = nyci2; %elllers sæt til confidence interval for flex
+        dofB = dof2; %elllers sæt til confidence interval for flex
     end
-    if nyci4 <= nyci6 %hvis confidence int for rad er mindre end uln
-        dofB = -nyci4; %sæt dofB til at være -con int for rad
+    if nyci5 <= nyci6 %hvis confidence int for rad er mindre end uln
+        dofA = -dof5; %sæt dofB til at være -con int for rad
     else
-        dofB = nyci6; %ellers sæt til at conf int for uln
+        dofA = dof6; %ellers sæt til at conf int for uln
     end
     
     %cursor size = dofC.
-    if nyci3 <= nyci5 %hvis confidence interval for 3 er mindre end 5
-        dofC = -nyci3;%sæt dofC til at være -ci3
+    if nyci1 <= nyci4 %hvis confidence interval for 3 er mindre end 5
+        dofC = -dof1;%sæt dofC til at være -ci3
     else
-        dofC = nyci5;
+        dofC = dof4;
     end
 
     
@@ -321,7 +321,7 @@ for ii = 1:N
     % Limit the play field to the border
     sysOut(sysOut>1)=1;                             %If systemstate is bigger than 1, set to 1.
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
-    sysOut1(sysOut1>5)=5;               %sets limit to oyr markersize so it cannot go below 0
+    sysOut1(sysOut1>5)=5;               %sets limit to oyr markersize so it cannot go below 0 for sysout1(3).
     sysOut1(sysOut1<0.35)=0.35;
     % Store data                                     
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
@@ -332,7 +332,7 @@ for ii = 1:N
        
     
     % Update screen  %%markersize skal ændres muligvis.
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', (sysOut1(3)*10));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', (sysOut1(3)*20));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
     
     % Update Bargraph

@@ -39,12 +39,12 @@ GeneratedProfile= transpose(GeneratedProfile);
 
 %Assigning a number for each movement to be used in indexing. Feasible
 %because the files are always loaded alphabetically9
-movement(1:sum(f(1:3))) =1;                   %Extension = 1
-movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Flexion= 2
-movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Pronation = 3
-movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Radial deviation = 4
-movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Rest = 5
-movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Supination = 6
+movement(1:sum(f(1:3))) =1;                   %Close = 1
+movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Extension= 2
+movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Flexion = 3
+movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Open = 4
+movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Radial deviation = 5
+movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Rest = 6
 movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
 
 %The index vector
@@ -63,36 +63,36 @@ plot(1:length(GeneratedProfile), GeneratedProfile)
 %% Arrangement in predictors and target
 
 %Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC. 
-x_ext = RMS(i(1):i(2)-1,:);  %Vi trækker 1 fra fordi i(2) er første sample i næste bevægelse.
-x_flex = RMS(i(2):i(3)-1,:);
-x_pro = RMS(i(3):i(4)-1,:);
-x_rd = RMS(i(4):i(5)-1,:);
-x_rest = RMS(i(5):i(6)-1,:);
-x_sup = RMS(i(6):i(7)-1,:);
+x_cls = RMS(i(1):i(2)-1,:);  %Vi trækker 1 fra fordi i(2) er første sample i næste bevægelse.
+x_ext = RMS(i(2):i(3)-1,:);
+x_flex = RMS(i(3):i(4)-1,:);
+x_opn = RMS(i(4):i(5)-1,:);
+x_rd = RMS(i(5):i(6)-1,:);
+x_rest = RMS(i(6):i(7)-1,:);
 x_ud = RMS(i(7):end,:);
 %x_ud = RMS(i(7):i(8)-1,:);
 
 % Setting rest to zero
-GeneratedProfile(i(5):i(6)-1,:)= 0;
+GeneratedProfile(i(6):i(7)-1,:)= 0;
 %GeneratedProfile(i(8):end,:)= 0;
 
 %Target values - The generated profile. 
-y_ext = GeneratedProfile(i(1):i(2)-1,:);  
-y_flex = GeneratedProfile(i(2):i(3)-1,:);
-y_pro = GeneratedProfile(i(3):i(4)-1,:);
-y_rd = GeneratedProfile(i(4):i(5)-1,:);
-y_rest = GeneratedProfile(i(5):i(6)-1,:);
-y_sup = GeneratedProfile(i(6):i(7)-1,:);
+y_cls = GeneratedProfile(i(1):i(2)-1,:);  
+y_ext = GeneratedProfile(i(2):i(3)-1,:);
+y_flex = GeneratedProfile(i(3):i(4)-1,:);
+y_opn = GeneratedProfile(i(4):i(5)-1,:);
+y_rd = GeneratedProfile(i(5):i(6)-1,:);
+y_rest = GeneratedProfile(i(6):i(7)-1,:);
 y_ud = GeneratedProfile(i(7):end,:);
 %y_ud = GeneratedProfile(i(7):i(8)-1,:);
 
 
 %
- y1 = [y_ext;y_rest];   x1 = [x_ext;x_rest];
- y2 = [y_flex;y_rest];  x2 = [x_flex;x_rest];
- y3 = [y_pro;y_rest];   x3 = [x_pro;x_rest];
- y4 = [y_rd;y_rest];    x4 = [x_rd;x_rest];
- y5 = [y_sup;y_rest];   x5 = [x_sup;x_rest];
+ y1 = [y_cls;y_rest];   x1 = [x_cls;x_rest];
+ y2 = [y_ext;y_rest];   x2 = [x_ext;x_rest];
+ y3 = [y_flex;y_rest];  x3 = [x_flex;x_rest];
+ y4 = [y_opn;y_rest];   x4 = [x_opn;x_rest];
+ y5 = [y_rd;y_rest];    x5 = [x_rd;x_rest];
  y6 = [y_ud;y_rest];    x6 = [x_ud;x_rest];
 
  
@@ -186,49 +186,49 @@ y6_LR = predict(LRmdl_6,RMS);
 subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.03], [0.08 0.03]);
 LR_GPR=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.39774756441 1],'Color','w');
 ax1 = subplot(6,1,1);
-rectangle('Position',[i(5) -0.24 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(6) -0.24 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[0 -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y1_testGPR,'k');
-title('Flexion')
+title('Close')
 hold on;
 plot(1:length(RMS),o1,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
 ax2 = subplot(6,1,2);
-rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y2_testGPR,'k');
 plot(1:length(RMS),o2,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
-title('Extension')
+title('Flexion')
 ax3 = subplot(6,1,3);
-rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y3_testGPR,'k');
 plot(1:length(RMS),o3,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
-title('Abduction')
+title('Extension')
 ylabel('normalized [-]')
 ax4 = subplot(6,1,4);
-rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y4_testGPR,'k');
 plot(1:length(RMS),o4,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
-title('Adduction')
+title('Open')
 ax5 = subplot(6,1,5);
-rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-rectangle('Position',[i(6) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(5) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y5_testGPR,'k');
 plot(1:length(RMS),o5,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
-title('Supination')
+title('Radial deviation')
 ax6 = subplot(6,1,6);
-rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(7) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y6_testGPR,'k');
 plot(1:length(RMS),o6,'r');
 %plot(1:length(RMS),GeneratedProfile,'b');
-title('Pronation')
+title('Ulna deviation')
 xlabel('samples [#]')
 [~, hobj, ~, ~] = legend('GPR','CI','Location','Best');
 set(hobj,'linewidth',1.5);
