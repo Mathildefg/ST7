@@ -278,6 +278,36 @@ for ii = 1:N
                 end
             end
             
+            % Update Bargraph
+            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+            b.YData = xaksen;
+            
+            % Update confidence bars
+            %ext_fill = max(0.5- ci1(:,2)-dof1,0);
+            ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
+            set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
+            
+            %flex_fill = max(0.5- ci2(:,2)-dof2,0);
+            flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+            set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
+            
+            %rd_fill = max(0.5- ci4(:,2)-dof4,0);
+            rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+            set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
+            
+            %ud_fill = max(0.5- ci6(:,2)-dof6,0);
+            ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+            set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+            
+            %pro_fill = max(0.5- ci3(:,2)-dof3,0);
+            pro_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
+            set(con_pro_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
+            
+            %sub_fill = max(0.5-ci5(:,2)-dof5,0);
+            sup_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
+            set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 sup_fill]);
+    
+            drawnow
             
         case "LR"               %Linear regression 
               dof1 = predict(LRmdl_1,rms_data(N,:));    %close
@@ -357,40 +387,7 @@ for ii = 1:N
     % Update screen  %%markersize skal ændres muligvis.
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', (sysOut1(3)*20));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
-    
-    % Update Bargraph
-    xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
-    b.YData = xaksen;
-    
-    % Update confidence bars
-    %ext_fill = max(0.5- ci1(:,2)-dof1,0);
-    ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
-    set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
-    
-    %flex_fill = max(0.5- ci2(:,2)-dof2,0);
-    flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
-    set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
-    
-    %rd_fill = max(0.5- ci4(:,2)-dof4,0);
-    rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
-    set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
-    
-    %ud_fill = max(0.5- ci6(:,2)-dof6,0);
-    ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
-    set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
-    
-    %pro_fill = max(0.5- ci3(:,2)-dof3,0);
-    pro_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
-    set(con_pro_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
-    
-    %sub_fill = max(0.5-ci5(:,2)-dof5,0);
-    sup_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
-    set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 sup_fill]);
-    
-    
-    drawnow
-    
-    
+
     
     % Update target position 
     if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
