@@ -36,7 +36,7 @@ fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real
 Target = fscanf(fileID,'%f %f %f %f',[4 inf])'; %fscanf reads data from the fileID, 
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 4 rows and to the end of the file in rows
-Target = [Target;Target];                       % Double the length of the task
+Target = [Target;Target;Target];                % Double the length of the task //Here to change number of iteration of each movement
 Target = Target(randperm(length(Target)),:);    % Randomize it
 
 
@@ -51,8 +51,9 @@ Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
 dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0; dofC = 0;
 prevdofC = 0; nydofC = 0;
-
 xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
+do_rest = 4;    % number of performed test movements before first break
+rest_increment = 4; %increment in break
 
 % Choose algorithm
 algo = input('What algorithm? LR/GPR [GPR]: ','s');
@@ -328,7 +329,7 @@ for ii = 1:N
                   dofB = dof2;
               end
               if dof1 <= dof4
-                  dofC = -dof1
+                  dofC = -dof1;
               else
                   dofC = dof4;
               end
@@ -396,7 +397,7 @@ for ii = 1:N
         counter_dwell = counter_dwell + 1;
         counter_reach = counter_reach+1;
     elseif counter_dwell >= Dwell/dt % HIT, when dwell time is reached
-        counter_score=counter_score+1;
+        counter_score=counter_score+1;  % add 1 to succes score
         set(htext_score2,'string',num2str(counter_score));  %update score
         set(htext_score4,'string',num2str(toc(t_score)));   %show time
         counter_dwell = 0;
@@ -444,6 +445,20 @@ for ii = 1:N
         counter_reach = counter_reach+1;
     end
     
+    % Pause every four movements done. Added by Steff
+    if counter_fail+counter_score == do_rest
+        pauseTic = tic;
+        while toc(pauseTic)<=10
+            drawnow           
+            set(htext,'string', {'PAUSE';'';num2str(round(10-toc(pauseTic)))})
+            pause(1)
+        end
+        %pause(20);
+        set(htext, 'string', '')
+        drawnow
+        do_rest = do_rest + rest_increment;
+    end
+    
     % For next iteration, update windows 1 and 2. Window 1 is filled in at iteration 3.
     window2_data(1:samples_win,:) = m1.emg_log(kk-(samples_win-1):kk,:);
     if ii >= 3
@@ -468,9 +483,9 @@ dataB.cursor = dataB.cursor(1:length(dataB.time),:);       %??
 dataB.dof = dataB.dof(1:length(dataB.time),:);             %??
 if algo == "GPR"                                        %if algorithm case is Gaussian Process Regression
     dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
-    save('dataGPR','-struct','data')                    %save the data of GRP in a structure field in a file called dataGPR
+    save('dataGPR','-struct','dataB')                    %save the data of GRP in a structure field in a file called dataGPR
 else 
-    save('dataLR','-struct','data')                     %save the data of LR in a structure field in a file called dataLR
+    save('dataLR','-struct','dataB')                     %save the data of LR in a structure field in a file called dataLR
 end
 
 %% Plots
@@ -515,7 +530,7 @@ else
     plot(1:length(dataB.cursor),dataB.cursor,'LineWidth',1.5)
     ylabel('normalized [-]')
     ylim([-1.1 1.1])
-    legend('x','y')
+    legend('x','y','z')
     title('','Fontsize',14)
     ax2 = subplot(3,1,2);
     plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
@@ -525,7 +540,7 @@ else
     ax3 = subplot(3,1,3);
     plot(1:length(dataB.p),dataB.p,'LineWidth',1.5)
     ylabel('uncertainty [ratio]')
-    legend('p1','p2','p3','p4')
+    legend('p1','p2','p3','p4','p5','p6')
     xlabel('samples [#]')
     set([ax1,ax2,ax3],'fontsize',11)
     export_fig(fig_plots,'-pdf','filename','GPR_plots');
