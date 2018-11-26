@@ -290,7 +290,7 @@ for ii = 1:N
             end
             
             % Update Bargraph
-            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
             b.YData = xaksen;
             
             % Update confidence bars
@@ -401,7 +401,7 @@ for ii = 1:N
 
     
     % Update target position 
-    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,3)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,4)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
         counter_dwell = counter_dwell + 1;
