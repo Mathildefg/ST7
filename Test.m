@@ -186,7 +186,6 @@ htext_score3 = text(1.01, 0.7, {'Time:'},'fontsize', 14, 'color', 'k'); htext_sc
 htext_score5 = text(1.01, 0.6, {'Fails:'},'fontsize', 14, 'color', 'k'); htext_score6 = text(1.2, 0.6, num2str(counter_fail),'fontsize', 14, 'color', 'k');
 
 
-
 % Wait for start
 uiwait
 % Hide mouse pointer
@@ -244,11 +243,15 @@ for ii = 1:N
                 dofA = -dof5;
                 if abs(dofA) < MVC(5)*0.1            %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
+                else
+                    dofA= dofA/MVC(5);
                 end
             else
                 dofA = dof6;
                 if abs(dofA) < MVC(7)*0.1            %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
+                else
+                    dofA= dofA/MVC(7);
                 end
               end
                 
@@ -257,11 +260,15 @@ for ii = 1:N
                 dofB = -dof3;
                 if abs(dofB) < MVC(3)*0.1            %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
+                else
+                    dofB= dofB/MVC(3);
                 end
             else
                 dofB = dof2;
                 if abs(dofB) < MVC(2)*0.1            %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
+                else
+                    dofB= dofB/MVC(2);
                 end
             end 
             
@@ -270,11 +277,15 @@ for ii = 1:N
                 dofC = -dof1;
                 if abs(dofC) < MVC(1)*0.1            %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
+                else
+                    dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
                 if abs(dofC) < MVC(4)*0.1            %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
+                else
+                    dofC= dofC/MVC(4);
                 end
             end
             
