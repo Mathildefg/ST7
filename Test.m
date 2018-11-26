@@ -328,6 +328,13 @@ for ii = 1:N
               dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
               
+              dof1 = dof1/MVC(1);    %close
+              dof2 = dof1/MVC(2);    %extension
+              dof3 = dof1/MVC(3);    %flexion
+              dof4 = dof1/MVC(4);    %open
+              dof5 = dof1/MVC(5);    %rd
+              dof6 = dof1/MVC(7);    %ud
+              
               if dof5 <= dof6
                   dofA = -dof5;
                   if abs(dofA) < MVC(5)*0.1           %if dofC is below 10% of MVC set to 0.
@@ -408,6 +415,7 @@ for ii = 1:N
     % Store data                                     
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
+    dataB.sysOut1(ii,:)= sysOut1(3);                 %store the sysOut1(3) controlled system state out to be stored in data.sysOut1 array
     dataB.target(ii,:) = Target(counter_target,:); %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data

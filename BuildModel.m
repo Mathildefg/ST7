@@ -193,46 +193,46 @@ rectangle('Position',[0 -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.
 plot(1:length(RMS),y1_testGPR,'k');
 title('Close')
 hold on;
-plot(1:length(RMS),o1,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y1_LR,'b');
+plot(1:length(RMS),o1,'--k');
 ax2 = subplot(6,1,2);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y2_testGPR,'k');
-plot(1:length(RMS),o2,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y2_LR,'b');
+plot(1:length(RMS),o2,'--k');
 title('Flexion')
 ax3 = subplot(6,1,3);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y3_testGPR,'k');
-plot(1:length(RMS),o3,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y3_LR,'b');
+plot(1:length(RMS),o3,'--k');
 title('Extension')
 ylabel('normalized [-]')
 ax4 = subplot(6,1,4);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y4_testGPR,'k');
-plot(1:length(RMS),o4,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y4_LR,'b');
+plot(1:length(RMS),o4,'--k');
 title('Open')
 ax5 = subplot(6,1,5);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(5) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y5_testGPR,'k');
-plot(1:length(RMS),o5,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y5_LR,'b');
+plot(1:length(RMS),o5,'--k');
 title('Radial deviation')
 ax6 = subplot(6,1,6);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(7) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y6_testGPR,'k');
-plot(1:length(RMS),o6,'r');
-%plot(1:length(RMS),GeneratedProfile,'b');
+plot(1:length(RMS),y6_LR,'b');
+plot(1:length(RMS),o6,'--k');
 title('Ulna deviation')
 xlabel('samples [#]')
-[~, hobj, ~, ~] = legend('GPR','CI','Location','Best');
+[~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
 set(hobj,'linewidth',1.5);
 gca_handles = [ax1,ax2,ax3,ax4,ax5,ax6];
 set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y1_testGPR)+1])
