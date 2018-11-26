@@ -140,21 +140,21 @@ hp = [gprMdl_dof1o.Sigma,gprMdl_dof1o.KernelInformation.KernelParameters'; ...
 % Make hyper parameters to build GPR model. Baumeister chose these based on tests.
 hp_new = [hp(:,1)*(0.1/mean(hp(:,1))),hp(:,2)*(0.7/mean(hp(:,2))),hp(:,3)*(0.9/mean(hp(:,3)))];
 
-% GPR with adjusted kernel parameters. 
-%  gprMdl_dof1 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(1,2);hp_new(1,3)],'Basisfunction','none');
-%  gprMdl_dof2 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(2,2);hp_new(2,3)],'Basisfunction','none');
-%  gprMdl_dof3 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(3,2);hp_new(3,3)],'Basisfunction','none');
-%  gprMdl_dof4 = fitrgp(x4,y4,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
-%  gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
-%  gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
+GPR with adjusted kernel parameters. 
+ gprMdl_dof1 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(1,2);hp_new(1,3)],'Basisfunction','none');
+ gprMdl_dof2 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(2,2);hp_new(2,3)],'Basisfunction','none');
+ gprMdl_dof3 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(3,2);hp_new(3,3)],'Basisfunction','none');
+ gprMdl_dof4 = fitrgp(x4,y4,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
+ gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
+ gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
 
 % GPR model with fixed hyper parameters.
- gprMdl_dof1 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
- gprMdl_dof2 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
- gprMdl_dof3 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
- gprMdl_dof4 = fitrgp(x4,y4,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
- gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
- gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof1 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof2 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof3 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof4 = fitrgp(x4,y4,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
+%  gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
  
 %% LR
 % LR - basic model (intersection incl)
