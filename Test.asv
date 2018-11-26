@@ -36,7 +36,7 @@ fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real
 Target = fscanf(fileID,'%f %f %f %f',[4 inf])'; %fscanf reads data from the fileID, 
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 4 rows and to the end of the file in rows
-Target = [Target;Target];                       % Double the length of the task //Here
+Target = [Target;Target;Target];                % Double the length of the task //Here to change number of iteration of each movement
 Target = Target(randperm(length(Target)),:);    % Randomize it
 
 
@@ -50,7 +50,6 @@ W = Target(1,3); % Width or difficulty of the target
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
 dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0; dofC = 0;
-prevdofC = 0; nydofC = 0;
 xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
 do_rest = 4;    % number of performed test movements before first break
 rest_increment = 4; %increment in break
@@ -69,10 +68,10 @@ window2_data = zeros(samples_win,8);    %window2 data array with only zeros of s
 window3_data = zeros(samples_win,8);    %window3 data array with only zeros of size (samples_win,8)
 rms_data = zeros(Time/dt,8);            %rootmeansquared data array with only zeros of size (time / dt, 8)
 dataB(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in array with only zeros of size (time / dt, 1)
-dataB(1).dof = zeros(Time/dt,6);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 4)
-dataB(1).target = zeros(Time/dt,2);      %the target value from data(1) is put in array with only zeros of size (time / dt, 2)
-dataB(1).cursor = zeros(Time/dt,3);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 2)
-dataB(1).sysOut = zeros(Time/dt,3);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 2)
+dataB(1).dof = zeros(Time/dt,6);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 6)
+dataB(1).target = zeros(Time/dt,4);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
+dataB(1).cursor = zeros(Time/dt,3);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 3)
+dataB(1).sysOut = zeros(Time/dt,3);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
 
 % Counters
 counter_target = 1;                 %set the counter for target to be 1
@@ -187,7 +186,6 @@ htext_score3 = text(1.01, 0.7, {'Time:'},'fontsize', 14, 'color', 'k'); htext_sc
 htext_score5 = text(1.01, 0.6, {'Fails:'},'fontsize', 14, 'color', 'k'); htext_score6 = text(1.2, 0.6, num2str(counter_fail),'fontsize', 14, 'color', 'k');
 
 
-
 % Wait for start
 uiwait
 % Hide mouse pointer
@@ -245,11 +243,15 @@ for ii = 1:N
                 dofA = -dof5;
                 if abs(dofA) < MVC(5)*0.1            %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
+                else
+                    dofA= dofA/MVC(5);
                 end
             else
                 dofA = dof6;
                 if abs(dofA) < MVC(7)*0.1            %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
+                else
+                    dofA= dofA/MVC(7);
                 end
               end
                 
@@ -258,11 +260,15 @@ for ii = 1:N
                 dofB = -dof3;
                 if abs(dofB) < MVC(3)*0.1            %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
+                else
+                    dofB= dofB/MVC(3);
                 end
             else
                 dofB = dof2;
                 if abs(dofB) < MVC(2)*0.1            %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
+                else
+                    dofB= dofB/MVC(2);
                 end
             end 
             
@@ -271,11 +277,15 @@ for ii = 1:N
                 dofC = -dof1;
                 if abs(dofC) < MVC(1)*0.1            %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
+                else
+                    dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
                 if abs(dofC) < MVC(4)*0.1            %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
+                else
+                    dofC= dofC/MVC(4);
                 end
             end
             
@@ -329,7 +339,7 @@ for ii = 1:N
                   dofB = dof2;
               end
               if dof1 <= dof4
-                  dofC = -dof1
+                  dofC = -dof1;
               else
                   dofC = dof4;
               end
@@ -380,7 +390,7 @@ for ii = 1:N
     % Store data                                     
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
-    dataB.target(ii,:) = Target(counter_target,1:2); %store the Target data 
+    dataB.target(ii,:) = Target(counter_target,:); %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
@@ -391,7 +401,7 @@ for ii = 1:N
 
     
     % Update target position 
-    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,3)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
         counter_dwell = counter_dwell + 1;
@@ -492,9 +502,9 @@ end
 %Plot 1 - Trajectory
 hfig_traj = figure;
 set(hfig_traj, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off','Color','w')
-plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),'go')
+plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'go')
 hold on
-plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),'bx')
+plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'bx')
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
