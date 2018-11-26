@@ -248,7 +248,7 @@ for ii = 1:N
                 end
             else
                 dofA = dof6;
-                if abs(dofA) < MVC(7)*0.1            %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(7)*0.1 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 else
                     dofA= dofA/MVC(7);
@@ -258,14 +258,14 @@ for ii = 1:N
             %Flexion vs. extension
             if  nyci3 <= nyci2 
                 dofB = -dof3;
-                if abs(dofB) < MVC(3)*0.1            %if dofB is below 10% of MVC set to 0.
+                if abs(dofB) < MVC(3)*0.1 || nyci3 >= 1.5 * baseCI_3           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 else
                     dofB= dofB/MVC(3);
                 end
             else
                 dofB = dof2;
-                if abs(dofB) < MVC(2)*0.1            %if dofB is below 10% of MVC set to 0.
+                if abs(dofB) < MVC(2)*0.1 || nyci2 >= 1.5 * baseCI_2           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 else
                     dofB= dofB/MVC(2);
@@ -275,14 +275,14 @@ for ii = 1:N
             %cursor size = dofC.
             if nyci1 <= nyci4
                 dofC = -dof1;
-                if abs(dofC) < MVC(1)*0.1            %if dofC is below 10% of MVC set to 0.
+                if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
                 else
                     dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
-                if abs(dofC) < MVC(4)*0.1            %if dofC is below 10% of MVC set to 0.
+                if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
                 else
                     dofC= dofC/MVC(4);
@@ -290,7 +290,7 @@ for ii = 1:N
             end
             
             % Update Bargraph
-            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC, prevdofC, nydofC];
+            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
             b.YData = xaksen;
             
             % Update confidence bars
@@ -335,13 +335,25 @@ for ii = 1:N
               end
               if  dof3 <= dof2
                   dofB = -dof3;
+                  if abs(dofB) < MVC(3)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofB = 0;
+                  end
               else
                   dofB = dof2;
+                  if abs(dofB) < MVC(2)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofB = 0;
+                  end
               end
               if dof1 <= dof4
                   dofC = -dof1;
+                  if abs(dofC) < MVC(1)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofC = 0;
+                  end
               else
                   dofC = dof4;
+                  if abs(dofC) < MVC(4)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofC = 0;
+                  end
               end
     end
     
@@ -401,7 +413,7 @@ for ii = 1:N
 
     
     % Update target position 
-    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,3)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,4)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
         counter_dwell = counter_dwell + 1;

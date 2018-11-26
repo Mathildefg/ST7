@@ -330,18 +330,36 @@ for ii = 1:N
               
               if dof5 <= dof6
                   dofA = -dof5;
+                  if abs(dofA) < MVC(5)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofA = 0;
+                  end
               else
                   dofA = dof6;
+                  if abs(dofA) < MVC(6)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofA = 0;
+                  end
               end
               if  dof3 <= dof2
                   dofB = -dof3;
+                  if abs(dofB) < MVC(3)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofB = 0;
+                  end
               else
                   dofB = dof2;
+                  if abs(dofB) < MVC(2)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofB = 0;
+                  end
               end
               if dof1 <= dof4
                   dofC = -dof1;
+                  if abs(dofC) < MVC(1)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofC = 0;
+                  end
               else
                   dofC = dof4;
+                  if abs(dofC) < MVC(4)*0.1           %if dofC is below 10% of MVC set to 0.
+                      dofC = 0;
+                  end
               end
     end
     
