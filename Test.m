@@ -33,7 +33,7 @@ end
 
 % Load txt file that determines target positions and size
 fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real.txt
-Target = fscanf(fileID,'%f %f %f %f',[4 inf])'; %fscanf reads data from the fileID, 
+Target = fscanf(fileID,'%f %f %f %f %f',[5 inf])'; %fscanf reads data from the fileID, 
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 4 rows and to the end of the file in rows
 Target = [Target;Target;Target];                % Double the length of the task //Here to change number of iteration of each movement
@@ -47,6 +47,7 @@ samples_win = 20; % Number of samples used for prediction after windowing
 dt = samples_win/200; % Sample time after windowing [s]
 threshold = 0.1; % Threshold
 W = Target(1,3); % Width or difficulty of the target
+W1 = Target(1,5);
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
 dof1 = 0; dof2 = 0; dof3 = 0; dof4 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0; dofC = 0;
@@ -69,7 +70,7 @@ window3_data = zeros(samples_win,8);    %window3 data array with only zeros of s
 rms_data = zeros(Time/dt,8);            %rootmeansquared data array with only zeros of size (time / dt, 8)
 dataB(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in array with only zeros of size (time / dt, 1)
 dataB(1).dof = zeros(Time/dt,6);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 6)
-dataB(1).target = zeros(Time/dt,4);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
+dataB(1).target = zeros(Time/dt,5);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
 dataB(1).cursor = zeros(Time/dt,3);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 3)
 dataB(1).sysOut = zeros(Time/dt,3);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
 
@@ -418,7 +419,7 @@ for ii = 1:N
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
     dataB.sysOut1(ii,:)= sysOut1(3);                 %store the sysOut1(3) controlled system state out to be stored in data.sysOut1 array
-    dataB.target(ii,:) = Target(counter_target,:); %store the Target data 
+    dataB.target(ii,:) = Target(counter_target,:);   %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
@@ -428,10 +429,12 @@ for ii = 1:N
     drawnow  
 
     
-    % Update target position 
-    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2+(Target(counter_target,4)-sysOut1(3))^2) <= W && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    % Update target position
+    % %&& (Target(counter_target,5)-sysOut1(3))^2 <= W1  indsat i koden
+    %Kan udkommenteres hvis man bare vil køre position på cursor
+    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && (Target(counter_target,5)-sysOut1(3))^2 <= W1 && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
-        set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
+        set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         counter_dwell = counter_dwell + 1;
         counter_reach = counter_reach+1;
     elseif counter_dwell >= Dwell/dt % HIT, when dwell time is reached
@@ -445,6 +448,7 @@ for ii = 1:N
             break;                              %break
         end
         W = Target(counter_target,3);           %update position of the target
+        W1 = Target(counter_target,5);
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
@@ -466,6 +470,7 @@ for ii = 1:N
             break;                              %break
         end
         W = Target(counter_target,3);
+        W1 = Target(counter_target,5);
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
