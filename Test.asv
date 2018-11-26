@@ -504,7 +504,7 @@ hfig_traj = figure;
 set(hfig_traj, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off','Color','w')
 plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'go')
 hold on
-plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.sysOut(1:length(dataB.target),3),'bx')
+plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'bx')
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
