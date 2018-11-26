@@ -418,7 +418,7 @@ for ii = 1:N
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
     dataB.sysOut1(ii,:)= sysOut1(3);                 %store the sysOut1(3) controlled system state out to be stored in data.sysOut1 array
-    dataB.target(ii,:) = Target(counter_target,:); %store the Target data 
+    dataB.target(ii,:) = Target(counter_target,:);   %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
