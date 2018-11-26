@@ -88,7 +88,7 @@ end                                 %end comparison
 if control_type == "pos"            %if controltype is position
     sys = tf(1, 1);                 %set system to be the transferfunction for position control
 else                                %if controltype is not pos
-    sys = tf(0.8, [0 1 0]);         %set system to be the transferfunction for velocity control
+    sys = tf(0.4, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
 % State space model of transfer function
 sysDisc = c2d(ss(sys),dt);          %convert statespacd model from continuous time to discrete
