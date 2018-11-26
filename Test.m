@@ -241,14 +241,14 @@ for ii = 1:N
             %Radial vs. ulnar dev.
             if nyci5 <= nyci6
                 dofA = -dof5;
-                if abs(dofA) < MVC(5)*0.1            %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(5)*0.1 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 else
                     dofA= dofA/MVC(5);
                 end
             else
                 dofA = dof6;
-                if abs(dofA) < MVC(7)*0.1            %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(7)*0.1 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 else
                     dofA= dofA/MVC(7);
@@ -258,14 +258,14 @@ for ii = 1:N
             %Flexion vs. extension
             if  nyci3 <= nyci2 
                 dofB = -dof3;
-                if abs(dofB) < MVC(3)*0.1            %if dofB is below 10% of MVC set to 0.
+                if abs(dofB) < MVC(3)*0.1 || nyci3 >= 1.5 * baseCI_3           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 else
                     dofB= dofB/MVC(3);
                 end
             else
                 dofB = dof2;
-                if abs(dofB) < MVC(2)*0.1            %if dofB is below 10% of MVC set to 0.
+                if abs(dofB) < MVC(2)*0.1 || nyci2 >= 1.5 * baseCI_2           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 else
                     dofB= dofB/MVC(2);
@@ -275,14 +275,14 @@ for ii = 1:N
             %cursor size = dofC.
             if nyci1 <= nyci4
                 dofC = -dof1;
-                if abs(dofC) < MVC(1)*0.1            %if dofC is below 10% of MVC set to 0.
+                if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
                 else
                     dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
-                if abs(dofC) < MVC(4)*0.1            %if dofC is below 10% of MVC set to 0.
+                if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
                 else
                     dofC= dofC/MVC(4);

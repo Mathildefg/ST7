@@ -241,7 +241,7 @@ for ii = 1:N
             %Radial vs. ulnar dev.
             if nyci5 <= nyci6
                 dofA = -dof5;
-                if abs(dofA) < MVC(5)*0.1            %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(5)*0.1 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 else
                     dofA= dofA/MVC(5);
@@ -253,7 +253,7 @@ for ii = 1:N
                 else
                     dofA= dofA/MVC(7);
                 end
-              end
+            end
                 
             %Flexion vs. extension
             if  nyci3 <= nyci2 
@@ -502,9 +502,9 @@ end
 %Plot 1 - Trajectory
 hfig_traj = figure;
 set(hfig_traj, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off','Color','w')
-plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'go')
+plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),dataB.target(1:length(dataB.target),4),'go')
 hold on
-plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.target(1:length(dataB.target),3),'bx')
+plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.sysOut(1:length(dataB.target),4),'bx')
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
