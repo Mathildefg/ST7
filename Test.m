@@ -253,7 +253,7 @@ for ii = 1:N
                 else
                     dofA= dofA/MVC(7);
                 end
-              end
+            end
                 
             %Flexion vs. extension
             if  nyci3 <= nyci2 
