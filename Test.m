@@ -115,7 +115,7 @@ sysState = zeros(size(sysB));       %Creates an array of only zeros with the siz
 %         
 % end
 
-%% Calculate the confidence baseline 
+%% Calculate the confidence line 
 % tilføjet af Steff
 baseCI_1 = mean(o1(:,2))-mean(o1(:,1)); %Den gennemsnitlige forskel mellem nedre og øvre CI
 baseCI_2 = mean(o2(:,2))-mean(o2(:,1));
@@ -329,13 +329,13 @@ for ii = 1:N
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
               
               dof1 = dof1/MVC(1);    %close
-              dof2 = dof1/MVC(2);    %extension
-              dof3 = dof1/MVC(3);    %flexion
-              dof4 = dof1/MVC(4);    %open
-              dof5 = dof1/MVC(5);    %rd
-              dof6 = dof1/MVC(7);    %ud
+              dof2 = dof2/MVC(2);    %extension
+              dof3 = dof3/MVC(3);    %flexion
+              dof4 = dof4/MVC(4);    %open
+              dof5 = dof5/MVC(5);    %rd
+              dof6 = dof6/MVC(7);    %ud
               
-              if dof5 <= dof6
+              if dof5 >= dof6
                   dofA = -dof5;
                   if abs(dofA) < MVC(5)*0.1           %if dofC is below 10% of MVC set to 0.
                       dofA = 0;
@@ -346,7 +346,7 @@ for ii = 1:N
                       dofA = 0;
                   end
               end
-              if  dof3 <= dof2
+              if  dof3 >= dof2
                   dofB = -dof3;
                   if abs(dofB) < MVC(3)*0.1           %if dofC is below 10% of MVC set to 0.
                       dofB = 0;
@@ -357,7 +357,7 @@ for ii = 1:N
                       dofB = 0;
                   end
               end
-              if dof1 <= dof4
+              if dof1 >= dof4
                   dofC = -dof1;
                   if abs(dofC) < MVC(1)*0.1           %if dofC is below 10% of MVC set to 0.
                       dofC = 0;
@@ -368,6 +368,8 @@ for ii = 1:N
                       dofC = 0;
                   end
               end
+            xaksen = [dof1, dof2, dof3, dof4, dof5, dof6, dofA, dofB, dofC];
+            b.YData = xaksen;
     end
     
     %%
