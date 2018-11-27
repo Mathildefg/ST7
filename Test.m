@@ -244,15 +244,15 @@ for ii = 1:N
                 dofA = -dof5;
                 if abs(dofA) < MVC(5)*0.1 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
-                else
-                    dofA= dofA/MVC(5);
+                %else
+                 %   dofA= dofA/MVC(5);
                 end
             else
                 dofA = dof6;
                 if abs(dofA) < MVC(7)*0.1 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
-                else
-                    dofA= dofA/MVC(7);
+                %else
+                 %   dofA= dofA/MVC(7);
                 end
             end
                 
@@ -261,15 +261,15 @@ for ii = 1:N
                 dofB = -dof3;
                 if abs(dofB) < MVC(3)*0.1 || nyci3 >= 1.5 * baseCI_3           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
-                else
-                    dofB= dofB/MVC(3);
+                %else
+                 %   dofB= dofB/MVC(3);
                 end
             else
                 dofB = dof2;
                 if abs(dofB) < MVC(2)*0.1 || nyci2 >= 1.5 * baseCI_2           %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
-                else
-                    dofB= dofB/MVC(2);
+                %else
+                 %   dofB= dofB/MVC(2);
                 end
             end 
             
@@ -278,15 +278,15 @@ for ii = 1:N
                 dofC = -dof1;
                 if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                else
-                    dofC= dofC/MVC(1);
+                %else
+                 %   dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
                 if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                else
-                    dofC= dofC/MVC(4);
+                %else
+                 %   dofC= dofC/MVC(4);
                 end
             end
             
@@ -396,12 +396,12 @@ for ii = 1:N
 % %      if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofB = 0;                         %set dofB to be equal to 0
 % %      end
-     dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
  
 % %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofC = 0;                         %set dofB to be equal to 0
 % %      end
-     dofC(dofC>1)=1; dofC(dofC<-1)=-1;
+    dofC(dofC>2)=2; dofC(dofC<-1)=0;
      
     cursor = [dofA,dofB,dofC];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
     
@@ -413,8 +413,8 @@ for ii = 1:N
     % Limit the play field to the border
     sysOut(sysOut>1)=1;                             %If systemstate is bigger than 1, set to 1.
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
-    sysOut1(sysOut1>5)=5;                           %sets limit to oyr markersize so it cannot go below 0 for sysout1(3).
-    sysOut1(sysOut1<0.35)=0.35;
+    sysOut1(sysOut1>2)=2;                           %sets limit to oyr markersize so it cannot go below 0 for sysout1(3).
+    sysOut1(sysOut1<-1)=0;
     % Store data                                     
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
@@ -425,7 +425,7 @@ for ii = 1:N
        
     
     % Update screen  %%markersize skal ændres muligvis.
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', (sysOut1(3)*20));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max((sysOut1(3)*25),5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
 
     
