@@ -83,7 +83,7 @@ counter_reach = 0;                  %set the counter for reach to be 0
 
 % Control system
 control_type = input('What control? pos/vel [pos]: ','s');
-if ~strcmp(control_type,'vel')      %string compare controltype velocity
+if ~strcmp(control_type,"vel")      %string compare controltype velocity
     control_type = "pos";           %with controltype position
 end                                 %end comparison
 if control_type == "pos"            %if controltype is position
@@ -452,7 +452,7 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-        if control_type == 'vel'
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
@@ -535,9 +535,9 @@ end
 %Plot 1 - Trajectory
 hfig_traj = figure;
 set(hfig_traj, 'units', 'normalized','position', [0 0 1 1],'menubar', 'none','renderer','painters','name','Experiment','numbertitle','off','Color','w')
-plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),dataB.target(1:length(dataB.target),4),'go')
+plot(dataB.target(1:length(dataB.target),1),dataB.target(1:length(dataB.target),2),'go') %,dataB.target(1:length(dataB.target),4)
 hold on
-plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),dataB.sysOut(1:length(dataB.target),4),'bx')
+plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),2),'bx') %,dataB.sysOut(1:length(dataB.target),4)
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
