@@ -176,7 +176,7 @@ subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
 htarget = plot(Target(1,1), Target(1,2), 'ro','markersize', Target(1,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'linewidth', 2, 'buttondownfcn', 'uiresume'); hold on
 htarget_cross = plot(Target(1,1), Target(1,2), 'k+','markersize',Target(1,4),'linewidth', .7, 'buttondownfcn', 'uiresume'); hold on
 % Add position cursor (of controlled system)
-hpos = plot(0, 0, 'ko', 'markersize', 12, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', [0.1 0.1 0.1], 'linewidth', 2, 'buttondownfcn', 'uiresume');
+hpos = plot(0, 0, 'ko', 'markersize', cursorSize, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', [0.1 0.1 0.1], 'linewidth', 2, 'buttondownfcn', 'uiresume');
 axis([-1 1 -1 1])
 set(subplotFitts, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0.25 0.02 0.65 0.95], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
@@ -455,11 +455,11 @@ for ii = 1:N
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
         if control_type == "vel"
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',cursorSize,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',cursorSize,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
@@ -477,11 +477,11 @@ for ii = 1:N
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
         if control_type == "vel"
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',cursorSize,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0];
             t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',cursorSize,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
