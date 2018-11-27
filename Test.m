@@ -474,7 +474,7 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
-        if control_type == 'vel'
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',12,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0];
