@@ -422,7 +422,7 @@ for ii = 1:N
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
-    cursorSize= (sysOut(3)+1)*55; %Skulle give en cursorsize mellem 5 og 115 hvis sysout lå mellem 1 og 2.
+    cursorSize= (sysOut(3)+1)*55+5; %Skulle give en cursorsize mellem 5 og 115 hvis sysout lå mellem 1 og 2.
     
     % Update screen  %%markersize skal ændres muligvis.
     set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', cursorSize);   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
@@ -432,8 +432,7 @@ for ii = 1:N
     % Update target position
     % %&& (Target(counter_target,5)-sysOut1(3))^2 <= W1  indsat i koden
     %Kan udkommenteres hvis man bare vil køre position på cursor
-    %if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && 
-    if W1 <= cursorSize && cursorSize <= Target(counter_target,4) && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && W1 <= cursorSize && cursorSize <= Target(counter_target,4) && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         counter_dwell = counter_dwell + 1;
