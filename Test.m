@@ -89,7 +89,7 @@ end                                 %end comparison
 if control_type == "pos"            %if controltype is position
     sys = tf(1, 1);                 %set system to be the transferfunction for position control
 else                                %if controltype is not pos
-    sys = tf(0.4, [0 1 0]);         %set system to be the transferfunction for velocity control
+    sys = tf(0.8, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
 % State space model of transfer function
 sysDisc = c2d(ss(sys),dt);          %convert statespacd model from continuous time to discrete
@@ -242,14 +242,14 @@ for ii = 1:N
             %Radial vs. ulnar dev.
             if nyci5 <= nyci6
                 dofA = -dof5;
-                if abs(dofA) < MVC(5)*0.1 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(5)*0.05 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 %else
                  %   dofA= dofA/MVC(5);
                 end
             else
                 dofA = dof6;
-                if abs(dofA) < MVC(7)*0.1 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
+                if abs(dofA) < MVC(7)*0.05 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
                 dofA = 0;
                 %else
                  %   dofA= dofA/MVC(7);
@@ -425,7 +425,7 @@ for ii = 1:N
        
     
     % Update screen  %%markersize skal ændres muligvis.
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max((sysOut1(3)*25),5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max((sysOut1(3)*55),5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
 
     
