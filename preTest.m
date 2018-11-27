@@ -43,7 +43,7 @@ Target = fscanf(fileID,'%f %f %f %f %f',[5 inf])';     %fscanf reads data from t
 Target = Target(randperm(length(Target)),:);        %randperm = random permutation of the length of Target
 
 %% Initialize important parameters
-Reach_time = 15; % Max time to reach target [s]
+Reach_time = 30; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Duration of simulation [s]
 samples_win = 20; % Sample time after windowing [#samples]
 dt = samples_win/200; % Sample time after windowing [s]
