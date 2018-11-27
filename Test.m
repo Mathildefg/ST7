@@ -278,15 +278,15 @@ for ii = 1:N
                 dofC = -dof1;
                 if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                else
-                    dofC= dofC+1; %/MVC(1);
+                %else
+                %    dofC= dofC/MVC(1);
                 end
             else
                 dofC = dof4;
                 if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                else
-                    dofC= dofC+1; %/MVC(4);
+                %else
+                %    dofC= dofC/MVC(4);
                 end
             end
             
@@ -401,7 +401,7 @@ for ii = 1:N
 % %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofC = 0;                         %set dofB to be equal to 0
 % %      end
-    dofC(dofC>2)=2; dofC(dofC<0)=0;
+    dofC(dofC>1)=1; dofC(dofC<-1)=-1;
      
     cursor = [dofA,dofB,dofC];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
     
@@ -423,10 +423,10 @@ for ii = 1:N
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
-    cursorSize= sysOut1(3)*55+5;
+    cursorSize= (sysOut(3)+1)*55; %Skulle give en cursorsize mellem 5 og 115 hvis sysout lå mellem 1 og 2.
     
     % Update screen  %%markersize skal ændres muligvis.
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max(cursorSize,5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', cursorSize);   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
 
     
