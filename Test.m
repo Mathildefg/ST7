@@ -278,15 +278,15 @@ for ii = 1:N
                 dofC = -dof1;
                 if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                %else
-                 %   dofC= dofC/MVC(1);
+                else
+                    dofC= dofC+1; %/MVC(1);
                 end
             else
                 dofC = dof4;
                 if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
                 dofC = 0;
-                %else
-                 %   dofC= dofC/MVC(4);
+                else
+                    dofC= dofC+1; %/MVC(4);
                 end
             end
             
@@ -414,7 +414,7 @@ for ii = 1:N
     sysOut(sysOut>1)=1;                             %If systemstate is bigger than 1, set to 1.
     sysOut(sysOut<-1)=-1;                           %If systemstate is less than -1, set to -1.
     sysOut1(sysOut1>2)=2;                           %sets limit to oyr markersize so it cannot go below 0 for sysout1(3).
-    sysOut1(sysOut1<-1)=0;
+    sysOut1(sysOut1<0)=0;
     % Store data                                     
     dataB.time(ii,:) = toc;                          %store the elapsed time from the stopwatch (toc=time since tic start) in data.time array
     dataB.sysOut(ii,:) = sysOut;                     %store the sysOut controlled system state out to be stored in data.sysOut array
@@ -423,16 +423,18 @@ for ii = 1:N
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
        
+    cursorSize= sysOut1(3)*55+5;
     
     % Update screen  %%markersize skal ændres muligvis.
-    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max((sysOut1(3)*55),5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
+    set(hpos, 'xdata', sysOut(1), 'ydata', sysOut(2),'markersize', max(cursorSize,5));   %set the hpos to have x-data = sysOut(1) and y-data = sysOut(2)
     drawnow  
 
     
     % Update target position
     % %&& (Target(counter_target,5)-sysOut1(3))^2 <= W1  indsat i koden
     %Kan udkommenteres hvis man bare vil køre position på cursor
-    if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && (Target(counter_target,5)-sysOut1(3))^2 <= W1 && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
+    %if sqrt((Target(counter_target,1)-sysOut(1))^2+(Target(counter_target,2)-sysOut(2))^2) <= W && 
+    if W1 <= cursorSize <= Target(counter_target,4) && counter_dwell < Dwell/dt  % When cursor is within width of target change the color of the target
         set(htarget,'MarkerFaceColor',[0.3 .9 0.3],'MarkerEdgeColor',[0.05 .75 0.05]);
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         counter_dwell = counter_dwell + 1;
