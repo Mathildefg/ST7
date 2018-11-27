@@ -35,7 +35,7 @@ end
 fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real.txt
 Target = fscanf(fileID,'%f %f %f %f %f',[5 inf])'; %fscanf reads data from the fileID, 
                                                 %with format %f = floating-point numbers. 
-                                                %Reads 4 rows and to the end of the file in rows
+                                                %Reads 5 rows and to the end of the file in rows
 Target = [Target;Target;Target];                % Double the length of the task //Here to change number of iteration of each movement
 Target = Target(randperm(length(Target)),:);    % Randomize it
 
