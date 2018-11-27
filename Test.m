@@ -401,7 +401,7 @@ for ii = 1:N
 % %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofC = 0;                         %set dofB to be equal to 0
 % %      end
-    dofC(dofC>2)=2; dofC(dofC<-1)=0;
+    dofC(dofC>2)=2; dofC(dofC<0)=0;
      
     cursor = [dofA,dofB,dofC];               %set the cursor to be dofB and dofA (put two matrices together to create a larger one).
     
