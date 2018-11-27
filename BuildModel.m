@@ -99,24 +99,24 @@ end
 
 switch train_type
     case 1
-        y_reg = [y_cls,zeros(length(y_cls),6);
-            zeros(length(y_ext),1),y_ext,zeros(length(y_ext),5);...
-            zeros(length(y_flex),2), y_flex, zeros(length(y_flex),4);
+        y_reg = [
+            y_cls,zeros(length(y_cls),6);
+            zeros(length(y_ext),1),y_ext,zeros(length(y_ext),5);
+            zeros(length(y_flex),2),y_flex, zeros(length(y_flex),4);
             zeros(length(y_rest),7);
-            zeros(length(y_opn),4),y_opn,zeros(length(y_opn),2);...
-            zeros(length(y_rd),5),y_rd, zeros(length(y_rd),1);
+            zeros(length(y_opn),4),y_opn,zeros(length(y_opn),2);
+            zeros(length(y_rd),5),y_rd,zeros(length(y_rd),1);
             zeros(length(y_ud),6),y_ud];
         
-        y1 = y_reg(:,1); y2 = y_reg(:,2); y3 = y_reg(:,4); y4 = y_reg(:,5); y5= y_reg(:,6); y6= y_reg(:,7);
-        x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5=RMS; x6=RMS;
-
-case 2
- y1 = [y_cls;y_rest];   x1 = [x_cls;x_rest];
- y2 = [y_ext;y_rest];   x2 = [x_ext;x_rest];
- y3 = [y_flex;y_rest];  x3 = [x_flex;x_rest];
- y4 = [y_opn;y_rest];   x4 = [x_opn;x_rest];
- y5 = [y_rd;y_rest];    x5 = [x_rd;x_rest];
- y6 = [y_ud;y_rest];    x6 = [x_ud;x_rest];
+        y1 = y_reg(:,1); y2 = y_reg(:,2); y3 = y_reg(:,4); y4 = y_reg(:,5); y5 = y_reg(:,6); y6 = y_reg(:,7);
+        x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5 = RMS; x6 = RMS;
+    case 2
+        y1 = [y_cls;y_rest];   x1 = [x_cls;x_rest];
+        y2 = [y_ext;y_rest];   x2 = [x_ext;x_rest];
+        y3 = [y_flex;y_rest];  x3 = [x_flex;x_rest];
+        y4 = [y_opn;y_rest];   x4 = [x_opn;x_rest];
+        y5 = [y_rd;y_rest];    x5 = [x_rd;x_rest];
+        y6 = [y_ud;y_rest];    x6 = [x_ud;x_rest];
 
  end
 
