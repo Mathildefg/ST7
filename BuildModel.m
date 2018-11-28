@@ -92,32 +92,54 @@ y_ud = GeneratedProfile(i(7):end,:);
 %% Choose between training individual or with other setting to zero
 % Setting others to 0 is performed during the experiment and has shown to
 % derive better performance by tests.
-train_type = input('What training? Set others zero (1) or Individual (2): ');
-if train_type ~= 2
-    train_type = 1;
-end
+train_type = input('What training? Set others zero (1) or Individual (2) Opposite zero (3): ');
+% if train_type ~= 2
+%     train_type = 1;
+% end
 
 switch train_type
     case 1
-        y_reg = [
-            y_cls,zeros(length(y_cls),6);
-            zeros(length(y_ext),1),y_ext,zeros(length(y_ext),5);
-            zeros(length(y_flex),2),y_flex, zeros(length(y_flex),4);
+        y_reg = [y_cls,zeros(length(y_cls),6);
+            zeros(length(y_ext),1),y_ext,zeros(length(y_ext),5);...
+            zeros(length(y_flex),2), y_flex, zeros(length(y_flex),4);
             zeros(length(y_rest),7);
-            zeros(length(y_opn),4),y_opn,zeros(length(y_opn),2);
-            zeros(length(y_rd),5),y_rd,zeros(length(y_rd),1);
+            zeros(length(y_opn),4),y_opn,zeros(length(y_opn),2);...
+            zeros(length(y_rd),5),y_rd, zeros(length(y_rd),1);
             zeros(length(y_ud),6),y_ud];
         
-        y1 = y_reg(:,1); y2 = y_reg(:,2); y3 = y_reg(:,4); y4 = y_reg(:,5); y5 = y_reg(:,6); y6 = y_reg(:,7);
-        x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5 = RMS; x6 = RMS;
-    case 2
-        y1 = [y_cls;y_rest];   x1 = [x_cls;x_rest];
-        y2 = [y_ext;y_rest];   x2 = [x_ext;x_rest];
-        y3 = [y_flex;y_rest];  x3 = [x_flex;x_rest];
-        y4 = [y_opn;y_rest];   x4 = [x_opn;x_rest];
-        y5 = [y_rd;y_rest];    x5 = [x_rd;x_rest];
-        y6 = [y_ud;y_rest];    x6 = [x_ud;x_rest];
+        y1 = y_reg(:,1); %cls
+        y2 = y_reg(:,2); %ext
+        y3 = y_reg(:,3); %flex
+        y4 = y_reg(:,5); %opn
+        y5= y_reg(:,6); %rd
+        y6= y_reg(:,7); %ud
+        x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5=RMS; x6=RMS;
 
+case 2
+ y1 = [y_cls;y_rest];   x1 = [x_cls;x_rest];
+ y2 = [y_ext;y_rest];   x2 = [x_ext;x_rest];
+ y3 = [y_flex;y_rest];  x3 = [x_flex;x_rest];
+ y4 = [y_opn;y_rest];   x4 = [x_opn;x_rest];
+ y5 = [y_rd;y_rest];    x5 = [x_rd;x_rest];
+ y6 = [y_ud;y_rest];    x6 = [x_ud;x_rest];
+
+ 
+ case 3 %Opposite zero
+    
+y1= [y_cls;zeros(length(y_opn),1);zeros(length(y_rest),1)];
+y2= [y_ext;zeros(length(y_flex),1);zeros(length(y_rest),1)];
+y3= [y_flex;zeros(length(y_ext),1);zeros(length(y_rest),1)];
+y4= [y_opn;zeros(length(y_cls),1);zeros(length(y_rest),1)];
+y5= [y_rd;zeros(length(y_ud),1);zeros(length(y_rest),1)];
+y6= [y_ud;zeros(length(y_rd),1);zeros(length(y_rest),1)];
+    
+x1 = [x_cls;x_opn;x_rest];
+x2 = [x_ext;x_flex;x_rest];
+x3 = [x_flex;x_ext;x_rest];
+x4 = [x_opn;x_cls;x_rest];
+x5 = [x_rd;x_ud;x_rest];
+x6 = [x_ud;x_rd;x_rest]; 
+        
  end
 
 
@@ -133,12 +155,12 @@ end
 switch optimization %the little o after models stands for 'old'.
     case 'Y'        % if optimization method is chosen
         % Gaussian Regression - Optimization
-        gprMdl_dof1o = fitrgp(x1,y1,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof2o = fitrgp(x2,y2,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof3o = fitrgp(x3,y3,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof4o = fitrgp(x4,y4,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof5o = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
-        gprMdl_dof6o = fitrgp(x6,y6,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',20));
+        gprMdl_dof1o = fitrgp(x1,y1,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+        gprMdl_dof2o = fitrgp(x2,y2,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+        gprMdl_dof3o = fitrgp(x3,y3,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+        gprMdl_dof4o = fitrgp(x4,y4,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+        gprMdl_dof5o = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+        gprMdl_dof6o = fitrgp(x6,y6,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
         
     case 'N'        % if non-optimization (already known hyperparameters) method is chosen
         % Gaussian Regression - Already known hyperparameters
