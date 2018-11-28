@@ -244,14 +244,14 @@ rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth'
 plot(1:length(RMS),y2_testGPR,'k');
 plot(1:length(RMS),y2_LR,'b');
 plot(1:length(RMS),o2,'--k');
-title('Flexion')
+title('Extension')
 ax3 = subplot(6,1,3);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
 rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 plot(1:length(RMS),y3_testGPR,'k');
 plot(1:length(RMS),y3_LR,'b');
 plot(1:length(RMS),o3,'--k');
-title('Extension')
+title('Flexion')
 ylabel('normalized [-]')
 ax4 = subplot(6,1,4);
 rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
@@ -273,7 +273,7 @@ rectangle('Position',[i(7) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth'
 plot(1:length(RMS),y6_testGPR,'k');
 plot(1:length(RMS),y6_LR,'b');
 plot(1:length(RMS),o6,'--k');
-title('Ulna deviation')
+title('Ulnar deviation')
 xlabel('samples [#]')
 [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
 set(hobj,'linewidth',1.5);
