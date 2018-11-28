@@ -10,8 +10,8 @@ close all;
   % The following 2 commented lines of codes builds the myomex file.
   % Uncommend and run if necessary.
   
-% sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
-% build_myo_mex(sdk_path); % builds myo_mex
+ sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
+ build_myo_mex(sdk_path); % builds myo_mex
 if exist('mm')
     mm.delete
 end
