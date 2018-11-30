@@ -48,14 +48,12 @@ switch train_dof
         GeneratedProfile= transpose(GeneratedProfile);
         
         %Assigning a number for each movement to be used in indexing. Feasible
-        %because the files are always loaded alphabetically9
-        movement(1:sum(f(1:3))) =1;                   %Close = 1
-        movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Extension= 2
-        movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Flexion = 3
-        movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Open = 4
-        movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Radial deviation = 5
-        movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Rest = 6
-        movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
+        %because the files are always loaded alphabetically.
+        movement(1:sum(f(1:3))) =2;                   %Close = 1
+        movement(sum(f(1:3))+1: sum(f(1:6)))=3;       %Extension= 2
+        movement(sum(f(1:6))+1:sum(f(1:9)))=5;        %Flexion = 3
+        movement(sum(f(1:9))+1:sum(f(1:12)))=6;       %Open = 4
+        movement(sum(f(1:12))+1:sum(f(1:15)))=7;      %Radial deviation = 5
         
         %The index vector
         [dofs, i, ~] = unique(movement);
@@ -71,27 +69,24 @@ switch train_dof
         %% Arrangement in predictors and target
         
         %Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC.
-        x_cls = RMS(i(1):i(2)-1,:);  %Vi tr?kker 1 fra fordi i(2) er f?rste sample i n?ste bev?gelse.
-        x_ext = RMS(i(2):i(3)-1,:);
-        x_flex = RMS(i(3):i(4)-1,:);
-        x_opn = RMS(i(4):i(5)-1,:);
-        x_rd = RMS(i(5):i(6)-1,:);
-        x_rest = RMS(i(6):i(7)-1,:);
-        x_ud = RMS(i(7):end,:);
+        %Vi tr?kker 1 fra fordi i(2) er f?rste sample i n?ste bev?gelse.
+        x_ext = RMS(i(1):i(2)-1,:);
+        x_flex = RMS(i(2):i(3)-1,:);
+        x_rd = RMS(i(3):i(4)-1,:);
+        x_rest = RMS(i(4):i(5)-1,:);
+        x_ud = RMS(i(5):end,:);
         %x_ud = RMS(i(7):i(8)-1,:);
         
         % Setting rest to zero
-        GeneratedProfile(i(6):i(7)-1,:)= 0;
+        GeneratedProfile(i(4):i(5)-1,:)= 0;
         %GeneratedProfile(i(8):end,:)= 0;
         
         %Target values - The generated profile.
-        y_cls = GeneratedProfile(i(1):i(2)-1,:);
-        y_ext = GeneratedProfile(i(2):i(3)-1,:);
-        y_flex = GeneratedProfile(i(3):i(4)-1,:);
-        y_opn = GeneratedProfile(i(4):i(5)-1,:);
-        y_rd = GeneratedProfile(i(5):i(6)-1,:);
-        y_rest = GeneratedProfile(i(6):i(7)-1,:);
-        y_ud = GeneratedProfile(i(7):end,:);
+        y_ext = GeneratedProfile(i(1):i(2)-1,:);
+        y_flex = GeneratedProfile(i(2):i(3)-1,:);
+        y_rd = GeneratedProfile(i(3):i(4)-1,:);
+        y_rest = GeneratedProfile(i(4):i(5)-1,:);
+        y_ud = GeneratedProfile(i(5):end,:);
         %y_ud = GeneratedProfile(i(7):i(8)-1,:);
         switch train_type
             case 1
@@ -106,7 +101,7 @@ switch train_dof
                 y3 = y_reg(:,3); %rd
                 y4 = y_reg(:,4); %rest
                 y5= y_reg(:,5); %ud
-                x1 = RMS2d; x2 = RMS2d; x3 = RMS2d; x4 = RMS2d; x5=RMS2d;
+                x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5=RMS;
             case 2
                 y1 = [y_ext;y_rest];    x1 = [x_ext;x_rest];
                 y2 = [y_flex;y_rest];   x2 = [x_flex;x_rest];
@@ -159,16 +154,16 @@ switch train_dof
         %% Test predictions on training data
         % GPR
         % the training data
-        [y2_testGPR,p2,o2] = predict(gprMdl_dof2,RMS2d);
-        [y3_testGPR,p3,o3] = predict(gprMdl_dof3,RMS2d);
-        [y5_testGPR,p5,o5] = predict(gprMdl_dof5,RMS2d);
-        [y6_testGPR,p6,o6] = predict(gprMdl_dof6,RMS2d);
+        [y2_testGPR,p2,o2] = predict(gprMdl_dof2,RMS);
+        [y3_testGPR,p3,o3] = predict(gprMdl_dof3,RMS);
+        [y5_testGPR,p5,o5] = predict(gprMdl_dof5,RMS);
+        [y6_testGPR,p6,o6] = predict(gprMdl_dof6,RMS);
         
         % LR
-        y2_LR = predict(LRmdl_2,RMS2d);
-        y3_LR = predict(LRmdl_3,RMS2d);
-        y5_LR = predict(LRmdl_5,RMS2d);
-        y6_LR = predict(LRmdl_6,RMS2d);
+        y2_LR = predict(LRmdl_2,RMS);
+        y3_LR = predict(LRmdl_3,RMS);
+        y5_LR = predict(LRmdl_5,RMS);
+        y6_LR = predict(LRmdl_6,RMS);
         
         %% Plots
         % GPR
@@ -177,32 +172,32 @@ switch train_dof
         ax1 = subplot(6,1,1);
         rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
         rectangle('Position',[0 -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS2d),y2_testGPR,'k');
+        plot(1:length(RMS),y2_testGPR,'k');
         title('Extension')
         hold on;
-        plot(1:length(RMS2d),y2_LR,'b');
-        plot(1:length(RMS2d),o2,'--k');
+        plot(1:length(RMS),y2_LR,'b');
+        plot(1:length(RMS),o2,'--k');
         ax2 = subplot(6,1,2);
         rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
         rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS2d),y3_testGPR,'k');
-        plot(1:length(RMS2d),y3_LR,'b');
-        plot(1:length(RMS2d),o3,'--k');
+        plot(1:length(RMS),y3_testGPR,'k');
+        plot(1:length(RMS),y3_LR,'b');
+        plot(1:length(RMS),o3,'--k');
         title('Flexion')
         ax3 = subplot(6,1,3);
         rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
         rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS2d),y5_testGPR,'k');
-        plot(1:length(RMS2d),y5_LR,'b');
-        plot(1:length(RMS2d),o5,'--k');
+        plot(1:length(RMS),y5_testGPR,'k');
+        plot(1:length(RMS),y5_LR,'b');
+        plot(1:length(RMS),o5,'--k');
         title('Radial deviation')
         ylabel('normalized [-]')
         ax4 = subplot(6,1,4);
         rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
         rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS2d),y6_testGPR,'k');
-        plot(1:length(RMS2d),y6_LR,'b');
-        plot(1:length(RMS2d),o6,'--k');
+        plot(1:length(RMS),y6_testGPR,'k');
+        plot(1:length(RMS),y6_LR,'b');
+        plot(1:length(RMS),o6,'--k');
         title('Open')
         title('Ulna deviation')
         xlabel('samples [#]')
