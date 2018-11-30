@@ -44,7 +44,7 @@ Reach_time = 15; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Max duration of simulation [s]
 samples_win = 20; % Number of samples used for prediction after windowing
 dt = samples_win/200; % Sample time after windowing [s]
-threshold = 0.1; % Threshold
+threshold = 0.01; % Threshold
 W = Target(1,3); % Width or difficulty of the target
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
@@ -160,7 +160,7 @@ con_ud = rectangle('Position',[0.20 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linew
 %Plotting the confidence (fill) - tilføjet af Mat
 %The fill will represent the confidence by varying the height of a green
 
-ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; sup_fill=0; pro_fill=0;
+ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; %sup_fill=0; pro_fill=0;
 con_ext_fill = rectangle('Position',[-0.70 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_flex_fill = rectangle('Position',[0.20 0.35 0.5 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 con_rd_fill = rectangle('Position',[-0.70 -0.30 0.5 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;

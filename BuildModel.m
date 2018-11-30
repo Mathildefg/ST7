@@ -153,33 +153,20 @@ switch train_dof
         switch optimization %the little o after models stands for 'old'.
             case 'Y'        % if optimization method is chosen
                 % Gaussian Regression - Optimization
-                gprMdl_dof2o = fitrgp(x1,y1,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
-                gprMdl_dof3o = fitrgp(x2,y2,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
-                gprMdl_dof5o = fitrgp(x3,y3,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
-                gprMdl_dof6o = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+                gprMdl_dof2 = fitrgp(x1,y1,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+                gprMdl_dof3 = fitrgp(x2,y2,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+                gprMdl_dof5 = fitrgp(x3,y3,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
+                gprMdl_dof6 = fitrgp(x5,y5,'FitMethod','exact','PredictMethod','exact','Basisfunction','none','OptimizeHyperparameters',{'Sigma'},'HyperparameterOptimizationOptions', struct('MaxObjectiveEvaluations',5));
                 
             case 'N'        % if non-optimization (already known hyperparameters) method is chosen
                 % Gaussian Regression - Already known hyperparameters
-                gprMdl_dof2o = fitrgp(x1,y1,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-                gprMdl_dof3o = fitrgp(x2,y2,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-                gprMdl_dof5o = fitrgp(x3,y3,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-                gprMdl_dof6o = fitrgp(x5,y5,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+                gprMdl_dof2 = fitrgp(x1,y1,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+                gprMdl_dof3 = fitrgp(x2,y2,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+                gprMdl_dof5 = fitrgp(x3,y3,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+                gprMdl_dof6 = fitrgp(x5,y5,'Fitmethod','sr','PredictMethod','sr','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
         end
         
-        % Hyperparameter matrix on the Gaussian process regression
-        hp = [gprMdl_dof2o.Sigma,gprMdl_dof2o.KernelInformation.KernelParameters'; ...
-            gprMdl_dof3o.Sigma,gprMdl_dof3o.KernelInformation.KernelParameters'; ...
-            gprMdl_dof5o.Sigma,gprMdl_dof5o.KernelInformation.KernelParameters'; ...
-            gprMdl_dof6o.Sigma,gprMdl_dof6o.KernelInformation.KernelParameters'];
         
-        % Make hyper parameters to build GPR model. Baumeister chose these based on tests.
-        hp_new = [hp(:,1)*(0.1/mean(hp(:,1))),hp(:,2)*(0.7/mean(hp(:,2))),hp(:,3)*(0.9/mean(hp(:,3)))];
-        
-        %GPR with adjusted kernel parameters.
-        gprMdl_dof2 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(1,2);hp_new(1,3)],'Basisfunction','none');
-        gprMdl_dof3 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(2,2);hp_new(2,3)],'Basisfunction','none');
-        gprMdl_dof5 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(3,2);hp_new(3,3)],'Basisfunction','none');
-        gprMdl_dof6 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
         
 %% LR
         % LR - basic model (intersection incl)
@@ -241,7 +228,7 @@ switch train_dof
         [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
         set(hobj,'linewidth',1.5);
         gca_handles = [ax1,ax2,ax3,ax4];
-        set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y2_testGPR)+1])
+        set(gca_handles,'fontsize',10,'YLim',[-0.25 0.5],'XLim',[0 length(y2_testGPR)+1])
     case 3
 %% Dof 3
 %% Choose between training individual or with other setting to zero
@@ -429,7 +416,7 @@ switch train_dof
         [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
         set(hobj,'linewidth',1.5);
         gca_handles = [ax1,ax2,ax3,ax4,ax5,ax6];
-        set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y1_testGPR)+1])
+        set(gca_handles,'fontsize',10,'YLim',[-0.25 0.5],'XLim',[0 length(y1_testGPR)+1])
 end
 
 
