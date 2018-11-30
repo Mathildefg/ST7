@@ -54,11 +54,7 @@ do_rest = 4;    % number of performed test movements before first break
 rest_increment = 4; %increment in break
 
 % Choose algorithm
-algo = input('What algorithm? LR/GPR [GPR]: ','s');
-if ~strcmp(algo,"LR")
-    algo = "GPR";
-    dataB(1).p = zeros(Time/dt,4); % For GPR p-values are saved
-end
+algo = input('What algorithm? LR/GPR/GPR+LR: ','s');
 
 %% Initialization
 % Matrices/vectors
@@ -221,7 +217,39 @@ for ii = 1:N
     
     % Target predictions: GPR or LR
     switch algo
+        case "GPR+LR"
+            dataB(1).p = zeros(Time/dt,4);
+            
+            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
+            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
+            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:)); %rd
+            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
+            dataB.p(ii,1:4)=[p2,p3,p5,p6];
+            
+            nyci2 = ci2(2)-ci2(1);
+            nyci3 = ci3(2)-ci3(1);
+            nyci5 = ci5(2)-ci5(1);
+            nyci6 = ci6(2)-ci6(1);
+            
+            if dof3 >= dof2 && nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
+                dofA = -dof3;               %put dofA to be -dof1
+            else
+                dofA = dof2;                %else put dofA to be dof2
+            end
+            if dof6 >= dof5 && nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
+                dofB = -dof6;                %put dofB to be dof3                            
+            else
+                dofB = dof5;               %else dofB to be -dof4                         
+            end
+            
+            
+           % if 
+                
+                
+           % end
         case "GPR"              %Gaussian process regression
+            dataB(1).p = zeros(Time/dt,4);
+            
             %[dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:)); %close
             [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
             [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
@@ -231,130 +259,63 @@ for ii = 1:N
             dataB.p(ii,1:4)=[p2,p3,p5,p6];
             
             %nyci1 = ci1(2)-ci1(1);
-            nyci2 = ci2(2)-ci2(1);
-            nyci3 = ci3(2)-ci3(1);
+            nyci2 = 1-((ci2(2)-ci2(1))-baseCI_2)/baseCI_2;
+            nyci3 = 1-((ci3(2)-ci3(1))-baseCI_3)/baseCI_3;
             %nyci4 = ci4(2)-ci4(1);
-            nyci5 = ci5(2)-ci5(1);
-            nyci6 = ci6(2)-ci6(1);
+            nyci5 = 1-((ci5(2)-ci5(1))-baseCI_5)/baseCI_5;
+            nyci6 = 1-((ci6(2)-ci6(1))-baseCI_6)/baseCI_6;
             
-%             %Radial vs. ulnar dev.
-%             if nyci5 <= nyci6
-%                 dofA = -dof5;
-%                 if abs(dofA) < MVC(5)*0.05 || nyci5 >= 1.5 * baseCI_5           %if dofA is below 10% of MVC set to 0.
-%                 dofA = 0;
-%                 %else
-%                  %   dofA= dofA/MVC(5);
-%                 end
-%             else
-%                 dofA = dof6;
-%                 if abs(dofA) < MVC(7)*0.05 || nyci6 >= 1.5 * baseCI_6           %if dofA is below 10% of MVC set to 0.
-%                 dofA = 0;
-%                 %else
-%                  %   dofA= dofA/MVC(7);
-%                 end
-%             end
-%                 
-%             %Flexion vs. extension
-%             if  nyci3 <= nyci2 
-%                 dofB = -dof3;
-%                 if abs(dofB) < MVC(3)*0.1 || nyci3 >= 1.5 * baseCI_3           %if dofB is below 10% of MVC set to 0.
-%                 dofB = 0;
-%                 %else
-%                  %   dofB= dofB/MVC(3);
-%                 end
-%             else
-%                 dofB = dof2;
-%                 if abs(dofB) < MVC(2)*0.1 || nyci2 >= 1.5 * baseCI_2           %if dofB is below 10% of MVC set to 0.
-%                 dofB = 0;
-%                 %else
-%                  %   dofB= dofB/MVC(2);
-%                 end
-%             end 
-%             
-%             %cursor size = dofC.
-%             if nyci1 <= nyci4
-%                 dofC = -dof1;
-%                 if abs(dofC) < MVC(1)*0.1 || nyci1 >= 1.5 * baseCI_1           %if dofC is below 10% of MVC set to 0.
-%                 dofC = 0;
-%                 %else
-%                 %    dofC= dofC/MVC(1);
-%                 end
-%             else
-%                 dofC = dof4;
-%                 if abs(dofC) < MVC(4)*0.1 || nyci4 >= 1.5 * baseCI_4           %if dofC is below 10% of MVC set to 0.
-%                 dofC = 0;
-%                 %else
-%                 %    dofC= dofC/MVC(4);
-%                 end
-%             end
-             % Predictions are ranging [0 1]. Set to [-1 1] for x and y
-%     if abs(dof3) <= 0.1
-%         dof3 = 0;
-%     end
-%     if abs(dof2) <= 0.1
-%         dof2 = 0;
-%     end
-%     
-%     if abs(dof6) <= 0.1
-%         dof6 = 0;
-%     end
-%     if abs(dof5) <= 0.05
-%         dof5 = 0;
-%     end 
-%     
-%     if abs(dof1) <= 0.2
-%         dof1 = 0;
-%     end
-%     if abs(dof4) <= 0.05
-%         dof4 = 0;
-%     end
-%              
-    if dof3 >= dof2                 %if dof1 is bigger than or equal to dof2
-        dofA = -dof3;               %put dofA to be -dof1
-    else
-        dofA = dof2;                %else put dofA to be dof2
-    end
-    if dof6 >= dof5                 %if dof3 is bigger than or equal to dof4
-        dofB = -dof6;                %put dofB to be dof3                            Why is this reverse from MYO4?
-    else
-        dofB = dof5;               %else dofB to be -dof4                          Why is this reverse from MYO4?
-    end
-
-    
-    % Use movement thresholds for minima and maxima
-%     if abs(dofA) < threshold            %if the absolute value of dofB is lower than the threshold
-%         dofA=0;                         %set dofB to be equal to 0
-%     end
-%                                    %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
-% 
-%     if abs(dofB) < threshold            %if the absolute value of dofA is lower than the threshold
-%         dofB=0;                         %set dofA to be equal to 0
-%     end
-%                                    %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
-%     if abs(dofC) < threshold
-%         dofC=0;
-%     end 
+%Normalisering er IKKE med. Det virker ALDRIG.
 
 
-            % Update Bargraph
+            
+            if dof3 >= dof2 && nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
+                dofA = -dof3;               %put dofA to be -dof1
+                if dof3< 0.1*MVC(3)          %if dofB is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+            else
+                dofA = dof2;                %else put dofA to be dof2
+                 if dof2< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+            end
+            if dof6 >= dof5 %&& nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
+                dofB = -dof6;                %put dofB to be dof3  
+                 if dof6< 0.1*MVC(7)          %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            else
+                dofB = dof5;               %else dofB to be -dof4   
+                 if dof5< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            end
+            
+            
+             % Update Bargraph
             xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
             b.YData = xaksen;
             
             % Update confidence bars
             %ext_fill = max(0.5- ci1(:,2)-dof1,0);
-            ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5);
+            %ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5)
+            ext_fill = min(max(0.5*nyci2,0),0.5);
             set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
             
             %flex_fill = max(0.5- ci2(:,2)-dof2,0);
-            flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+            %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+            flex_fill = min(max(0.5*nyci3,0),0.5);
             set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
             
             %rd_fill = max(0.5- ci4(:,2)-dof4,0);
-            rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+            %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+            rd_fill = min(max(0.5*nyci5,0),0.5);
             set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
             
             %ud_fill = max(0.5- ci6(:,2)-dof6,0);
-            ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+            %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+            ud_fill = min(max(0.5*nyci6,0),0.5);
             set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
             
             %pro_fill = max(0.5- ci3(:,2)-dof3,0);
