@@ -25,15 +25,6 @@ m1 = mm.myoData(1); % Object that collects data from the Myoband
 m1.stopStreaming(); % Streaming is stopped
 m1.clearLogs(); % The log file that saves the collected data is cleared.
 
-% Load regression models
-disp('Open the regression models to be used.')
-if ~exist('gprMdl_dof1') || ~exist('LRmdl_1') %Skal indkommenteres når vi har linær model. 
-    uiopen('*.mat')
-end
-
-
-
-
 train_dof = input('#DoF? (2 or 3):');
 switch train_dof
     case 2
@@ -43,7 +34,11 @@ Target = fscanf(fileID,'%f %f %f %f',[4 inf])'; %fscanf reads data from the file
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 5 rows and to the end of the file in rows
 Target = Target(randperm(length(Target)),:);    % Randomize it
-
+% Load regression models
+disp('Open the regression models to be used.')
+if ~exist('gprMdl_dof2') || ~exist('LRmdl_2') %Skal indkommenteres når vi har linær model. 
+    uiopen('*.mat')
+end
 %% Initialize important parameters
 Reach_time = 15; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Max duration of simulation [s]
@@ -75,7 +70,7 @@ dataB(1).time = zeros(Time/dt,1);        %the time value from data(1) is put in 
 dataB(1).dof = zeros(Time/dt,4);         %the dof value from data(1) is put in array with only zeros of size (time / dt, 6)
 dataB(1).target = zeros(Time/dt,4);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
 dataB(1).cursor = zeros(Time/dt,2);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 3)
-dataB(1).sysOut = zeros(Time/dt,3);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
+dataB(1).sysOut = zeros(Time/dt,2);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
 
 % Counters
 counter_target = 1;                 %set the counter for target to be 1
@@ -682,7 +677,11 @@ Target = fscanf(fileID,'%f %f %f %f %f',[5 inf])'; %fscanf reads data from the f
                                                 %with format %f = floating-point numbers. 
                                                 %Reads 5 rows and to the end of the file in rows
 Target = Target(randperm(length(Target)),:);    % Randomize it
-        
+        % Load regression models
+disp('Open the regression models to be used.')
+if ~exist('gprMdl_dof1') || ~exist('LRmdl_1') %Skal indkommenteres når vi har linær model. 
+    uiopen('*.mat')
+end
 %% Initialize important parameters
 Reach_time = 15; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Max duration of simulation [s]
