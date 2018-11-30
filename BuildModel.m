@@ -14,105 +14,85 @@ addpath(fileFolder);
 listOfFiles = dir(fullfile(fileFolder, '*.mat'));
 % Load the files
 EMG= []; MVC=[]; RMS= []; GeneratedProfile = []; movement=[];
-for k = 1 : length(listOfFiles)
-    
-    load(listOfFiles(k).name, 'emg');
-    data{1,k} = emg.values;
-    data{2,k} = emg.MVC;
-    EMG = [EMG; data{1,k}];
-    MVC = [MVC; data{2,k}];
-    
-    RMS_temp = [];
-    for i=1 : 8
-        RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,20,0));
-    end
-    
-    RMS = [RMS; RMS_temp];
-    
-    GeneratedProfile = [GeneratedProfile my_rms(mean(data{1,k},2), 40, 20, 0)];
-    
-    %To be used for indexing - the lengths of the RMS from each movement:
-    f(k) = length(RMS_temp);
-    
-end
-clear emg RMS_temp;
-
-GeneratedProfile= transpose(GeneratedProfile);
-
-%Assigning a number for each movement to be used in indexing. Feasible
-%because the files are always loaded alphabetically9
-movement(1:sum(f(1:3))) =1;                   %Close = 1
-movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Extension= 2
-movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Flexion = 3
-movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Open = 4
-movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Radial deviation = 5
-movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Rest = 6
-movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
-
-%The index vector
-[dofs, i, ~] = unique(movement);
-MVC = unique(MVC, 'stable');
-
-figure(1)
-subplot(3,1,1)
-plot(1:length(EMG),EMG)
-subplot(3,1,2)
-plot(1:length(RMS),RMS)
-subplot(3,1,3)
-plot(1:length(GeneratedProfile), GeneratedProfile)
-
-%% 2 Dof rescaling
-RMS2d_1 = RMS(i(2):(i(4)-1),:);
-RMS2d_2 = RMS(i(5):end,:);
-RMS2d = [RMS2d_1;RMS2d_2];
-
-EMG2d_1 = EMG((12001:36000),:);
-EMG2d_2 = EMG(48001:end,:);
-EMG2d = [EMG2d_1;EMG2d_2];
-
-GeneratedProfile2d_1 = GeneratedProfile(i(2):(i(4)-1),:);
-GeneratedProfile2d_2 = GeneratedProfile(i(5):end,:);
-GeneratedProfile2d = [GeneratedProfile2d_1;GeneratedProfile2d_2];
-
-figure(2)
-subplot(3,1,1)
-plot(1:length(EMG2d),EMG2d)
-subplot(3,1,2)
-plot(1:length(RMS2d),RMS2d)
-subplot(3,1,3)
-plot(1:length(GeneratedProfile2d), GeneratedProfile2d)
-%% Arrangement in predictors and target
-
-%Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC.
-x_cls = RMS(i(1):i(2)-1,:);  %Vi trækker 1 fra fordi i(2) er første sample i næste bevægelse.
-x_ext = RMS(i(2):i(3)-1,:);
-x_flex = RMS(i(3):i(4)-1,:);
-x_opn = RMS(i(4):i(5)-1,:);
-x_rd = RMS(i(5):i(6)-1,:);
-x_rest = RMS(i(6):i(7)-1,:);
-x_ud = RMS(i(7):end,:);
-%x_ud = RMS(i(7):i(8)-1,:);
-
-% Setting rest to zero
-GeneratedProfile(i(6):i(7)-1,:)= 0;
-%GeneratedProfile(i(8):end,:)= 0;
-
-%Target values - The generated profile.
-y_cls = GeneratedProfile(i(1):i(2)-1,:);
-y_ext = GeneratedProfile(i(2):i(3)-1,:);
-y_flex = GeneratedProfile(i(3):i(4)-1,:);
-y_opn = GeneratedProfile(i(4):i(5)-1,:);
-y_rd = GeneratedProfile(i(5):i(6)-1,:);
-y_rest = GeneratedProfile(i(6):i(7)-1,:);
-y_ud = GeneratedProfile(i(7):end,:);
-%y_ud = GeneratedProfile(i(7):i(8)-1,:);
 
 %% Choose number of degrees of freedom
 train_dof = input('#DoF? (2 or 3):');
 train_type = input('What training? Set others zero (1) or Individual (2) Opposite zero (3): ');
 switch train_dof
-%% Dof 2
+    %% Dof 2
     case 2
+        
+        for k = 1 : length(listOfFiles)
+            
+            load(listOfFiles(k).name, 'emg');
+            data{1,k} = emg.values;
+            data{2,k} = emg.MVC;
+            EMG = [EMG; data{1,k}];
+            MVC = [MVC; data{2,k}];
+            
+            RMS_temp = [];
+            for i=1 : 8
+                RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,20,0));
+            end
+            
+            RMS = [RMS; RMS_temp];
+            
+            GeneratedProfile = [GeneratedProfile my_rms(mean(data{1,k},2), 40, 20, 0)];
+            
+            %To be used for indexing - the lengths of the RMS from each movement:
+            f(k) = length(RMS_temp);
+            
+        end
+        clear emg RMS_temp;
+        
+        GeneratedProfile= transpose(GeneratedProfile);
+        
+        %Assigning a number for each movement to be used in indexing. Feasible
+        %because the files are always loaded alphabetically9
+        movement(1:sum(f(1:3))) =1;                   %Close = 1
+        movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Extension= 2
+        movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Flexion = 3
+        movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Open = 4
+        movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Radial deviation = 5
+        movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Rest = 6
+        movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
+        
+        %The index vector
+        [dofs, i, ~] = unique(movement);
+        MVC = unique(MVC, 'stable');
+        
+        figure(1)
+        subplot(3,1,1)
+        plot(1:length(EMG),EMG)
+        subplot(3,1,2)
+        plot(1:length(RMS),RMS)
+        subplot(3,1,3)
+        plot(1:length(GeneratedProfile), GeneratedProfile)
+        %% Arrangement in predictors and target
+        
+        %Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC.
+        x_cls = RMS(i(1):i(2)-1,:);  %Vi tr?kker 1 fra fordi i(2) er f?rste sample i n?ste bev?gelse.
+        x_ext = RMS(i(2):i(3)-1,:);
+        x_flex = RMS(i(3):i(4)-1,:);
+        x_opn = RMS(i(4):i(5)-1,:);
+        x_rd = RMS(i(5):i(6)-1,:);
+        x_rest = RMS(i(6):i(7)-1,:);
+        x_ud = RMS(i(7):end,:);
+        %x_ud = RMS(i(7):i(8)-1,:);
+        
+        % Setting rest to zero
+        GeneratedProfile(i(6):i(7)-1,:)= 0;
+        %GeneratedProfile(i(8):end,:)= 0;
+        
+        %Target values - The generated profile.
+        y_cls = GeneratedProfile(i(1):i(2)-1,:);
+        y_ext = GeneratedProfile(i(2):i(3)-1,:);
+        y_flex = GeneratedProfile(i(3):i(4)-1,:);
+        y_opn = GeneratedProfile(i(4):i(5)-1,:);
+        y_rd = GeneratedProfile(i(5):i(6)-1,:);
+        y_rest = GeneratedProfile(i(6):i(7)-1,:);
+        y_ud = GeneratedProfile(i(7):end,:);
+        %y_ud = GeneratedProfile(i(7):i(8)-1,:);
         switch train_type
             case 1
                 y_reg = [y_ext,zeros(length(y_ext),4);...
@@ -143,7 +123,7 @@ switch train_dof
                 x3 = [x_rd;x_ud;x_rest];
                 x5 = [x_ud;x_rd;x_rest];
         end
-%% Gaussian Process Regression - Stort set kopieret fra Baumeister.
+        %% Gaussian Process Regression - Stort set kopieret fra Baumeister.
         optimization = input('Optimization? Y/N [N]: ','s');
         if ~strcmp(optimization,'Y') && ~strcmp(optimization,'y')
             optimization = 'N';
@@ -169,14 +149,14 @@ switch train_dof
         
         
         
-%% LR
+        %% LR
         % LR - basic model (intersection incl)
         LRmdl_2 = fitlm(x1,y1);
         LRmdl_3 = fitlm(x2,y2);
         LRmdl_5 = fitlm(x3,y3);
         LRmdl_6 = fitlm(x5,y5);
         
-%% Test predictions on training data
+        %% Test predictions on training data
         % GPR
         % the training data
         [y2_testGPR,p2,o2] = predict(gprMdl_dof2,RMS2d);
@@ -190,7 +170,7 @@ switch train_dof
         y5_LR = predict(LRmdl_5,RMS2d);
         y6_LR = predict(LRmdl_6,RMS2d);
         
-%% Plots
+        %% Plots
         % GPR
         subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.03], [0.08 0.03]);
         LR_GPR=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.39774756441 1],'Color','w');
@@ -231,8 +211,80 @@ switch train_dof
         gca_handles = [ax1,ax2,ax3,ax4];
         set(gca_handles,'fontsize',10,'YLim',[-0.25 0.5],'XLim',[0 length(y2_testGPR)+1])
     case 3
-%% Dof 3
-%% Choose between training individual or with other setting to zero
+        %% Dof 3
+        
+        for k = 1 : length(listOfFiles)
+            
+            load(listOfFiles(k).name, 'emg');
+            data{1,k} = emg.values;
+            data{2,k} = emg.MVC;
+            EMG = [EMG; data{1,k}];
+            MVC = [MVC; data{2,k}];
+            
+            RMS_temp = [];
+            for i=1 : 8
+                RMS_temp(:,i) = transpose(my_rms(data{1,k}(:,i),40,20,0));
+            end
+            
+            RMS = [RMS; RMS_temp];
+            
+            GeneratedProfile = [GeneratedProfile my_rms(mean(data{1,k},2), 40, 20, 0)];
+            
+            %To be used for indexing - the lengths of the RMS from each movement:
+            f(k) = length(RMS_temp);
+            
+        end
+        clear emg RMS_temp;
+        
+        GeneratedProfile= transpose(GeneratedProfile);
+        
+        %Assigning a number for each movement to be used in indexing. Feasible
+        %because the files are always loaded alphabetically9
+        movement(1:sum(f(1:3))) =1;                   %Close = 1
+        movement(sum(f(1:3))+1: sum(f(1:6)))=2;       %Extension= 2
+        movement(sum(f(1:6))+1:sum(f(1:9)))=3;        %Flexion = 3
+        movement(sum(f(1:9))+1:sum(f(1:12)))=4;       %Open = 4
+        movement(sum(f(1:12))+1:sum(f(1:15)))=5;      %Radial deviation = 5
+        movement(sum(f(1:15))+1:sum(f(1:18)))= 6;     %Rest = 6
+        movement(sum(f(1:18))+1:sum(f(1:21)))=7;      %Ulnar deviation = 7
+        
+        %The index vector
+        [dofs, i, ~] = unique(movement);
+        MVC = unique(MVC, 'stable');
+        
+        figure(1)
+        subplot(3,1,1)
+        plot(1:length(EMG),EMG)
+        subplot(3,1,2)
+        plot(1:length(RMS),RMS)
+        subplot(3,1,3)
+        plot(1:length(GeneratedProfile), GeneratedProfile)
+        %% Arrangement in predictors and target
+        
+        %Predictor - RMS of each EMG-channel of the myo armband for 25%, 50%, 75% of MVC.
+        x_cls = RMS(i(1):i(2)-1,:);  %Vi tr?kker 1 fra fordi i(2) er f?rste sample i n?ste bev?gelse.
+        x_ext = RMS(i(2):i(3)-1,:);
+        x_flex = RMS(i(3):i(4)-1,:);
+        x_opn = RMS(i(4):i(5)-1,:);
+        x_rd = RMS(i(5):i(6)-1,:);
+        x_rest = RMS(i(6):i(7)-1,:);
+        x_ud = RMS(i(7):end,:);
+        %x_ud = RMS(i(7):i(8)-1,:);
+        
+        % Setting rest to zero
+        GeneratedProfile(i(6):i(7)-1,:)= 0;
+        %GeneratedProfile(i(8):end,:)= 0;
+        
+        %Target values - The generated profile.
+        y_cls = GeneratedProfile(i(1):i(2)-1,:);
+        y_ext = GeneratedProfile(i(2):i(3)-1,:);
+        y_flex = GeneratedProfile(i(3):i(4)-1,:);
+        y_opn = GeneratedProfile(i(4):i(5)-1,:);
+        y_rd = GeneratedProfile(i(5):i(6)-1,:);
+        y_rest = GeneratedProfile(i(6):i(7)-1,:);
+        y_ud = GeneratedProfile(i(7):end,:);
+        %y_ud = GeneratedProfile(i(7):i(8)-1,:);
+        %% Choose between training individual or with other setting to zero
         % Setting others to 0 is performed during the experiment and has shown to
         % derive better performance by tests.
         % if train_type ~= 2
@@ -283,7 +335,7 @@ switch train_dof
                 x6 = [x_ud;x_rd;x_rest];
                 
         end
-%% Gaussian Process Regression - Stort set kopieret fra Baumeister.
+        %% Gaussian Process Regression - Stort set kopieret fra Baumeister.
         optimization = input('Optimization? Y/N [N]: ','s');
         if ~strcmp(optimization,'Y') && ~strcmp(optimization,'y')
             optimization = 'N';
@@ -338,7 +390,7 @@ switch train_dof
         %  gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
         %  gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
         
-%% LR
+        %% LR
         % LR - basic model (intersection incl)
         LRmdl_1 = fitlm(x1,y1);
         LRmdl_2 = fitlm(x2,y2);
@@ -347,7 +399,7 @@ switch train_dof
         LRmdl_5 = fitlm(x5,y5);
         LRmdl_6 = fitlm(x6,y6);
         
-%% Test predictions on training data
+        %% Test predictions on training data
         % GPR
         % the training data
         [y1_testGPR,p1,o1] = predict(gprMdl_dof1,RMS);  %[predicted response values, estimated standard deviation, prediction intervals]
@@ -365,7 +417,7 @@ switch train_dof
         y5_LR = predict(LRmdl_5,RMS);
         y6_LR = predict(LRmdl_6,RMS);
         
-%% Plots
+        %% Plots
         % GPR
         subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.03], [0.08 0.03]);
         LR_GPR=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.39774756441 1],'Color','w');
