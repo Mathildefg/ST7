@@ -29,7 +29,7 @@ for k = 1 : length(listOfFiles)
   
   RMS = [RMS; RMS_temp];
   
-  GeneratedProfile = [GeneratedProfile my_rms(data{1,k}, 40, 20, 0)];
+  GeneratedProfile = [GeneratedProfile my_rms(mean(data{1,k},2), 40, 20, 0)];
   
   %To be used for indexing - the lengths of the RMS from each movement:
   f(k) = length(RMS_temp);
@@ -102,16 +102,16 @@ switch train_type
         y_reg = [y_cls,zeros(length(y_cls),6);
             zeros(length(y_ext),1),y_ext,zeros(length(y_ext),5);...
             zeros(length(y_flex),2), y_flex, zeros(length(y_flex),4);
-            zeros(length(y_rest),7);
-            zeros(length(y_opn),4),y_opn,zeros(length(y_opn),2);...
-            zeros(length(y_rd),5),y_rd, zeros(length(y_rd),1);
+            zeros(length(y_opn),3),y_opn, zeros(length(y_opn),3);...
+            zeros(length(y_rd),4),y_rd, zeros(length(y_rd),2);
+            zeros(length(y_rest),5),y_rest, zeros(length(y_rest),1);
             zeros(length(y_ud),6),y_ud];
         
         y1 = y_reg(:,1); %cls
         y2 = y_reg(:,2); %ext
         y3 = y_reg(:,3); %flex
-        y4 = y_reg(:,5); %opn
-        y5= y_reg(:,6); %rd
+        y4 = y_reg(:,4); %opn
+        y5= y_reg(:,5); %rd
         y6= y_reg(:,7); %ud
         x1 = RMS; x2 = RMS; x3 = RMS; x4 = RMS; x5=RMS; x6=RMS;
 
@@ -164,12 +164,12 @@ switch optimization %the little o after models stands for 'old'.
         
     case 'N'        % if non-optimization (already known hyperparameters) method is chosen
         % Gaussian Regression - Already known hyperparameters
-        gprMdl_dof1o = fitrgp(x1,y1,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-        gprMdl_dof2o = fitrgp(x2,y2,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-        gprMdl_dof3o = fitrgp(x3,y3,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-        gprMdl_dof4o = fitrgp(x4,y4,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-        gprMdl_dof5o = fitrgp(x5,y5,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
-        gprMdl_dof6o = fitrgp(x6,y6,'Fitmethod','exact','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof1o = fitrgp(x1,y1,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof2o = fitrgp(x2,y2,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof3o = fitrgp(x3,y3,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof4o = fitrgp(x4,y4,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof5o = fitrgp(x5,y5,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
+        gprMdl_dof6o = fitrgp(x6,y6,'Fitmethod','sr','PredictMethod','exact','Sigma',0.06,'KernelParameters',[0.15;0.35],'Basisfunction','none');
 end
 
 % Hyperparameter matrix on the Gaussian process regression
