@@ -309,21 +309,17 @@ for ii = 1:N
 %         dof4 = 0;
 %     end
 %              
-%     if dof3 >= dof2                 %if dof1 is bigger than or equal to dof2
-%         dofA = -dof3;               %put dofA to be -dof1
-%     else
-%         dofA = dof2;                %else put dofA to be dof2
-%     end
-%     if dof6 >= dof5                 %if dof3 is bigger than or equal to dof4
-%         dofB = -dof6;                %put dofB to be dof3                            Why is this reverse from MYO4?
-%     else
-%         dofB = dof5;               %else dofB to be -dof4                          Why is this reverse from MYO4?
-%     end
-%     if dof1 >= dof4
-%         dofC = -dof1;
-%     else
-%         dofC = dof4;
-%     end
+    if dof3 >= dof2                 %if dof1 is bigger than or equal to dof2
+        dofA = -dof3;               %put dofA to be -dof1
+    else
+        dofA = dof2;                %else put dofA to be dof2
+    end
+    if dof6 >= dof5                 %if dof3 is bigger than or equal to dof4
+        dofB = -dof6;                %put dofB to be dof3                            Why is this reverse from MYO4?
+    else
+        dofB = dof5;               %else dofB to be -dof4                          Why is this reverse from MYO4?
+    end
+
     
     % Use movement thresholds for minima and maxima
 %     if abs(dofA) < threshold            %if the absolute value of dofB is lower than the threshold
