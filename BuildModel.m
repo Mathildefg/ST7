@@ -111,6 +111,7 @@ y_ud = GeneratedProfile(i(7):end,:);
 train_dof = input('#DoF? (2 or 3):');
 train_type = input('What training? Set others zero (1) or Individual (2) Opposite zero (3): ');
 switch train_dof
+%% Dof 2
     case 2
         switch train_type
             case 1
@@ -339,8 +340,8 @@ switch train_dof
         gprMdl_dof2 = fitrgp(x2,y2,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(2,2);hp_new(2,3)],'Basisfunction','none');
         gprMdl_dof3 = fitrgp(x3,y3,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(3,2);hp_new(3,3)],'Basisfunction','none');
         gprMdl_dof4 = fitrgp(x4,y4,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
-        gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
-        gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(4,2);hp_new(4,3)],'Basisfunction','none');
+        gprMdl_dof5 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(5,2);hp_new(5,3)],'Basisfunction','none');
+        gprMdl_dof6 = fitrgp(x6,y6,'Fitmethod','none','Sigma',0.1,'KernelParameters',[hp_new(6,2);hp_new(6,3)],'Basisfunction','none');
         
         % GPR model with fixed hyper parameters.
         %  gprMdl_dof1 = fitrgp(x1,y1,'Fitmethod','none','Sigma',0.1,'KernelParameters',[0.7;0.9],'Basisfunction','none');
