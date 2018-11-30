@@ -207,54 +207,41 @@ switch train_dof
         subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.03], [0.08 0.03]);
         LR_GPR=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.39774756441 1],'Color','w');
         ax1 = subplot(6,1,1);
-        rectangle('Position',[i(6) -0.24 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+        rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
         rectangle('Position',[0 -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y1_testGPR,'k');
-        title('Close')
-        hold on;
-        plot(1:length(RMS),y1_LR,'b');
-        plot(1:length(RMS),o1,'--k');
-        ax2 = subplot(6,1,2);
-        rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-        rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y2_testGPR,'k');
-        plot(1:length(RMS),y2_LR,'b');
-        plot(1:length(RMS),o2,'--k');
+        plot(1:length(RMS2d),y2_testGPR,'k');
         title('Extension')
-        ax3 = subplot(6,1,3);
-        rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-        rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y3_testGPR,'k');
-        plot(1:length(RMS),y3_LR,'b');
-        plot(1:length(RMS),o3,'--k');
+        hold on;
+        plot(1:length(RMS2d),y2_LR,'b');
+        plot(1:length(RMS2d),o2,'--k');
+        ax2 = subplot(6,1,2);
+        rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+        rectangle('Position',[i(2) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+        plot(1:length(RMS2d),y3_testGPR,'k');
+        plot(1:length(RMS2d),y3_LR,'b');
+        plot(1:length(RMS2d),o3,'--k');
         title('Flexion')
+        ax3 = subplot(6,1,3);
+        rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+        rectangle('Position',[i(3) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+        plot(1:length(RMS2d),y5_testGPR,'k');
+        plot(1:length(RMS2d),y5_LR,'b');
+        plot(1:length(RMS2d),o5,'--k');
+        title('Radial deviation')
         ylabel('normalized [-]')
         ax4 = subplot(6,1,4);
-        rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-        rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y4_testGPR,'k');
-        plot(1:length(RMS),y4_LR,'b');
-        plot(1:length(RMS),o4,'--k');
+        rectangle('Position',[i(4) -0.25 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
+        rectangle('Position',[i(5) -0.23 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+        plot(1:length(RMS2d),y6_testGPR,'k');
+        plot(1:length(RMS2d),y6_LR,'b');
+        plot(1:length(RMS2d),o6,'--k');
         title('Open')
-        ax5 = subplot(6,1,5);
-        rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-        rectangle('Position',[i(5) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y5_testGPR,'k');
-        plot(1:length(RMS),y5_LR,'b');
-        plot(1:length(RMS),o5,'--k');
-        title('Radial deviation')
-        ax6 = subplot(6,1,6);
-        rectangle('Position',[i(6) -0.23 i(2)-1 1.25],'FaceColor',[.95,.95,.95],'Linestyle','none');
-        rectangle('Position',[i(7) -0.25 i(2)-1 1.25],'EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-        plot(1:length(RMS),y6_testGPR,'k');
-        plot(1:length(RMS),y6_LR,'b');
-        plot(1:length(RMS),o6,'--k');
-        title('Ulnar deviation')
+        title('Ulna deviation')
         xlabel('samples [#]')
         [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
         set(hobj,'linewidth',1.5);
-        gca_handles = [ax1,ax2,ax3,ax4,ax5,ax6];
-        set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y1_testGPR)+1])
+        gca_handles = [ax1,ax2,ax3,ax4];
+        set(gca_handles,'fontsize',10,'YLim',[-0.25 1],'XLim',[0 length(y2_testGPR)+1])
     case 3
 %% Dof 3
 %% Choose between training individual or with other setting to zero
