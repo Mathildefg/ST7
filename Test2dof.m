@@ -537,7 +537,7 @@ for ii = 1:N
         if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
+            sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
@@ -559,7 +559,7 @@ for ii = 1:N
         if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0 0];
+            sysState = [0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         end
