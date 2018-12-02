@@ -15,6 +15,7 @@ close all;
 %  sdk_path = 'C:\myo-sdk-win-0.9.0'; % root path to Myo SDK
 %  build_myo_mex(sdk_path); % builds myo_mex
 %%%%%%%%Supination = close, pronation = open. forkortelserne er ikke ændret i koden%%%%%%%%% 
+addpath(genpath('MyoWrapper'));
 if exist('mm')
     mm.delete
 end
@@ -27,6 +28,7 @@ m1.clearLogs(); % The log file that saves the collected data is cleared.
 
 train_dof = input('#DoF? (2 or 3):');
 switch train_dof
+%% HER STARTER 2DOF
     case 2
         % Load txt file that determines target positions and size
 fileID = fopen('Fitt_real_2dof.txt','r');            %load the file from Fitt_real.txt
@@ -54,7 +56,7 @@ do_rest = 4;    % number of performed test movements before first break
 rest_increment = 4; %increment in break
 
 % Choose algorithm
-algo = input('What algorithm? LR/GPR/GPR+LR: ','s');
+algo = input('What algorithm? LR(1), GPR w/o confidence (2), GPR w. confidence (3): ','s');
 
 %% Initialization
 % Matrices/vectors
@@ -83,7 +85,7 @@ end                                 %end comparison
 if control_type == "pos"            %if controltype is position
     sys = tf(1, 1);                 %set system to be the transferfunction for position control
 else                                %if controltype is not pos
-    sys = tf(0.8, [0 1 0]);         %set system to be the transferfunction for velocity control
+    sys = tf(1.6, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
 % State space model of transfer function
 sysDisc = c2d(ss(sys),dt);          %convert statespacd model from continuous time to discrete
@@ -93,22 +95,6 @@ sysC = sysDisc.C;                   %sysC is set to be the system discrete at C
 sysD = sysDisc.D;                   %sysD is set to be the system discrete at D
 sysState = zeros(size(sysB));       %Creates an array of only zeros with the size of sysB, called sysState.
 
-% %% Plotting the dof data instead of the green bars
-% testplotdof = input('Green bars? Y/N [N]: ','s');
-% if ~strcmp(testplotdof,'Y') && ~strcmp(testplotdof,'y')
-%     testplotdof = 'N';
-% elseif strcmp(testplotdof,'y')
-%     testplotdof = 'Y';
-% end
-% 
-% switch testplotdof
-%     case 'Y'        %if you want to see green bars as output
-%         
-%         
-%     case 'N'        %if you want to see DoF output instead
-%        
-%         
-% end
 
 %% Calculate the confidence line 
 % tilføjet af Steff
@@ -215,9 +201,9 @@ for ii = 1:N
     window3_data(1:samples_win,:) = m1.emg_log(kk-(samples_win-1):kk,:);
     rms_data(N,:)=rms([ window1_data(1:samples_win,:) ; window2_data(1:samples_win,:) ; window3_data(1:samples_win,:) ]);
     
-    % Target predictions: GPR or LR
+    % Target predictions: 
     switch algo
-        case "GPR+LR"
+        case "3" %GPR w. confidence
             dataB(1).p = zeros(Time/dt,4);
             
             [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
@@ -230,64 +216,119 @@ for ii = 1:N
             nyci3 = ci3(2)-ci3(1);
             nyci5 = ci5(2)-ci5(1);
             nyci6 = ci6(2)-ci6(1);
-            
-            if dof3 >= dof2 && nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
+ 
+ %Threshold på confidence
+ if (0.5-(0.5*nyci2))>0.45
+     dof3 = 0;
+     dof5 = 0;
+     dof6 = 0;
+ end
+ 
+ if (0.5-(0.5*nyci3))>0.45
+     dof2 = 0;
+     dof5 = 0;
+     dof6 = 0;
+ end
+ 
+ if (0.5-(0.5*nyci5))>0.45
+     dof2 = 0;
+     dof3 = 0;
+     dof6 = 0;
+ end
+ 
+ if (0.5-(0.5*nyci6))>0.45
+     dof2 = 0;
+     dof3 = 0;
+     dof5 = 0;
+ end
+ 
+ 
+ %Kontrol baseret på smalleste confidence-interval
+            if nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
                 dofA = -dof3;               %put dofA to be -dof1
-            else
-                dofA = dof2;                %else put dofA to be dof2
-            end
-            if dof6 >= dof5 && nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
-                dofB = -dof6;                %put dofB to be dof3                            
-            else
-                dofB = dof5;               %else dofB to be -dof4                         
-            end
-            
-            
-           % if 
-                
-                
-           % end
-        case "GPR"              %Gaussian process regression
-            dataB(1).p = zeros(Time/dt,4);
-            
-            %[dof1,p1,ci1] = predict(gprMdl_dof1,rms_data(N,:)); %close
-            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
-            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
-            %[dof4,p4,ci4] = predict(gprMdl_dof4,rms_data(N,:)); %open
-            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:)); %rd
-            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
-            dataB.p(ii,1:4)=[p2,p3,p5,p6];
-            
-            %nyci1 = ci1(2)-ci1(1);
-            nyci2 = 1-((ci2(2)-ci2(1))-baseCI_2)/baseCI_2;
-            nyci3 = 1-((ci3(2)-ci3(1))-baseCI_3)/baseCI_3;
-            %nyci4 = ci4(2)-ci4(1);
-            nyci5 = 1-((ci5(2)-ci5(1))-baseCI_5)/baseCI_5;
-            nyci6 = 1-((ci6(2)-ci6(1))-baseCI_6)/baseCI_6;
-            
-%Normalisering er IKKE med. Det virker ALDRIG.
-
-
-            
-            if dof3 >= dof2 && nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
-                dofA = -dof3;               %put dofA to be -dof1
-                if dof3< 0.1*MVC(3)          %if dofB is below 10% of MVC set to 0.
+                if dof3< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
                 dofA = 0;
                 end
             else
                 dofA = dof2;                %else put dofA to be dof2
-                 if dof2< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
+                 if dof2< 0.1*MVC(1)          %if dofB is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+            end
+            if nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
+                dofB = -dof6;                %put dofB to be dof3  
+                 if dof6< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            else
+                dofB = dof5;               %else dofB to be -dof4   
+                 if dof5< 0.1*MVC(3)          %if dofB is below 10% of MVC set to 0.
+                dofB = 0;
+                end
+            end            
+            
+ 
+
+            
+            
+            
+            % Update Bargraph
+            xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
+            b.YData = xaksen;
+            
+            % Update confidence bars
+            %ext_fill = max(0.5- ci1(:,2)-dof1,0);
+            %ext_fill = min(max(0.5*(1-(((nyci2)-baseCI_2)/baseCI_2)),0),0.5) %Procent af baseCI
+            ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
+            set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
+            
+            %flex_fill = max(0.5- ci2(:,2)-dof2,0);
+            %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+            flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
+            set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
+            
+            %rd_fill = max(0.5- ci4(:,2)-dof4,0);
+            %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+            rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
+            set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
+            
+            %ud_fill = max(0.5- ci6(:,2)-dof6,0);
+            %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+            ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
+            set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+    
+            drawnow
+           
+        case "2"     %GPR w/o confidence
+            dataB(1).p = zeros(Time/dt,4);
+            
+            [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
+            [dof3,p3,ci3] = predict(gprMdl_dof3,rms_data(N,:)); %flexion
+            [dof5,p5,ci5] = predict(gprMdl_dof5,rms_data(N,:)); %rd
+            [dof6,p6,ci6] = predict(gprMdl_dof6,rms_data(N,:)); %ud
+            dataB.p(ii,1:4)=[p2,p3,p5,p6];
+            
+%Normalisering er IKKE med. Det virker ALDRIG.
+
+            if dof3 >= dof2              %if dof1 is bigger than or equal to dof2
+                dofA = -dof3;               %put dofA to be -dof1
+                if dof3< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
+                dofA = 0;
+                end
+            else
+                dofA = dof2;                %else put dofA to be dof2
+                 if dof2< 0.1*MVC(1)          %if dofB is below 10% of MVC set to 0.
                 dofA = 0;
                 end
             end
             if dof6 >= dof5 %&& nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
                 dofB = -dof6;                %put dofB to be dof3  
-                 if dof6< 0.1*MVC(7)          %if dofB is below 10% of MVC set to 0.
+                 if dof6< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 end
             else
                 dofB = dof5;               %else dofB to be -dof4   
-                 if dof5< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
+                 if dof5< 0.1*MVC(3)          %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
                 end
             end
@@ -298,37 +339,29 @@ for ii = 1:N
             b.YData = xaksen;
             
             % Update confidence bars
-            %ext_fill = max(0.5- ci1(:,2)-dof1,0);
-            %ext_fill = min(max(0.5*(1-(((ci2(:,2)-ci2(:,1))-baseCI_2)/baseCI_2)),0),0.5)
-            ext_fill = min(max(0.5*nyci2,0),0.5);
+           %ext_fill = max(0.5- ci1(:,2)-dof1,0);
+            %ext_fill = min(max(0.5*(1-(((nyci2)-baseCI_2)/baseCI_2)),0),0.5) %Procent af baseCI
+            ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
             set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
             
             %flex_fill = max(0.5- ci2(:,2)-dof2,0);
             %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
-            flex_fill = min(max(0.5*nyci3,0),0.5);
+            flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
             set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
             
             %rd_fill = max(0.5- ci4(:,2)-dof4,0);
             %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
-            rd_fill = min(max(0.5*nyci5,0),0.5);
+            rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
             set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
             
             %ud_fill = max(0.5- ci6(:,2)-dof6,0);
             %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
-            ud_fill = min(max(0.5*nyci6,0),0.5);
+            ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
             set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
-            
-            %pro_fill = max(0.5- ci3(:,2)-dof3,0);
-            %pro_fill = min(max(0.5*(1-(((ci1(:,2)-ci1(:,1))-baseCI_1)/baseCI_1)),0),0.5);
-            %set(con_pro_fill, 'Position', [0.20 -0.95 0.5 pro_fill]);
-            
-            %sub_fill = max(0.5-ci5(:,2)-dof5,0);
-            %sup_fill = min(max(0.5*(1-(((ci4(:,2)-ci4(:,1))-baseCI_4)/baseCI_4)),0),0.5);
-            %set(con_sup_fill, 'Position', [-0.70 -0.95 0.5 sup_fill]);
     
             drawnow
             
-        case "LR"               %Linear regression 
+        case "1"               %Linear regression 
               %dof1 = predict(LRmdl_1,rms_data(N,:));    %close
               dof2 = predict(LRmdl_2,rms_data(N,:));    %extension
               dof3 = predict(LRmdl_3,rms_data(N,:));    %flexion
@@ -336,12 +369,6 @@ for ii = 1:N
               dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
               
-%                dof1 = dof1/MVC(1);    %close
-%                dof2 = dof2/MVC(2);    %extension
-%                dof3 = dof3/MVC(3);    %flexion
-%                dof4 = dof4/MVC(4);    %open
-%                dof5 = dof5/MVC(5);    %rd
-%                dof6 = dof6/MVC(7);    %ud
 %               
 %               if dof5 >= dof6
 %                   dofA = -dof5;
@@ -627,6 +654,8 @@ else
     set([ax1,ax2,ax3],'fontsize',11)
     export_fig(fig_plots,'-pdf','filename','GPR_plots');
 end
+
+%% HER STARTER 3DOF
     case 3
         % Load txt file that determines target positions and size
 fileID = fopen('Fitt_real_ny.txt','r');            %load the file from Fitt_real.txt
