@@ -214,7 +214,7 @@ gprMdl_dof6 = fitrgp(x5,y5,'Fitmethod','none','Sigma',0.01,'KernelParameters',[h
         plot(1:length(RMS),y6_LR,'b');
         plot(1:length(RMS),o6,'--k');
         title('Open')
-        title('Ulna deviation')
+        title('Ulnar deviation')
         xlabel('samples [#]')
         [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
         set(hobj,'linewidth',1.5);
