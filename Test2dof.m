@@ -77,7 +77,7 @@ counter_score = 0;                  %set the counter for score to be 0
 counter_fail = 0;                   %set the counter for fail to be 0
 counter_reach = 0;                  %set the counter for reach to be 0
 
-% Control system
+% Control system hej
 control_type = input('What control? pos/vel [pos]: ','s');
 if ~strcmp(control_type,"vel")      %string compare controltype velocity
     control_type = "pos";           %with controltype position
