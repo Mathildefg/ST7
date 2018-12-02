@@ -220,26 +220,50 @@ for ii = 1:N
  %Threshold på confidence
  if (0.5-(0.5*nyci2))>0.45
      dof3 = 0;
-     dof5 = 0;
-     dof6 = 0;
+ if (0.5-(0.5*nyci2))>0.45 && (0.5-(0.5*nyci5))>0.45
+         dof6 = 0;
+     elseif (0.5-(0.5*nyci2))>0.45 && (0.5-(0.5*nyci6))>0.45
+         dof5 = 0;
+ else
+     dof5= 0;
+     dof6= 0;
+ end   
  end
  
  if (0.5-(0.5*nyci3))>0.45
      dof2 = 0;
-     dof5 = 0;
-     dof6 = 0;
+    if (0.5-(0.5*nyci3))>0.45 && (0.5-(0.5*nyci5))>0.45
+         dof6 = 0;
+     elseif (0.5-(0.5*nyci3))>0.45 && (0.5-(0.5*nyci6))>0.45
+         dof5 = 0;
+    else
+        dof5= 0;
+        dof6= 0;
+ end  
  end
  
  if (0.5-(0.5*nyci5))>0.45
-     dof2 = 0;
-     dof3 = 0;
      dof6 = 0;
+       if (0.5-(0.5*nyci5))>0.45 && (0.5-(0.5*nyci2))>0.45
+         dof3 = 0;
+     elseif (0.5-(0.5*nyci5))>0.45 && (0.5-(0.5*nyci3))>0.45
+         dof2 = 0;
+      else
+        dof2= 0;
+        dof3= 0;
+ end 
  end
  
  if (0.5-(0.5*nyci6))>0.45
-     dof2 = 0;
-     dof3 = 0;
      dof5 = 0;
+      if (0.5-(0.5*nyci6))>0.45 && (0.5-(0.5*nyci2))>0.45
+         dof3 = 0;
+     elseif (0.5-(0.5*nyci6))>0.45 && (0.5-(0.5*nyci3))>0.45
+         dof2 = 0;
+      else
+        dof2= 0;
+        dof3= 0;
+ end 
  end
  
  
