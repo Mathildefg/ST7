@@ -199,7 +199,7 @@ switch train_dof
         plot(1:length(RMS),y6_LR,'b');
         plot(1:length(RMS),o6,'--k');
         title('Open')
-        title('Ulna deviation')
+        title('Ulnar deviation')
         xlabel('samples [#]')
         [~, hobj, ~, ~] = legend('GPR','LR','CI(GPR)','Location','Best');
         set(hobj,'linewidth',1.5);
