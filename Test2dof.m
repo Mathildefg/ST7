@@ -83,7 +83,7 @@ if ~strcmp(control_type,"vel")      %string compare controltype velocity
     control_type = "pos";           %with controltype position
 end                                 %end comparison
 if control_type == "pos"            %if controltype is position
-    sys = tf(1, 1);                 %set system to be the transferfunction for position control
+    sys = tf(0.8, [0 1 0]);                %set system to be the transferfunction for position control
 else                                %if controltype is not pos
     sys = tf(1.6, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
@@ -204,6 +204,7 @@ for ii = 1:N
     % Target predictions: 
     switch algo
         case "3" %GPR w. confidence
+            
             dataB(1).p = zeros(Time/dt,4);
             
             [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
@@ -486,13 +487,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-        if control_type == "vel"
+        %if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        end
+       % end
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
         set(htext_score4,'string',num2str(Reach_time));     %show the time it takes to reach
@@ -508,13 +509,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
-        if control_type == "vel"
+        %if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        end
+        %end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
@@ -1132,13 +1133,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-        if control_type == "vel"
+        %if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        end
+       % end   
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
         set(htext_score4,'string',num2str(Reach_time));     %show the time it takes to reach
@@ -1154,13 +1155,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
-        if control_type == "vel"
+        %if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        end
+        %end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
