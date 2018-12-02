@@ -218,30 +218,30 @@ for ii = 1:N
             nyci5 = ci5(2)-ci5(1);
             nyci6 = ci6(2)-ci6(1);
  
- %Threshold på confidence
- if (0.5-(0.5*nyci2))>0.45
-     dof3 = 0;
-     dof5 = 0;
-     dof6 = 0;
- end
- 
- if (0.5-(0.5*nyci3))>0.45
-     dof2 = 0;
-     dof5 = 0;
-     dof6 = 0;
- end
- 
- if (0.5-(0.5*nyci5))>0.45
-     dof2 = 0;
-     dof3 = 0;
-     dof6 = 0;
- end
- 
- if (0.5-(0.5*nyci6))>0.45
-     dof2 = 0;
-     dof3 = 0;
-     dof5 = 0;
- end
+%  %Threshold på confidence
+%  if (0.5-(0.5*nyci2))>0.40
+%      dof3 = 0;
+%      dof5 = 0;
+%      dof6 = 0;
+%  end
+%  
+%  if (0.5-(0.5*nyci3))>0.40
+%      dof2 = 0;
+%      dof5 = 0;
+%      dof6 = 0;
+%  end
+%  
+%  if (0.5-(0.5*nyci5))>0.40
+%      dof2 = 0;
+%      dof3 = 0;
+%      dof6 = 0;
+%  end
+%  
+%  if (0.5-(0.5*nyci6))>0.40
+%      dof2 = 0;
+%      dof3 = 0;
+%      dof5 = 0;
+%  end
  
  
  %Kontrol baseret på smalleste confidence-interval
