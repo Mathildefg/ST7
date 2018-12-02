@@ -260,7 +260,7 @@ for ii = 1:N
  
  
  %Kontrol baseret på smalleste confidence-intervalHER
-            if nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
+            if nyci3 <= nyci2  && dof3>dof2             
                 dofA = -dof3;               %put dofA to be -dof1
                 if dof3< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
                 dofA = 0;
@@ -271,7 +271,7 @@ for ii = 1:N
                 dofA = 0;
                 end
             end
-            if nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
+            if nyci6 <= nyci5 && dof6>dof5              %if dof3 is bigger than or equal to dof4
                 dofB = -dof6;                %put dofB to be dof3  
                  if dof6< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
                 dofB = 0;
