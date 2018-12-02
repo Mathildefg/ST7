@@ -280,6 +280,7 @@ for ii = 1:N
                 dofA = 0;
                 end
             end
+            dofA(dofA>1)=1; dofA(dofA<-1)=-1;
             if dof6 >= dof5 %&& nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
                 dofB = -dof6;                %put dofB to be dof3  
                  if dof6< 0.1*MVC(7)          %if dofB is below 10% of MVC set to 0.
@@ -291,7 +292,7 @@ for ii = 1:N
                 dofB = 0;
                 end
             end
-            
+            dofB(dofB>1)=1; dofB(dofB<-1)=-1;
             
              % Update Bargraph
             xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
@@ -394,15 +395,17 @@ for ii = 1:N
     %end
     
     % Use movement thresholds for minima and maxima
-    if abs(dofA) < threshold            %if the absolute value of dofB is lower than the threshold
+    if abs(dofA) < threshold*10            %if the absolute value of dofB is lower than the threshold
         dofA=0;                         %set dofB to be equal to 0
     end
+    dofA(dofA>1)=1; dofA(dofA<-1)=-1;
                                    %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
 
-    if abs(dofB) < threshold            %if the absolute value of dofA is lower than the threshold
+    if abs(dofB) < threshold*10            %if the absolute value of dofA is lower than the threshold
         dofB=0;                         %set dofA to be equal to 0
     end
-                                   %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
+    dofB(dofB>1)=1; dofB(dofB<-1)=-1;
+    %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
     %if abs(dofC) < threshold
     %    dofC=0;
     %end 
@@ -410,31 +413,17 @@ for ii = 1:N
             xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
             b.YData = xaksen;
     end
-    
-    %%
-      
-%      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
-%     if dof1 >= dof2                 %if dof1 is bigger than or equal to dof2
-%        dofA = -dof1;               %put dofA to be -dof1
-%     else
-%       dofA = dof2;                %else put dofA to be dof2
-%     end
-%     if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
-%       dofB = -dof4;                %put dofB to be dof4                            
-%     else
-%        dofB = dof6;               %else dofB to be -dof4                          
-%     end
-%     
+     
     % Use movement thresholds for minima and maxima
 % %      if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
 % %          dofA = 0;                         %set dofA to be equal to 0
 % %      end
-     dofA(dofA>1)=1; dofA(dofA<-1)=-1;       %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
+     %dofA(dofA>1)=1; dofA(dofA<-1)=-1;       %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
      
 % %      if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofB = 0;                         %set dofB to be equal to 0
 % %      end
-    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+    %dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
  
 % %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofC = 0;                         %set dofB to be equal to 0
