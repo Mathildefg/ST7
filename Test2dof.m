@@ -83,7 +83,7 @@ end                                 %end comparison
 if control_type == "pos"            %if controltype is position
     sys = tf(1, 1);                 %set system to be the transferfunction for position control
 else                                %if controltype is not pos
-    sys = tf(0.8, [0 1 0]);         %set system to be the transferfunction for velocity control
+    sys = tf(1.6, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
 % State space model of transfer function
 sysDisc = c2d(ss(sys),dt);          %convert statespacd model from continuous time to discrete
@@ -384,7 +384,7 @@ for ii = 1:N
         dofA = dof2;                %else put dofA to be dof2
     end
     if dof6 >= dof5                 %if dof3 is bigger than or equal to dof4
-        dofB = -dof6;                %put dofB to be dof3                            Why is this reverse from MYO4?
+        dofB = -dof6*2;                %put dofB to be dof3                            Why is this reverse from MYO4?
     else
         dofB = dof5;               %else dofB to be -dof4                          Why is this reverse from MYO4?
     end
@@ -395,13 +395,13 @@ for ii = 1:N
     %end
     
     % Use movement thresholds for minima and maxima
-    if abs(dofA) < threshold*10            %if the absolute value of dofB is lower than the threshold
+    if abs(dofA) < threshold            %if the absolute value of dofB is lower than the threshold
         dofA=0;                         %set dofB to be equal to 0
     end
     dofA(dofA>1)=1; dofA(dofA<-1)=-1;
                                    %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
 
-    if abs(dofB) < threshold*10            %if the absolute value of dofA is lower than the threshold
+    if abs(dofB) < threshold            %if the absolute value of dofA is lower than the threshold
         dofB=0;                         %set dofA to be equal to 0
     end
     dofB(dofB>1)=1; dofB(dofB<-1)=-1;
