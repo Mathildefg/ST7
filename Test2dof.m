@@ -16,6 +16,7 @@ close all;
 %  build_myo_mex(sdk_path); % builds myo_mex
 %%%%%%%%Supination = close, pronation = open. forkortelserne er ikke ændret i koden%%%%%%%%% 
 addpath(genpath('MyoWrapper'));
+
 if exist('mm')
     mm.delete
 end
@@ -144,12 +145,17 @@ con_ud = rectangle('Position',[0.20 -0.30 0.5 0.5],'EdgeColor',[.4,.4,.4],'Linew
 %The fill will represent the confidence by varying the height of a green
 
 ext_fill = 0; flex_fill= 0; rd_fill= 0; ud_fill= 0; %sup_fill=0; pro_fill=0;
-con_ext_fill = rectangle('Position',[-0.70 0.35 0.5 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-con_flex_fill = rectangle('Position',[0.20 0.35 0.5 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-con_rd_fill = rectangle('Position',[-0.70 -0.30 0.5 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-con_ud_fill = rectangle('Position',[0.20 -0.30 0.5 ud_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
-%con_sup_fill = rectangle('Position',[-0.70 -0.95 0.5 sup_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2);
-%con_pro_fill = rectangle('Position',[0.20 -0.95 0.5 pro_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_ext_fill = rectangle('Position',[-0.70 0.35 0.25 ext_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_flex_fill = rectangle('Position',[0.20 0.35 0.25 flex_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_rd_fill = rectangle('Position',[-0.70 -0.30 0.25 rd_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+con_ud_fill = rectangle('Position',[0.20 -0.30 0.25 ud_fill],'FaceColor','green','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+
+%Bars for dof-output
+ext_dof_fill = 0; flex_dof_fill= 0; rd_dof_fill= 0; ud_dof_fill= 0;
+dof_ext_fill = rectangle('Position',[-0.45 0.35 0.25 ext_dof_fill],'FaceColor','blue','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+dof_flex_fill = rectangle('Position',[0.45 0.35 0.25 flex_dof_fill],'FaceColor','blue','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+dof_rd_fill = rectangle('Position',[-0.45 -0.30 0.25 rd_dof_fill],'FaceColor','blue','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
+dof_ud_fill = rectangle('Position',[0.45 -0.30 0.25 ud_dof_fill],'FaceColor','blue','EdgeColor',[.4,.4,.4],'Linewidth',1.2); hold on;
 
 %Subplot for fitts law
 subplotFitts = subplot(1,2,2, 'position', [0.25 0.02 0.65 0.95]);
@@ -305,22 +311,35 @@ for ii = 1:N
             %ext_fill = max(0.5- ci1(:,2)-dof1,0);
             %ext_fill = min(max(0.5*(1-(((nyci2)-baseCI_2)/baseCI_2)),0),0.5) %Procent af baseCI
             ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
-            set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
+            set(con_ext_fill, 'Position', [-0.70 0.35 0.25 ext_fill]);
             
             %flex_fill = max(0.5- ci2(:,2)-dof2,0);
             %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
             flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
-            set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
+            set(con_flex_fill, 'Position', [0.20 0.35 0.25 flex_fill]);
             
             %rd_fill = max(0.5- ci4(:,2)-dof4,0);
             %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
             rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
-            set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
+            set(con_rd_fill, 'Position', [-0.70 -0.30 0.25 rd_fill]);
             
             %ud_fill = max(0.5- ci6(:,2)-dof6,0);
             %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
             ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
-            set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+            set(con_ud_fill, 'Position', [0.20 -0.30 0.25 ud_fill]);
+    
+    %Update dof-output-bars
+    ext_dof_fill = min(max(0.5*dof2,0),0.5);
+    set(dof_ext_fill, 'Position', [-0.45 0.35 0.25 ext_dof_fill]);
+    
+    flex_dof_fill = min(max(0.5*dof3,0),0.5);
+    set(dof_flex_fill, 'Position', [0.45 0.35 0.25 flex_dof_fill]);
+            
+    rd_dof_fill = min(max(0.5*dof5,0),0.5);
+    set(dof_rd_fill, 'Position', [-0.45 -0.30 0.25 rd_dof_fill]);
+    
+    ud_dof_fill = min(max(0.5*dof6,0),0.5);
+    set(dof_ud_fill, 'Position', [0.45 -0.30 0.25 ud_dof_fill]);
     
             drawnow
            
