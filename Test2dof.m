@@ -69,6 +69,7 @@ dataB(1).dof = zeros(Time/dt,4);         %the dof value from data(1) is put in a
 dataB(1).target = zeros(Time/dt,4);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
 dataB(1).cursor = zeros(Time/dt,2);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 3)
 dataB(1).sysOut = zeros(Time/dt,2);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
+dataB(1).ci = zeros(Time/dt,4);
 
 % Counters
 counter_target = 1;                 %set the counter for target to be 1
@@ -511,6 +512,7 @@ for ii = 1:N
     dataB.target(ii,:) = Target(counter_target,:);   %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof2,dof3,dof5,dof6];         %store the degrees of freedom data
+    dataB.ci(ii,:) = [nyci2, nyci3, nyci5, nyci6];
        
     %cursorSize= (sysOut(3)+1)*25+10; %cursorsize between 10 and 60
     cursorSize = 25;
@@ -613,6 +615,7 @@ dataB.time = nonzeros(dataB.time);                        %returns the nonzero e
 dataB.sysOut = dataB.sysOut(1:length(dataB.time),:);       %returns the ??
 dataB.target = dataB.target(1:length(dataB.time),:);       %??
 dataB.cursor = dataB.cursor(1:length(dataB.time),:);       %??
+dataB.ci = dataB.ci(1:length(dataB.time),:);
 dataB.dof = dataB.dof(1:length(dataB.time),:);             %??
 if algo == "GPR"                                        %if algorithm case is Gaussian Process Regression
     dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
@@ -725,7 +728,6 @@ dataB(1).dof = zeros(Time/dt,6);         %the dof value from data(1) is put in a
 dataB(1).target = zeros(Time/dt,5);      %the target value from data(1) is put in array with only zeros of size (time / dt, 4)
 dataB(1).cursor = zeros(Time/dt,3);      %the cursor value from data(1) is put in array with only zeros of size (time / dt, 3)
 dataB(1).sysOut = zeros(Time/dt,3);      %the sysOut value from data(1) is put in array with only zeros of size (time / dt, 3)
-
 % Counters
 counter_target = 1;                 %set the counter for target to be 1
 counter_dwell = 0;                  %set the counter for dwell to be 0
@@ -1157,6 +1159,7 @@ for ii = 1:N
     dataB.target(ii,:) = Target(counter_target,:);   %store the Target data 
     dataB.cursor(ii,:) = cursor;                     %store the cursor data
     dataB.dof(ii,:) = [dof1,dof2,dof3,dof4,dof5,dof6];         %store the degrees of freedom data
+    %dataB.ci(ii,:) = [nyci2, nyci3, nyci5, nyci6];
        
     cursorSize= (sysOut(3)+1)*25+10; %cursorsize between 10 and 60
     
