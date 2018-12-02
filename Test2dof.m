@@ -77,13 +77,13 @@ counter_score = 0;                  %set the counter for score to be 0
 counter_fail = 0;                   %set the counter for fail to be 0
 counter_reach = 0;                  %set the counter for reach to be 0
 
-% Control system hej
+% Control system
 control_type = input('What control? pos/vel [pos]: ','s');
 if ~strcmp(control_type,"vel")      %string compare controltype velocity
     control_type = "pos";           %with controltype position
 end                                 %end comparison
 if control_type == "pos"            %if controltype is position
-    sys = tf(0.8, [0 1 0]);                %set system to be the transferfunction for position control
+    sys = tf(1, 1);                 %set system to be the transferfunction for position control
 else                                %if controltype is not pos
     sys = tf(1.6, [0 1 0]);         %set system to be the transferfunction for velocity control
 end
@@ -204,7 +204,6 @@ for ii = 1:N
     % Target predictions: 
     switch algo
         case "3" %GPR w. confidence
-            
             dataB(1).p = zeros(Time/dt,4);
             
             [dof2,p2,ci2] = predict(gprMdl_dof2,rms_data(N,:)); %extension
@@ -218,33 +217,57 @@ for ii = 1:N
             nyci5 = ci5(2)-ci5(1);
             nyci6 = ci6(2)-ci6(1);
  
-%  %Threshold på confidence
-%  if (0.5-(0.5*nyci2))>0.40
-%      dof3 = 0;
-%      dof5 = 0;
-%      dof6 = 0;
-%  end
-%  
-%  if (0.5-(0.5*nyci3))>0.40
-%      dof2 = 0;
-%      dof5 = 0;
-%      dof6 = 0;
-%  end
-%  
-%  if (0.5-(0.5*nyci5))>0.40
-%      dof2 = 0;
-%      dof3 = 0;
-%      dof6 = 0;
-%  end
-%  
-%  if (0.5-(0.5*nyci6))>0.40
-%      dof2 = 0;
-%      dof3 = 0;
-%      dof5 = 0;
-%  end
+ %Threshold på confidence
+ if (0.5-(0.5*nyci2))>0.45
+     dof3 = 0;
+ if (0.5-(0.5*nyci2))>0.45 && (0.5-(0.5*nyci5))>0.45
+         dof6 = 0;
+     elseif (0.5-(0.5*nyci2))>0.45 && (0.5-(0.5*nyci6))>0.45
+         dof5 = 0;
+ else
+     dof5= 0;
+     dof6= 0;
+ end   
+ end
+ 
+ if (0.5-(0.5*nyci3))>0.45
+     dof2 = 0;
+    if (0.5-(0.5*nyci3))>0.45 && (0.5-(0.5*nyci5))>0.45
+         dof6 = 0;
+     elseif (0.5-(0.5*nyci3))>0.45 && (0.5-(0.5*nyci6))>0.45
+         dof5 = 0;
+    else
+        dof5= 0;
+        dof6= 0;
+ end  
+ end
+ 
+ if (0.5-(0.5*nyci5))>0.45
+     dof6 = 0;
+       if (0.5-(0.5*nyci5))>0.45 && (0.5-(0.5*nyci2))>0.45
+         dof3 = 0;
+     elseif (0.5-(0.5*nyci5))>0.45 && (0.5-(0.5*nyci3))>0.45
+         dof2 = 0;
+      else
+        dof2= 0;
+        dof3= 0;
+ end 
+ end
+ 
+ if (0.5-(0.5*nyci6))>0.45
+     dof5 = 0;
+      if (0.5-(0.5*nyci6))>0.45 && (0.5-(0.5*nyci2))>0.45
+         dof3 = 0;
+     elseif (0.5-(0.5*nyci6))>0.45 && (0.5-(0.5*nyci3))>0.45
+         dof2 = 0;
+      else
+        dof2= 0;
+        dof3= 0;
+ end 
+ end
  
  
- %Kontrol baseret på smalleste confidence-interval
+ %Kontrol baseret på smalleste confidence-intervalHER
             if nyci3 <= nyci2                %if dof1 is bigger than or equal to dof2
                 dofA = -dof3;               %put dofA to be -dof1
                 if dof3< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
@@ -322,7 +345,6 @@ for ii = 1:N
                 dofA = 0;
                 end
             end
-            dofA(dofA>1)=1; dofA(dofA<-1)=-1;
             if dof6 >= dof5 %&& nyci6 <= nyci5               %if dof3 is bigger than or equal to dof4
                 dofB = -dof6;                %put dofB to be dof3  
                  if dof6< 0.1*MVC(5)          %if dofB is below 10% of MVC set to 0.
@@ -334,12 +356,33 @@ for ii = 1:N
                 dofB = 0;
                 end
             end
-            dofB(dofB>1)=1; dofB(dofB<-1)=-1;
+            
             
              % Update Bargraph
             xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
             b.YData = xaksen;
             
+            % Update confidence bars
+           %ext_fill = max(0.5- ci1(:,2)-dof1,0);
+            %ext_fill = min(max(0.5*(1-(((nyci2)-baseCI_2)/baseCI_2)),0),0.5) %Procent af baseCI
+            ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
+            set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
+            
+            %flex_fill = max(0.5- ci2(:,2)-dof2,0);
+            %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+            flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
+            set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
+            
+            %rd_fill = max(0.5- ci4(:,2)-dof4,0);
+            %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+            rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
+            set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
+            
+            %ud_fill = max(0.5- ci6(:,2)-dof6,0);
+            %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+            ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
+            set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+    
             drawnow
             
         case "1"               %Linear regression 
@@ -391,7 +434,7 @@ for ii = 1:N
         dofA = dof2;                %else put dofA to be dof2
     end
     if dof6 >= dof5                 %if dof3 is bigger than or equal to dof4
-        dofB = -dof6*2;                %put dofB to be dof3                            Why is this reverse from MYO4?
+        dofB = -dof6;                %put dofB to be dof3                            Why is this reverse from MYO4?
     else
         dofB = dof5;               %else dofB to be -dof4                          Why is this reverse from MYO4?
     end
@@ -405,14 +448,12 @@ for ii = 1:N
     if abs(dofA) < threshold            %if the absolute value of dofB is lower than the threshold
         dofA=0;                         %set dofB to be equal to 0
     end
-    dofA(dofA>1)=1; dofA(dofA<-1)=-1;
                                    %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
 
     if abs(dofB) < threshold            %if the absolute value of dofA is lower than the threshold
         dofB=0;                         %set dofA to be equal to 0
     end
-    dofB(dofB>1)=1; dofB(dofB<-1)=-1;
-    %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
+                                   %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
     %if abs(dofC) < threshold
     %    dofC=0;
     %end 
@@ -420,17 +461,31 @@ for ii = 1:N
             xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
             b.YData = xaksen;
     end
-     
+    
+    %%
+      
+%      % Predictions are ranging [0 1]. Set to [-1 1] for x and y
+%     if dof1 >= dof2                 %if dof1 is bigger than or equal to dof2
+%        dofA = -dof1;               %put dofA to be -dof1
+%     else
+%       dofA = dof2;                %else put dofA to be dof2
+%     end
+%     if dof4 >= dof6                 %if dof4 is bigger than or equal to dof6
+%       dofB = -dof4;                %put dofB to be dof4                            
+%     else
+%        dofB = dof6;               %else dofB to be -dof4                          
+%     end
+%     
     % Use movement thresholds for minima and maxima
 % %      if abs(dofA) < threshold            %if the absolute value of dofA is lower than the threshold
 % %          dofA = 0;                         %set dofA to be equal to 0
 % %      end
-     %dofA(dofA>1)=1; dofA(dofA<-1)=-1;       %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
+     dofA(dofA>1)=1; dofA(dofA<-1)=-1;       %if dofA is bigger than 1 set to 1. if it is less than -1 set to -1.
      
 % %      if abs(dofB) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofB = 0;                         %set dofB to be equal to 0
 % %      end
-    %dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
+    dofB(dofB>1)=1; dofB(dofB<-1)=-1;   %if dofB is bigger than 1 set to 1. if it is less than -1, set to -1.
  
 % %      if abs(dofC) < threshold            %if the absolute value of dofB is lower than the threshold
 % %         dofC = 0;                         %set dofB to be equal to 0
@@ -487,13 +542,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-        %if control_type == "vel"
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-       % end
+        end
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
         set(htext_score4,'string',num2str(Reach_time));     %show the time it takes to reach
@@ -509,13 +564,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
-        %if control_type == "vel"
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        %end
+        end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
@@ -1133,13 +1188,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-        %if control_type == "vel"
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-       % end   
+        end
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
         set(htext_score4,'string',num2str(Reach_time));     %show the time it takes to reach
@@ -1155,13 +1210,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
-        %if control_type == "vel"
+        if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
             sysState = [0 0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
-        %end
+        end
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2));
