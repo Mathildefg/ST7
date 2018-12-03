@@ -546,7 +546,7 @@ dataB.target = dataB.target(1:length(dataB.time),:);       %??
 dataB.cursor = dataB.cursor(1:length(dataB.time),:);       %??
 dataB.ci = dataB.ci(1:length(dataB.time),:);
 dataB.dof = dataB.dof(1:length(dataB.time),:);             %??
-if algo == "GPR"                                        %if algorithm case is Gaussian Process Regression
+if algo_s == "3" || "2"                                        %if algorithm case is Gaussian Process Regression
     dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
     save('dataGPR','-struct','dataB')                    %save the data of GRP in a structure field in a file called dataGPR
 else 

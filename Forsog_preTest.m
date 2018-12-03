@@ -45,7 +45,7 @@ Reach_time = 30; % Max time to reach target [s]
 Time = Reach_time*length(Target); % Duration of simulation [s]
 samples_win = 20; % Sample time after windowing [#samples]
 dt = samples_win/200; % Sample time after windowing [s]
-threshold = 0.1; % Threshold
+threshold = 0.01; % Threshold
 W = Target(1,3); % Width or difficulty of the target
 Dwell = 1; % Dwell time [s]
 N = Time/dt; % Number of iterations
@@ -381,10 +381,8 @@ for ii = 1:N
             drawnow
             
         case "1"               %Linear regression 
-              %dof1 = predict(LRmdl_1,rms_data(N,:));    %close
               dof2 = predict(LRmdl_2,rms_data(N,:));    %extension
               dof3 = predict(LRmdl_3,rms_data(N,:));    %flexion
-              %dof4 = predict(LRmdl_4,rms_data(N,:));    %open
               dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
               
