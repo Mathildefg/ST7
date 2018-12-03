@@ -46,6 +46,7 @@ dof2 = 0; dof3 = 0; dof5 = 0; dof6 = 0; dofA = 0; dofB = 0;
 xaksen = [dof2, dof3, dof5, dof6, dofA, dofB];
 do_rest = 4;    % number of performed test movements before first break
 rest_increment = 4; %increment in break
+nyci2=0; nyci3=0; nyci5=0; nyci6=0;
 
 % Choose algorithm
 algo = input('What algorithm? LR(1), GPR w/o confidence (2), GPR w. confidence (3): ','s');
@@ -546,10 +547,13 @@ dataB.target = dataB.target(1:length(dataB.time),:);       %??
 dataB.cursor = dataB.cursor(1:length(dataB.time),:);       %??
 dataB.ci = dataB.ci(1:length(dataB.time),:);
 dataB.dof = dataB.dof(1:length(dataB.time),:);             %??
-if algo_s == "3" || "2"                                        %if algorithm case is Gaussian Process Regression
+if algo == "3"                                       %if algorithm case is Gaussian Process Regression
     dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
-    save('dataGPR','-struct','dataB')                    %save the data of GRP in a structure field in a file called dataGPR
-else 
+    save('dataGPR_mc','-struct','dataB')                    %save the data of GRP in a structure field in a file called dataGPR
+elseif algo == "2"
+    dataB.p = dataB.p(1:length(dataB.time),:);             %save the data ??
+    save('dataGPR_uc','-struct','dataB') 
+else
     save('dataLR','-struct','dataB')                     %save the data of LR in a structure field in a file called dataLR
 end
 
