@@ -567,15 +567,17 @@ plot(dataB.sysOut(1:length(dataB.target),1),dataB.sysOut(1:length(dataB.target),
 axis([-1 1 -1 1])
 set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized', 'position', [0 0 1 1], 'xtick', 0, 'ytick', 0, 'LineWidth', 3,'GridColor','k')%,'drawmode', 'fast')
 grid on
-if algo == "LR"
+if algo == "1"
     export_fig(hfig_traj,'-pdf','filename','LR_trajectory');
+elseif algo== "2"
+    export_fig(hfig_traj,'-pdf','filename','GPR_uc_trajectory');
 else
-    export_fig(hfig_traj,'-pdf','filename','GPR_trajectory');
+    export_fig(hfig_traj,'-pdf','filename','GPR_mc_trajectory');
 end
 
 %Plot 2 - Predicted target values and the uncertainty values (GPR only)
 %over time.
-if algo == "LR"
+if algo == "1"
     subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
     fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
     ax1 = subplot(2,1,1);
@@ -592,7 +594,7 @@ if algo == "LR"
     xlabel('samples [#]')
     set([ax1,ax2],'fontsize',11)
     export_fig(fig_plots,'-pdf','filename','LR_plots');
-else
+elseif algo == "2"
     subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
     fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
     ax1 = subplot(3,1,1);
@@ -612,5 +614,26 @@ else
     legend('p2','p3','p5','p6')
     xlabel('samples [#]')
     set([ax1,ax2,ax3],'fontsize',11)
-    export_fig(fig_plots,'-pdf','filename','GPR_plots');
+    export_fig(fig_plots,'-pdf','filename','GPR_uc_plots');
+else 
+    subplot = @(m,n,p) subtightplot(m, n, p, [0.06 0.03], [0.08 0.05], [0.08 0.03]);
+    fig_plots=figure('DefaultAxesPosition', [0.1, 0.1, 0.8, 0.8], 'units', 'normalized','position', [0 0 0.8 1],'Color','w');
+    ax1 = subplot(3,1,1);
+    plot(1:length(dataB.cursor),dataB.cursor,'LineWidth',1.5)
+    ylabel('normalized [-]')
+    ylim([-1.1 1.1])
+    legend('x','y','z')
+    title('','Fontsize',14)
+    ax2 = subplot(3,1,2);
+    plot(1:length(dataB.dof),dataB.dof,'LineWidth',1.5)
+    ylabel('normalized [-]')
+    ylim([0 1.1])
+    legend('dof2','dof3','dof5','dof6')
+    ax3 = subplot(3,1,3);
+    plot(1:length(dataB.p),dataB.p,'LineWidth',1.5)
+    ylabel('uncertainty [ratio]')
+    legend('p2','p3','p5','p6')
+    xlabel('samples [#]')
+    set([ax1,ax2,ax3],'fontsize',11)
+    export_fig(fig_plots,'-pdf','filename','GPR_mc_plots');
 end
