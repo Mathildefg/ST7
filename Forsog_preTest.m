@@ -381,10 +381,8 @@ for ii = 1:N
             drawnow
             
         case "1"               %Linear regression 
-              %dof1 = predict(LRmdl_1,rms_data(N,:));    %close
               dof2 = predict(LRmdl_2,rms_data(N,:));    %extension
               dof3 = predict(LRmdl_3,rms_data(N,:));    %flexion
-              %dof4 = predict(LRmdl_4,rms_data(N,:));    %open
               dof5 = predict(LRmdl_5,rms_data(N,:));    %rd
               dof6 = predict(LRmdl_6,rms_data(N,:));    %ud
               
