@@ -73,9 +73,9 @@ counter_fail = 0;               %set the counter for fail to be 0
 counter_reach = 0;              %set the counter for reach to be 0
 
 % Control system (Different for GPR w, confidence) 
-if algo == 1 || 2
+if algo_s == 1 || 2
     sys = tf(1.6, [0 1 0]);         %set system to be the transferfunction for velocity control
-elseif algo == 3
+elseif algo_s == 3
     sys = tf(1.3, [0 1 0]); 
 end
 
@@ -184,7 +184,7 @@ for ii = 1:N
     window3_data(1:samples_win,:) = m1.emg_log(kk-(samples_win-1):kk,:);
     rms_data(N,:)=rms([ window1_data(1:samples_win,:) ; window2_data(1:samples_win,:) ; window3_data(1:samples_win,:) ]);
     
-    switch algo
+    switch algo_s
         case "3" %GPR w. confidence
             dataB(1).p = zeros(Time/dt,4);
             
@@ -472,7 +472,7 @@ for ii = 1:N
         %if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0 0]; %is done in order to not use predictions during the 1 second wait
+            sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         %end
@@ -494,7 +494,7 @@ for ii = 1:N
        % if control_type == "vel"
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
             pause(1)
-            sysState = [0 0 0];
+            sysState = [0 0];
             t_score = tic;
             set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         %end
