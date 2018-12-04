@@ -50,7 +50,7 @@ end
 i_lr = nonzeros(i_lr);              %get the nonzero elements in i_lr, put them as i_lr
 
 % 47 indexes are expected and are checked. VI SKAL TJEKKE HVOR 
-if length(i_lr) == 32               %if the expected length of the array i_lr is 47          
+if length(i_lr) == 31               %if the expected length of the array i_lr is 47          
     disp('Yes')                     %display yes
 else                                %if the expected length of the array i_lr, is NOT 47, 
     disp('No, there is a mistake')  %display mistake message
@@ -122,7 +122,7 @@ LR(1).path.opt = zeros(length(i_lr),1);         %create an array of zeros with d
 GPR_uc(1).path.taken = zeros(length(i_gpr_uc),1);     %create an array of zeros with dim length(i_gpr) by 1 called GPR(1).path.taken
 LR(1).path.taken = zeros(length(i_lr),1);       %create an array of zeros with dim length(i_lrr) by 1 called LRR(1).path.taken
 for jj = 1:32   %run from jj equal to 1 through 48.    Look into the equations below for Path optimising
-    GPR_uc.path.opt(jj) = sqrt(GPR_uc.target(i_gpr_uc(jj)-1,1)^2+GPR.target(i_gpr_uc(jj)-1,2)^2)-0.075; %0.075 is the radius of the target
+    GPR_uc.path.opt(jj) = sqrt(GPR_uc.target(i_gpr_uc(jj)-1,1)^2+GPR_uc.target(i_gpr_uc(jj)-1,2)^2)-0.075; %0.075 is the radius of the target
     LR.path.opt(jj) = sqrt(LR.target(i_lr(jj)-1,1)^2+LR.target(i_lr(jj)-1,2)^2)-0.075;
     if jj == 1  %if jj equals to 1, do:
         gprOut_uc = [0,0;GPR_uc.sysOut(1:i_gpr_uc(jj)-1,1),GPR_uc.sysOut(1:i_gpr_uc(jj)-1,2)];     %GPR out is set to be concatenate of 0,0 and GPR.sysOut(1:i_gpr(jj)-1,1),GPR.sysOut(1:i_gpr(jj)-1,2)
@@ -225,7 +225,7 @@ for jj = 1:32   %run from jj equal to 1 through 48.    Look into the equations b
 end
 clear count d_gpr d_lr dt gprOut gprOut_new jj kk lrOut lrOut_new real_end_gpr real_end_lr t_gpr t_lr tmax_gpr tmax_lr
 % Path efficiency calculated
-path_ratio_gpr=(GPR_uc.path.taken - GPR_uc.path.opt)./GPR_uc.path.opt;
+path_ratio_gpr_uc=(GPR_uc.path.taken - GPR_uc.path.opt)./GPR_uc.path.opt;
 path_ratio_lr=(LR.path.taken - LR.path.opt)./LR.path.opt;
 
 %% Diagonal and non-diagonal path efficiencies
@@ -253,8 +253,8 @@ i_lr_d = find(lr_targets_check);            %find the indexes and values of the 
 i_lr_nd = find(lr_targets_check==0);        %find the index equal to 0 in the lr_targets_check
 
 % Path ratios of diagonal and non-diagonal targets for lr and gpr.
-path_ratio_gpr_d_uc=(GPR.path.taken(i_gpr_d_uc) - GPR_uc.path.opt(i_gpr_d_uc))./GPR_uc.path.opt(i_gpr_d_uc);
-path_ratio_gpr_nd_uc=(GPR.path.taken(i_gpr_nd_uc) - GPR_uc.path.opt(i_gpr_nd_uc))./GPR_uc.path.opt(i_gpr_nd_uc);
+path_ratio_gpr_d_uc=(GPR_uc.path.taken(i_gpr_d_uc) - GPR_uc.path.opt(i_gpr_d_uc))./GPR_uc.path.opt(i_gpr_d_uc);
+path_ratio_gpr_nd_uc=(GPR_uc.path.taken(i_gpr_nd_uc) - GPR_uc.path.opt(i_gpr_nd_uc))./GPR_uc.path.opt(i_gpr_nd_uc);
 path_ratio_lr_d=(LR.path.taken(i_lr_d) - LR.path.opt(i_lr_d))./LR.path.opt(i_lr_d);
 path_ratio_lr_nd=(LR.path.taken(i_lr_nd) - LR.path.opt(i_lr_nd))./LR.path.opt(i_lr_nd);
 
@@ -264,10 +264,10 @@ path_ratio_lr_nd=(LR.path.taken(i_lr_nd) - LR.path.opt(i_lr_nd))./LR.path.opt(i_
 
 %Performance = zeros(10,6);
 Performance(subject,1) = Score_LR;
-Performance(subject,2) = Score_GPR;
+Performance(subject,2) = Score_GPR_uc;
 Performance(subject,3) = B;
 Performance(subject,4) = mean(path_ratio_lr);
-Performance(subject,5) = mean(path_ratio_gpr);
+Performance(subject,5) = mean(path_ratio_gpr_uc);
 Performance(subject,6) = (Performance(subject,4)-Performance(subject,5))./Performance(subject,4);
 
 %Performance_d = zeros(10,6);
