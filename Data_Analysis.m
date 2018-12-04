@@ -5,15 +5,25 @@
 
 subject = 10; % Choose subject number. Each subject has to be done manually to fill the performance matrix.
 % Open the directory of the data from the subject
-% Load GPR data
-load dataGPR.mat
-GPR(1).cursor = cursor;                     %set the GPR(1).cursor to have the data from cursor
-GPR(1).dof = dof;                           %set the GPR(1).dof to have the data from dof
-GPR(1).p = p;                               %set the GPR(1).p to have the data from p
-GPR(1).sysOut = sysOut;                     %set the GPR(1).sysOut to have the data from sysOut
-GPR(1).target = target;                     %set the GPR(1).target to have the data from target
-GPR(1).time = time;                         %set the GPR(1).time to have the data from time
+% Load GPR_uc data
+load dataGPR_uc.mat
+GPR_uc(1).cursor = cursor;                     %set the GPR(1).cursor to have the data from cursor
+GPR_uc(1).dof = dof;                           %set the GPR(1).dof to have the data from dof
+GPR_uc(1).p = p;                               %set the GPR(1).p to have the data from p
+GPR_uc(1).sysOut = sysOut;                     %set the GPR(1).sysOut to have the data from sysOut
+GPR_uc(1).target = target;                     %set the GPR(1).target to have the data from target
+GPR_uc(1).time = time;                         %set the GPR(1).time to have the data from time
 clear cursor dof p sysOut target time       %clear the cursor, dof, p, sysOut, target, time
+
+% Load GPR_mc data
+load dataGPR_mc.mat
+GPR_mc(1).cursor = cursor;
+GPR_mc(1).dof = dof;
+GPR_mc(1).p = p;
+GPR_mc(1).sysOut = sysOut;
+GPR_mc(1).target = target;
+GPR_mc(1).time = time;
+clear cursor dof sysOut target time p
 
 % Load LR data
 load dataLR.mat
@@ -40,7 +50,7 @@ end
 i_lr = nonzeros(i_lr);              %get the nonzero elements in i_lr, put them as i_lr
 
 % 47 indexes are expected and are checked. VI SKAL TJEKKE HVOR 
-if length(i_lr) == 47               %if the expected length of the array i_lr is 47          
+if length(i_lr) == 32               %if the expected length of the array i_lr is 47          
     disp('Yes')                     %display yes
 else                                %if the expected length of the array i_lr, is NOT 47, 
     disp('No, there is a mistake')  %display mistake message
@@ -48,12 +58,12 @@ end
 i_lr = i_lr+1; i_lr = [i_lr;length(LR.time)]; %Add final index
 
 % Show performance: Time it took to reach each target
-P = zeros(1,48);                    %create an array of all zeros with dim 1 by 48 called P
+P = zeros(1,32);                    %create an array of all zeros with dim 1 by 48 called P
 for jj = 1:length(P)                %for loop with jj going from 1 through the length of P  %%why is this?? 
     if jj == 1                      %when jj equals 1               %%explain this loop please
         P(jj) = LR.time(i_lr(jj)-1)-1;  
-    elseif jj == 48                 
-        P(jj) = LR.time(i_lr(48))-LR.time(i_lr(jj-1))-1;  
+    elseif jj == 32                 
+        P(jj) = LR.time(i_lr(32))-LR.time(i_lr(jj-1))-1;  
     else
         P(jj) = LR.time(i_lr(jj)-1)-LR.time(i_lr(jj-1))-1;
     end
@@ -62,40 +72,40 @@ Score_LR = sum(P);          %Summation of all times is the performance score.
                             %Smaller number = better (faster time at reaching the target)
 
 % GPR (Same is done as in LR)
-i_gpr = zeros(100,1);
+i_gpr_uc = zeros(100,1);
 j = 1;
-for ii = 1:length(GPR.time)-1
-    if GPR.time(ii+1)-GPR.time(ii)>1
-        A = GPR.time(ii);
-        i_gpr(j) = find(GPR.time==A);
+for ii = 1:length(GPR_uc.time)-1
+    if GPR_uc.time(ii+1)-GPR_uc.time(ii)>1
+        A = GPR_uc.time(ii);
+        i_gpr_uc(j) = find(GPR_uc.time==A);
         j=j+1;
     end
 end
-i_gpr = nonzeros(i_gpr);
+i_gpr_uc = nonzeros(i_gpr_uc);
 
-if length(i_gpr) == 47
+if length(i_gpr_uc) == 31
     disp('Yes')
 else 
     disp('No, there is a mistake')
 end
-i_gpr = i_gpr+1; i_gpr  = [i_gpr;length(GPR.time)];
+i_gpr_uc = i_gpr_uc+1; i_gpr_uc  = [i_gpr_uc;length(GPR_uc.time)];
 
 % Show performance: Time it took to reach each target
-P = zeros(1,48);
+P = zeros(1,32);
 for jj = 1:length(P)
     if jj == 1
-        P(jj) = GPR.time(i_gpr(jj)-1)-1;
-    elseif jj == 48
-        P(jj) = GPR.time(i_gpr(48))-GPR.time(i_gpr(jj-1))-1;
+        P(jj) = GPR_uc.time(i_gpr_uc(jj)-1)-1;
+    elseif jj == 32
+        P(jj) = GPR_uc.time(i_gpr_uc(32))-GPR_uc.time(i_gpr_uc(jj-1))-1;
     else
-        P(jj) = GPR.time(i_gpr(jj)-1)-GPR.time(i_gpr(jj-1))-1;
+        P(jj) = GPR_uc.time(i_gpr_uc(jj)-1)-GPR_uc.time(i_gpr_uc(jj-1))-1;
     end
 end
-Score_GPR = sum(P);     %Summation of all times is the performance score. 
+Score_GPR_uc = sum(P);     %Summation of all times is the performance score. 
                         %Smaller number = better (faster time at reaching the target)
 
 % Percentage of GPR being relatively faster. When negative, LR was faster.
-B = (Score_LR - Score_GPR)/Score_LR;       
+B = (Score_LR - Score_GPR_uc)/Score_LR;       
 
 %% Performance measure 2: Path efficiency
 % Optimal path and path taken are derived. When cursor was in target, but
@@ -107,36 +117,36 @@ B = (Score_LR - Score_GPR)/Score_LR;
 % data points by use of splines after wich the eucledian distance between
 % each new data points is summed.
 dt = 0.01;
-GPR(1).path.opt = zeros(length(i_gpr),1);       %create an array of zeros with dim length(i_gpr) by 1 called GPR(1).path.opt
+GPR_uc(1).path.opt = zeros(length(i_gpr_uc),1);       %create an array of zeros with dim length(i_gpr) by 1 called GPR(1).path.opt
 LR(1).path.opt = zeros(length(i_lr),1);         %create an array of zeros with dim length(i_lr) by 1 called LR(1).path.opt
-GPR(1).path.taken = zeros(length(i_gpr),1);     %create an array of zeros with dim length(i_gpr) by 1 called GPR(1).path.taken
+GPR_uc(1).path.taken = zeros(length(i_gpr_uc),1);     %create an array of zeros with dim length(i_gpr) by 1 called GPR(1).path.taken
 LR(1).path.taken = zeros(length(i_lr),1);       %create an array of zeros with dim length(i_lrr) by 1 called LRR(1).path.taken
-for jj = 1:48   %run from jj equal to 1 through 48.    Look into the equations below for Path optimising
-    GPR.path.opt(jj) = sqrt(GPR.target(i_gpr(jj)-1,1)^2+GPR.target(i_gpr(jj)-1,2)^2)-0.075; %0.075 is the radius of the target
+for jj = 1:32   %run from jj equal to 1 through 48.    Look into the equations below for Path optimising
+    GPR_uc.path.opt(jj) = sqrt(GPR_uc.target(i_gpr_uc(jj)-1,1)^2+GPR.target(i_gpr_uc(jj)-1,2)^2)-0.075; %0.075 is the radius of the target
     LR.path.opt(jj) = sqrt(LR.target(i_lr(jj)-1,1)^2+LR.target(i_lr(jj)-1,2)^2)-0.075;
     if jj == 1  %if jj equals to 1, do:
-        gprOut = [0,0;GPR.sysOut(1:i_gpr(jj)-1,1),GPR.sysOut(1:i_gpr(jj)-1,2)];     %GPR out is set to be concatenate of 0,0 and GPR.sysOut(1:i_gpr(jj)-1,1),GPR.sysOut(1:i_gpr(jj)-1,2)
+        gprOut_uc = [0,0;GPR_uc.sysOut(1:i_gpr_uc(jj)-1,1),GPR_uc.sysOut(1:i_gpr_uc(jj)-1,2)];     %GPR out is set to be concatenate of 0,0 and GPR.sysOut(1:i_gpr(jj)-1,1),GPR.sysOut(1:i_gpr(jj)-1,2)
         lrOut = [0,0;LR.sysOut(1:i_lr(jj)-1,1),LR.sysOut(1:i_lr(jj)-1,2)];          %LR out is set to be concatenate of 0,0 and LR.sysOut(1:i_lr(jj)-1,1),LR.sysOut(1:i_lr(jj)-1,2)
-        tmax_gpr = length(gprOut);          %returns the length of the longest array dimension in gprOut
+        tmax_gpr_uc = length(gprOut_uc);          %returns the length of the longest array dimension in gprOut
         tmax_lr = length(lrOut);            %returns the length of the longest array dimension in lrOut
-        t_gpr = [1:dt:tmax_gpr];            %t_gpr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_gpr
+        t_gpr_uc = [1:dt:tmax_gpr_uc];            %t_gpr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_gpr
         t_lr = [1:dt:tmax_lr];              %t_lr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_lr
-        gprOut_new = interp1(gprOut, t_gpr, 'pchip');   %set gprOut_new to be 1D interpolation of gprOut and t_gpr with 
+        gprOut_uc_new = interp1(gprOut_uc, t_gpr_uc, 'pchip');   %set gprOut_new to be 1D interpolation of gprOut and t_gpr with 
                                                         %method pchip (Piecewise Cubic Hermite Interpolating Polynomial)
                                                         %connecting the dots
         lrOut_new = interp1(lrOut, t_lr, 'pchip');      %set lrOut_new to be 1D interpolation of lrOut and t_lr with 
                                                         %method pchip (Piecewise Cubic Hermite Interpolating Polynomial)
         count = 2;
-        for kk = 3:length(gprOut_new)           %for loop when kk equals 3 through the length of gprOut_new
-            if sqrt((GPR.target(i_gpr(jj)-1,1)-gprOut_new(end-(kk-1),1))^2+(GPR.target(i_gpr(jj)-1,2)-gprOut_new(end-(kk-1),2))^2) < 0.075 
+        for kk = 3:length(gprOut_uc_new)           %for loop when kk equals 3 through the length of gprOut_new
+            if sqrt((GPR_uc.target(i_gpr_uc(jj)-1,1)-gprOut_uc_new(end-(kk-1),1))^2+(GPR_uc.target(i_gpr_uc(jj)-1,2)-gprOut_uc_new(end-(kk-1),2))^2) < 0.075 
                 %above: if the ?? is below the radius of the target. ?? dont understand
                 count = count + 1;              %add 1 to count, put this as the new count
             else
                 break
             end
         end
-        real_end_gpr = length(gprOut_new)-count+1;  %real_end_gpr equals the length of gprOut_new - (count+1)
-        d_gpr = [gprOut_new(1,1),gprOut_new(1,2);diff(gprOut_new(1:real_end_gpr,:))]; %?? dont understand
+        real_end_gpr_uc = length(gprOut_uc_new)-count+1;  %real_end_gpr equals the length of gprOut_new - (count+1)
+        d_gpr_uc = [gprOut_uc_new(1,1),gprOut_uc_new(1,2);diff(gprOut_uc_new(1:real_end_gpr_uc,:))]; %?? dont understand
         count = 2;                              %set count to be equal to 2
         for kk = 3:length(lrOut_new)            %for loop when kk equals 3 through length of lrOut_new
             if sqrt((LR.target(i_lr(jj)-1,1)-lrOut_new(end-(kk-1),1))^2+(LR.target(i_lr(jj)-1,2)-lrOut_new(end-(kk-1),2))^2) < 0.075
@@ -148,28 +158,28 @@ for jj = 1:48   %run from jj equal to 1 through 48.    Look into the equations b
         end
         real_end_lr = length(lrOut_new)-count+1;    %real_end_lr equals the length of lrOut_new - (count+1)
         d_lr = [lrOut_new(1,1),lrOut_new(1,2);diff(lrOut_new(1:real_end_lr,:))]; %?? dont understand
-    elseif jj == 48                 %else if jj is equal to 48 do:
-        gprOut = [GPR.sysOut(i_gpr(jj-1):i_gpr(48),1),GPR.sysOut(i_gpr(jj-1):i_gpr(48),2)];
-        lrOut = [LR.sysOut(i_lr(jj-1):i_lr(48),1),LR.sysOut(i_lr(jj-1):i_lr(48),2)];
-        tmax_gpr = length(gprOut);  %set tmax_gpr to be the length of gprOut
+    elseif jj == 32                 %else if jj is equal to 48 do:
+        gprOut_uc = [GPR_uc.sysOut(i_gpr_uc(jj-1):i_gpr_uc(32),1),GPR_uc.sysOut(i_gpr_uc(jj-1):i_gpr_uc(32),2)];
+        lrOut = [LR.sysOut(i_lr(jj-1):i_lr(32),1),LR.sysOut(i_lr(jj-1):i_lr(32),2)];
+        tmax_gpr_uc = length(gprOut_uc);  %set tmax_gpr to be the length of gprOut
         tmax_lr = length(lrOut);    %set tmax_lr to be the length of lrOut
-        t_gpr = [1:dt:tmax_gpr];            %t_gpr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_gpr
+        t_gpr_uc = [1:dt:tmax_gpr_uc];            %t_gpr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_gpr
         t_lr = [1:dt:tmax_lr];              %t_lr = [start:step:stop] -> start at 1, go 0.01 each step, end at tmax_lr
-        gprOut_new = interp1(gprOut, t_gpr, 'pchip');   %set gprOut_new to be 1D interpolation of gprOut and t_gpr with 
+        gprOut_uc_new = interp1(gprOut_uc, t_gpr_uc, 'pchip');   %set gprOut_new to be 1D interpolation of gprOut and t_gpr with 
                                                         %method pchip (Piecewise Cubic Hermite Interpolating Polynomial)
                                                         %connecting the dots
         lrOut_new = interp1(lrOut, t_lr, 'pchip');      %set lrOut_new to be 1D interpolation of lrOut and t_lr with 
                                                         %method pchip (Piecewise Cubic Hermite Interpolating Polynomial)
         count = 2;
-        for kk = 3:length(gprOut_new)
-            if sqrt((GPR.target(i_gpr(jj)-1,1)-gprOut_new(end-(kk-1),1))^2+(GPR.target(i_gpr(jj)-1,2)-gprOut_new(end-(kk-1),2))^2) < 0.075
+        for kk = 3:length(gprOut_uc_new)
+            if sqrt((GPR_uc.target(i_gpr_uc(jj)-1,1)-gprOut_uc_new(end-(kk-1),1))^2+(GPR_uc.target(i_gpr_uc(jj)-1,2)-gprOut_uc_new(end-(kk-1),2))^2) < 0.075
                 count = count + 1;
             else
                 break
             end
         end
-        real_end_gpr = length(gprOut_new)-count+1;
-        d_gpr = [gprOut_new(1,1),gprOut_new(1,2);diff(gprOut_new(1:real_end_gpr,:))];
+        real_end_gpr_uc = length(gprOut_uc_new)-count+1;
+        d_gpr_uc = [gprOut_uc_new(1,1),gprOut_uc_new(1,2);diff(gprOut_uc_new(1:real_end_gpr_uc,:))];
         count = 2;
         for kk = 3:length(lrOut_new)
             if sqrt((LR.target(i_lr(jj)-1,1)-lrOut_new(end-(kk-1),1))^2+(LR.target(i_lr(jj)-1,2)-lrOut_new(end-(kk-1),2))^2) < 0.075
@@ -181,24 +191,24 @@ for jj = 1:48   %run from jj equal to 1 through 48.    Look into the equations b
         real_end_lr = length(lrOut_new)-count+1;
         d_lr = [lrOut_new(1,1),lrOut_new(1,2);diff(lrOut_new(1:real_end_lr,:))];
     else
-        gprOut = [GPR.sysOut(i_gpr(jj-1):i_gpr(jj)-1,1),GPR.sysOut(i_gpr(jj-1):i_gpr(jj)-1,2)];
+        gprOut_uc = [GPR_uc.sysOut(i_gpr_uc(jj-1):i_gpr_uc(jj)-1,1),GPR_uc.sysOut(i_gpr_uc(jj-1):i_gpr_uc(jj)-1,2)];
         lrOut = [LR.sysOut(i_lr(jj-1):i_lr(jj)-1,1),LR.sysOut(i_lr(jj-1):i_lr(jj)-1,2)];
-        tmax_gpr = length(gprOut);
+        tmax_gpr_uc = length(gprOut_uc);
         tmax_lr = length(lrOut);
-        t_gpr = [1:dt:tmax_gpr];
+        t_gpr_uc = [1:dt:tmax_gpr_uc];
         t_lr = [1:dt:tmax_lr];
-        gprOut_new = interp1(gprOut, t_gpr, 'pchip');
+        gprOut_uc_new = interp1(gprOut_uc, t_gpr_uc, 'pchip');
         lrOut_new = interp1(lrOut, t_lr, 'pchip');
         count = 2;
-        for kk = 3:length(gprOut_new)
-            if sqrt((GPR.target(i_gpr(jj)-1,1)-gprOut_new(end-(kk-1),1))^2+(GPR.target(i_gpr(jj)-1,2)-gprOut_new(end-(kk-1),2))^2) < 0.075
+        for kk = 3:length(gprOut_uc_new)
+            if sqrt((GPR_uc.target(i_gpr_uc(jj)-1,1)-gprOut_uc_new(end-(kk-1),1))^2+(GPR_uc.target(i_gpr_uc(jj)-1,2)-gprOut_uc_new(end-(kk-1),2))^2) < 0.075
                 count = count + 1;
             else
                 break
             end
         end
-        real_end_gpr = length(gprOut_new)-count+1;
-        d_gpr = [gprOut_new(1,1),gprOut_new(1,2);diff(gprOut_new(1:real_end_gpr,:))];
+        real_end_gpr_uc = length(gprOut_uc_new)-count+1;
+        d_gpr_uc = [gprOut_uc_new(1,1),gprOut_uc_new(1,2);diff(gprOut_uc_new(1:real_end_gpr_uc,:))];
         count = 2;
         for kk = 3:length(lrOut_new)
             if sqrt((LR.target(i_lr(jj)-1,1)-lrOut_new(end-(kk-1),1))^2+(LR.target(i_lr(jj)-1,2)-lrOut_new(end-(kk-1),2))^2) < 0.075
@@ -210,26 +220,26 @@ for jj = 1:48   %run from jj equal to 1 through 48.    Look into the equations b
         real_end_lr = length(lrOut_new);
         d_lr = [lrOut_new(1,1),lrOut_new(1,2);diff(lrOut_new(1:real_end_lr,:))];
     end
-    GPR.path.taken(jj) = sum(sqrt(sum(d_gpr.*d_gpr,2)));
+    GPR_uc.path.taken(jj) = sum(sqrt(sum(d_gpr_uc.*d_gpr_uc,2)));
     LR.path.taken(jj) = sum(sqrt(sum(d_lr.*d_lr,2)));
 end
 clear count d_gpr d_lr dt gprOut gprOut_new jj kk lrOut lrOut_new real_end_gpr real_end_lr t_gpr t_lr tmax_gpr tmax_lr
 % Path efficiency calculated
-path_ratio_gpr=(GPR.path.taken - GPR.path.opt)./GPR.path.opt;
+path_ratio_gpr=(GPR_uc.path.taken - GPR_uc.path.opt)./GPR_uc.path.opt;
 path_ratio_lr=(LR.path.taken - LR.path.opt)./LR.path.opt;
 
 %% Diagonal and non-diagonal path efficiencies
 % Find the indexes of diagonal and non-diagonal
 % GPR
-gpr_targets = GPR.target([1;i_gpr(1:end-1)],:);
-gpr_targets_check = zeros(length(gpr_targets),1);
-for jj = 1:length(gpr_targets)
-    if abs(gpr_targets(jj,1)) == abs(gpr_targets(jj,2))
-        gpr_targets_check(jj) = 1;
+gpr_targets_uc = GPR_uc.target([1;i_gpr_uc(1:end-1)],:);
+gpr_targets_check_uc = zeros(length(gpr_targets_uc),1);
+for jj = 1:length(gpr_targets_uc)
+    if abs(gpr_targets_uc(jj,1)) == abs(gpr_targets_uc(jj,2))
+        gpr_targets_check_uc(jj) = 1;
     end
 end
-i_gpr_d = find(gpr_targets_check);          %find the indexes and values of the nonzero elements in gpr_targets_check
-i_gpr_nd = find(gpr_targets_check==0);      %find the index equal to 0 in the gpr_targets_check
+i_gpr_d_uc = find(gpr_targets_check_uc);          %find the indexes and values of the nonzero elements in gpr_targets_check
+i_gpr_nd_uc = find(gpr_targets_check_uc==0);      %find the index equal to 0 in the gpr_targets_check
 
 % LR
 lr_targets = LR.target([1;i_lr(1:end-1)],:);
@@ -243,8 +253,8 @@ i_lr_d = find(lr_targets_check);            %find the indexes and values of the 
 i_lr_nd = find(lr_targets_check==0);        %find the index equal to 0 in the lr_targets_check
 
 % Path ratios of diagonal and non-diagonal targets for lr and gpr.
-path_ratio_gpr_d=(GPR.path.taken(i_gpr_d) - GPR.path.opt(i_gpr_d))./GPR.path.opt(i_gpr_d);
-path_ratio_gpr_nd=(GPR.path.taken(i_gpr_nd) - GPR.path.opt(i_gpr_nd))./GPR.path.opt(i_gpr_nd);
+path_ratio_gpr_d_uc=(GPR.path.taken(i_gpr_d_uc) - GPR_uc.path.opt(i_gpr_d_uc))./GPR_uc.path.opt(i_gpr_d_uc);
+path_ratio_gpr_nd_uc=(GPR.path.taken(i_gpr_nd_uc) - GPR_uc.path.opt(i_gpr_nd_uc))./GPR_uc.path.opt(i_gpr_nd_uc);
 path_ratio_lr_d=(LR.path.taken(i_lr_d) - LR.path.opt(i_lr_d))./LR.path.opt(i_lr_d);
 path_ratio_lr_nd=(LR.path.taken(i_lr_nd) - LR.path.opt(i_lr_nd))./LR.path.opt(i_lr_nd);
 
@@ -261,8 +271,8 @@ Performance(subject,5) = mean(path_ratio_gpr);
 Performance(subject,6) = (Performance(subject,4)-Performance(subject,5))./Performance(subject,4);
 
 %Performance_d = zeros(10,6);
-Performance_d(subject,1) = mean(path_ratio_gpr_d);
-Performance_d(subject,2) = mean(path_ratio_gpr_nd);
+Performance_d(subject,1) = mean(path_ratio_gpr_d_uc);
+Performance_d(subject,2) = mean(path_ratio_gpr_nd_uc);
 Performance_d(subject,3) = mean(path_ratio_lr_d);
 Performance_d(subject,4) = mean(path_ratio_lr_nd);
 Performance_d(subject,5) = (Performance_d(subject,3)-Performance(subject,1))./Performance(subject,3);
