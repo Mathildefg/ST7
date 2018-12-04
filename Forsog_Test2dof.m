@@ -2,7 +2,7 @@ close all;
 addpath(genpath('MyoWrapper'));
 clear subplot;
 %% The Fitts law test 
-
+3
 %% Set Myoband ready to collect EMG data
   % The following 2 commented lines of codes builds the myomex file.
   % Uncommend and run if necessary.
@@ -359,17 +359,17 @@ for ii = 1:N
             
        % Update confidence bars
     
-            ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
-            set(con_ext_fill, 'Position', [-0.70 0.35 0.25 ext_fill]);
-            
-            flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
-            set(con_flex_fill, 'Position', [0.20 0.35 0.25 flex_fill]);
-            
-            rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
-            set(con_rd_fill, 'Position', [-0.70 -0.30 0.25 rd_fill]);
-            
-            ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
-            set(con_ud_fill, 'Position', [0.20 -0.30 0.25 ud_fill]);
+%             ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
+%             set(con_ext_fill, 'Position', [-0.70 0.35 0.25 ext_fill]);
+%             
+%             flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
+%             set(con_flex_fill, 'Position', [0.20 0.35 0.25 flex_fill]);
+%             
+%             rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
+%             set(con_rd_fill, 'Position', [-0.70 -0.30 0.25 rd_fill]);
+%             
+%             ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
+%             set(con_ud_fill, 'Position', [0.20 -0.30 0.25 ud_fill]);
     
     %Update dof-output-bars
     ext_dof_fill = min(max(0.5*dof2,0),0.5);

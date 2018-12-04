@@ -360,23 +360,23 @@ for ii = 1:N
             % Update confidence bars
            %ext_fill = max(0.5- ci1(:,2)-dof1,0);
             %ext_fill = min(max(0.5*(1-(((nyci2)-baseCI_2)/baseCI_2)),0),0.5) %Procent af baseCI
-            ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
-            set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
-            
-            %flex_fill = max(0.5- ci2(:,2)-dof2,0);
-            %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
-            flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
-            set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
-            
-            %rd_fill = max(0.5- ci4(:,2)-dof4,0);
-            %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
-            rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
-            set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
-            
-            %ud_fill = max(0.5- ci6(:,2)-dof6,0);
-            %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
-            ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
-            set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
+%             ext_fill = min(max(0.5-(0.5*nyci2),0),0.5);
+%             set(con_ext_fill, 'Position', [-0.70 0.35 0.5 ext_fill]);
+%             
+%             %flex_fill = max(0.5- ci2(:,2)-dof2,0);
+%             %flex_fill = min(max(0.5*(1-(((ci3(:,2)-ci3(:,1))-baseCI_3)/baseCI_3)),0),0.5);
+%             flex_fill = min(max(0.5-(0.5*nyci3),0),0.5);
+%             set(con_flex_fill, 'Position', [0.20 0.35 0.5 flex_fill]);
+%             
+%             %rd_fill = max(0.5- ci4(:,2)-dof4,0);
+%             %rd_fill = min(max(0.5*(1-(((ci5(:,2)-ci5(:,1))-baseCI_5)/baseCI_5)),0),0.5);
+%             rd_fill = min(max(0.5-(0.5*nyci5),0),0.5);
+%             set(con_rd_fill, 'Position', [-0.70 -0.30 0.5 rd_fill]);
+%             
+%             %ud_fill = max(0.5- ci6(:,2)-dof6,0);
+%             %ud_fill = min(max(0.5*(1-(((ci6(:,2)-ci6(:,1))-baseCI_6)/baseCI_6)),0),0.5);
+%             ud_fill = min(max(0.5-(0.5*nyci6),0),0.5);
+%             set(con_ud_fill, 'Position', [0.20 -0.30 0.5 ud_fill]);
     
             drawnow
             
