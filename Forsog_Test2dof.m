@@ -2,7 +2,7 @@ close all;
 addpath(genpath('MyoWrapper'));
 clear subplot;
 %% The Fitts law test 
-3
+
 %% Set Myoband ready to collect EMG data
   % The following 2 commented lines of codes builds the myomex file.
   % Uncommend and run if necessary.
@@ -569,7 +569,7 @@ set(gca, 'color', [.98,.98,.98],'DataAspectRatio',[1 1 1], 'units', 'normalized'
 grid on
 if algo == "1"
     export_fig(hfig_traj,'-pdf','filename','LR_trajectory');
-elseif algo== "2"
+elseif algo== "2" 
     export_fig(hfig_traj,'-pdf','filename','GPR_uc_trajectory');
 else
     export_fig(hfig_traj,'-pdf','filename','GPR_mc_trajectory');

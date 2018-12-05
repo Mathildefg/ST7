@@ -6,6 +6,9 @@
 subject = 10; % Choose subject number. Each subject has to be done manually to fill the performance matrix.
 % Open the directory of the data from the subject
 % Load GPR_uc data
+dataLoad = dir(uigetdir);
+dataLoad = dataLoad.folder;
+addpath(dataLoad);
 load dataGPR_uc.mat
 GPR_uc(1).cursor = cursor;                     %set the GPR(1).cursor to have the data from cursor
 GPR_uc(1).dof = dof;                           %set the GPR(1).dof to have the data from dof
