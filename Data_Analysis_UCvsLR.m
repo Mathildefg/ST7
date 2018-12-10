@@ -261,15 +261,15 @@ Performance(subject,2) = Score_GPR_uc;
 Performance(subject,3) = B;
 Performance(subject,4) = mean(path_ratio_lr);
 Performance(subject,5) = mean(path_ratio_gpr_uc);
-Performance(subject,6) = (Performance(subject,4)-Performance(subject,5))./Performance(subject,4);
+Performance(subject,6) = (Performance(subject,4)-Performance(subject,5))/Performance(subject,4);
 
 %Performance_d = zeros(10,6);
 Performance_d(subject,1) = mean(path_ratio_gpr_d_uc);
 Performance_d(subject,2) = mean(path_ratio_gpr_nd_uc);
-Performance_d(subject,3) = mean(path_ratio_lr_d);
+Performance_d(subject,3) = mean(path_ratio_lr_d);   
 Performance_d(subject,4) = mean(path_ratio_lr_nd);
-Performance_d(subject,5) = (Performance_d(subject,3)-Performance(subject,1))./Performance(subject,3);
-Performance_d(subject,6) = (Performance_d(subject,4)-Performance(subject,2))./Performance(subject,4);
+Performance_d(subject,5) = (Performance_d(subject,3)-Performance(subject,1))/Performance(subject,3);
+Performance_d(subject,6) = (Performance_d(subject,4)-Performance(subject,2))/Performance(subject,4);
 
 %% EXTRAS: This include trajectory simultion and a sample time check
 % % Simulate Trajectory 
