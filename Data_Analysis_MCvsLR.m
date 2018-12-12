@@ -3,7 +3,7 @@
 % The script is written to analyse the obtained data from the fitts law
 % test of the Myoband.
 
-subject = 11; % Choose subject number. Each subject has to be done manually to fill the performance matrix.
+subject = 10; % Choose subject number. Each subject has to be done manually to fill the performance matrix.
 % Open the directory of the data from the subject
 % Load GPR_mc data
 dataLoad = dir(uigetdir);

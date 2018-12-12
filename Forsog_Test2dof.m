@@ -210,61 +210,61 @@ for ii = 1:N
             nyci5 = ci5(2)-ci5(1);
             nyci6 = ci6(2)-ci6(1);
  
- %Threshold på confidence
- if (0.5-(0.5*nyci2))>0.40
-     dof3 = 0;
- if (0.5-(0.5*nyci2))>0.40 && (0.5-(0.5*nyci5))>0.40
-         dof6 = 0;
- elseif (0.5-(0.5*nyci2))>0.40 && (0.5-(0.5*nyci6))>0.40
-         dof5 = 0;
- else
-     dof5= 0;
-     dof6= 0;
- end   
- end
+            %Threshold på confidence
+            if (0.5-(0.5*nyci2))>0.40
+                dof3 = 0;
+                if (0.5-(0.5*nyci2))>0.40 && (0.5-(0.5*nyci5))>0.40
+                    dof6 = 0;
+                elseif (0.5-(0.5*nyci2))>0.40 && (0.5-(0.5*nyci6))>0.40
+                    dof5 = 0;
+                else
+                    dof5= 0;
+                    dof6= 0;
+                end
+            end
  
- if (0.5-(0.5*nyci3))>0.40
-     dof2 = 0;
-    if (0.5-(0.5*nyci3))>0.40 && (0.5-(0.5*nyci5))>0.40
-         dof6 = 0;
-    elseif (0.5-(0.5*nyci3))>0.40 && (0.5-(0.5*nyci6))>0.40
-         dof5 = 0;
-    else
-        dof5= 0;
-        dof6= 0;
-    end  
- end
- 
- if (0.5-(0.5*nyci5))>0.40
-     dof6 = 0;
-     if (0.5-(0.5*nyci5))>0.40 && (0.5-(0.5*nyci2))>0.40
-         dof3 = 0;
-     elseif (0.5-(0.5*nyci5))>0.40 && (0.5-(0.5*nyci3))>0.40
-         dof2 = 0;
-     else
-        dof2= 0;
-        dof3= 0;
-     end 
- end
- 
- if (0.5-(0.5*nyci6))>0.40
-     dof5 = 0;
-      if (0.5-(0.5*nyci6))>0.40 && (0.5-(0.5*nyci2))>0.40
-         dof3 = 0;
-      elseif (0.5-(0.5*nyci6))>0.40 && (0.5-(0.5*nyci3))>0.40
-         dof2 = 0;
-      else
-        dof2= 0;
-        dof3= 0;
-      end 
- end
- 
+            if (0.5-(0.5*nyci3))>0.40
+                dof2 = 0;
+                if (0.5-(0.5*nyci3))>0.40 && (0.5-(0.5*nyci5))>0.40
+                    dof6 = 0;
+                elseif (0.5-(0.5*nyci3))>0.40 && (0.5-(0.5*nyci6))>0.40
+                    dof5 = 0;
+                else
+                    dof5= 0;
+                    dof6= 0;
+                end
+            end
+            
+            if (0.5-(0.5*nyci5))>0.40
+                dof6 = 0;
+                if (0.5-(0.5*nyci5))>0.40 && (0.5-(0.5*nyci2))>0.40
+                    dof3 = 0;
+                elseif (0.5-(0.5*nyci5))>0.40 && (0.5-(0.5*nyci3))>0.40
+                    dof2 = 0;
+                else
+                    dof2= 0;
+                    dof3= 0;
+                end
+            end
+            
+            if (0.5-(0.5*nyci6))>0.40
+                dof5 = 0;
+                if (0.5-(0.5*nyci6))>0.40 && (0.5-(0.5*nyci2))>0.40
+                    dof3 = 0;
+                elseif (0.5-(0.5*nyci6))>0.40 && (0.5-(0.5*nyci3))>0.40
+                    dof2 = 0;
+                else
+                    dof2= 0;
+                    dof3= 0;
+                end
+            end
+            
  
  %Kontrol baseret på smalleste confidence-intervalHER
             if nyci3 <= nyci2              
                 dofA = -dof3;               %put dofA to be -dof1
-                if dof3< 0.1*MVC(2)          %if dofB is below 10% of MVC set to 0.
-                dofA = 0;
+                if dof3< 0.1*MVC(2)         %if dofB is below 10% of MVC set to 0.
+                dofA = 0; 
                 end
             else
                 dofA = dof2;                %else put dofA to be dof2
@@ -473,13 +473,13 @@ for ii = 1:N
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2), 'markersize', Target(counter_target,4),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for control (only works for velocity control)
-            
+        
         %Fordi vi kører velocity control:
         set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
-            pause(1)
-            sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
-            t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+        pause(1)
+        sysState = [0 0]; %is done in order to not use predictions during the 1 second wait
+        t_score = tic;
+        set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         
     elseif counter_reach >= Reach_time/dt   %FAIL, when maximum time has passed. For the rest it's the same code as score.
         counter_fail=counter_fail+1;        %update fail score
@@ -497,11 +497,11 @@ for ii = 1:N
         set(htarget_cross, 'xdata', Target(counter_target,1),'ydata', Target(counter_target,2),'markersize', Target(counter_target,4));
         % Place cursor back to position for velocity control
         %Fordi vi kører velocity control
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
-            pause(1)
-            sysState = [0 0];
-            t_score = tic;
-            set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
+        set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.6 0.6 0.6],'MarkerEdgeColor', [0.6 0.6 0.6]);
+        pause(1)
+        sysState = [0 0];
+        t_score = tic;
+        set(hpos, 'xdata', 0, 'ydata', 0,'markersize',25,'MarkerFaceColor', [0.1 0.1 0.1],'MarkerEdgeColor', 'k');
         
     else
         set(htarget, 'xdata', Target(counter_target,1), 'ydata', Target(counter_target,2),'MarkerFaceColor', [0.9100 0.4100 0.1700], 'MarkerEdgeColor','r');
